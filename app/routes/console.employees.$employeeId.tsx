@@ -25,6 +25,7 @@ import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/modules/admin/AdminController.server";
 import EmployeeController from "~/modules/employee/EmployeeController.server";
+import { Button } from "~/components/ui/button";
 
 export default function ProductDetails() {
   let { user, employee } = useLoaderData();
