@@ -185,8 +185,21 @@ export const meta: MetaFunction = () => {
   return [
     { title: "ComClo - Cart" },
     {
-      description: "the best shopping site",
+      name: "description",
+      content: "The best e-Commerce platform for your business.",
     },
+    { name: "og:title", content: "ComClo" },
+    { property: "og:type", content: "websites" },
+    {
+      name: "og:description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    {
+      name: "og:image",
+      content:
+        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
+    },
+    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
   ];
 };
 
