@@ -26,7 +26,7 @@ export default class SettingsController {
 
   private async initializeModels() {
     const { NotificationSettings, SMSSettings, GeneralSettings, PaymentApi } =
-      await connectToDomainDatabase(this.domain);
+      await connectToDomainDatabase();
     this.PaymentApi = PaymentApi;
     this.Notification = NotificationSettings;
     this.SMSSettings = SMSSettings;

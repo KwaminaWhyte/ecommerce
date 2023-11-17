@@ -57,9 +57,7 @@ export default class AdminController {
   }
 
   private async initializeModels() {
-    const { Admin, connectionDetails } = await connectToDomainDatabase(
-      this.domain
-    );
+    const { Admin, connectionDetails } = await connectToDomainDatabase();
     this.Admin = Admin;
     this.connectionDetails = connectionDetails;
   }

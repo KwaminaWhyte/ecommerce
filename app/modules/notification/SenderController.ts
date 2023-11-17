@@ -69,7 +69,7 @@ export default class SenderController {
 
   private async initializeModels() {
     const { SMSHistory, EmailHistory, connectionDetails } =
-      await connectToDomainDatabase(this.domain);
+      await connectToDomainDatabase();
 
     this.SMSHistory = SMSHistory;
     this.EmailHistory = EmailHistory;

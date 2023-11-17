@@ -46,9 +46,7 @@ export default class CartController {
   }
 
   private async initializeModels() {
-    const { Cart, Product, ProductImages } = await connectToDomainDatabase(
-      this.domain
-    );
+    const { Cart, Product, ProductImages } = await connectToDomainDatabase();
 
     this.Cart = Cart;
     this.Product = Product;

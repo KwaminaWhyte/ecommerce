@@ -45,7 +45,7 @@ export default class FeatureController {
   }
 
   private async initializeModels() {
-    const { Feature } = await connectToDomainDatabase(this.domain);
+    const { Feature } = await connectToDomainDatabase();
 
     this.Feature = Feature;
   }

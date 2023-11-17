@@ -30,7 +30,7 @@ export default class ProductController {
 
   private async initializeModels() {
     const { Product, ProductImages, ProductCategory, StockHistory } =
-      await connectToDomainDatabase(this.domain);
+      await connectToDomainDatabase();
 
     this.Product = Product;
     this.ProductImages = ProductImages;

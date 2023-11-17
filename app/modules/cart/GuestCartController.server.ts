@@ -46,9 +46,8 @@ export default class GuestCartController {
   }
 
   private async initializeModels() {
-    const { Product, ProductImages, GuestCart } = await connectToDomainDatabase(
-      this.domain
-    );
+    const { Product, ProductImages, GuestCart } =
+      await connectToDomainDatabase();
 
     this.Product = Product;
     this.ProductImages = ProductImages;

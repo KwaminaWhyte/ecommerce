@@ -46,9 +46,7 @@ export default class ClientSetupController {
   }
 
   private async initializeModels() {
-    const { ClientConnection, ClientDetail } = await connectToDomainDatabase(
-      this.domain
-    );
+    const { ClientConnection, ClientDetail } = await connectToDomainDatabase();
     this.ClientConnection = ClientConnection;
     this.ClientDetail = ClientDetail;
   }

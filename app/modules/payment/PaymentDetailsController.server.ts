@@ -47,7 +47,7 @@ export default class PaymentDetailsController {
   }
 
   private async initializeModels() {
-    const clientDb = await connectToDomainDatabase(this.domain);
+    const clientDb = await connectToDomainDatabase();
     try {
       this.PaymentDetails = clientDb.model("payment_details");
       this.User = clientDb.model("users");

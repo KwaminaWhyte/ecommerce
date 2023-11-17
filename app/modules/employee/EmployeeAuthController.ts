@@ -40,7 +40,7 @@ export default class EmployeeAuthController {
   }
 
   private async initializeModels() {
-    const { Employee } = await connectToDomainDatabase(this.domain);
+    const { Employee } = await connectToDomainDatabase();
     this.Employee = Employee;
   }
 

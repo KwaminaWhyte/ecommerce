@@ -46,9 +46,8 @@ export default class WishlistController {
   }
 
   private async initializeModels() {
-    const { WishList, Product, ProductImages } = await connectToDomainDatabase(
-      this.domain
-    );
+    const { WishList, Product, ProductImages } =
+      await connectToDomainDatabase();
 
     this.WishList = WishList;
     this.Product = Product;

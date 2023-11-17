@@ -85,9 +85,8 @@ const fetchDomainConnectionDetails = async (domain: string) => {
 };
 
 /** Establish connection to the appropriate database based on the domain
- * @param domain The domian name string
  */
-const connectToDomainDatabase = async (domain: string) => {
+const connectToDomainDatabase = async () => {
   let Admin,
     Cart,
     User,
@@ -112,95 +111,93 @@ const connectToDomainDatabase = async (domain: string) => {
     ClientDetail, //main only
     ClientConnection; //main only
 
-  if (domain === process.env.CENTRAL_DOMAIN) {
-    try {
-      Admin = centralDb.model("admins");
-      Employee = centralDb.model("employees");
-      User = centralDb.model("users");
-      Product = centralDb.model("products");
-      ProductCategory = centralDb.model("product_categories");
-      ProductImages = centralDb.model("product_images");
-      Order = centralDb.model("orders");
-      Cart = centralDb.model("carts");
-      NotificationSettings = centralDb.model("notification_settings");
-      SMSSettings = centralDb.model("sms_settings");
-      SMSHistory = centralDb.model("sms_history");
-      EmailHistory = centralDb.model("email_history");
-      ShippingTimeline = centralDb.model("shipping_timelines");
-      WishList = centralDb.model("wishlistss");
-      Address = centralDb.model("addresses");
-      GeneralSettings = centralDb.model("general_settings");
-      Feature = centralDb.model("feature_requests");
-      ClientConnection = centralDb.model("client_connections");
-      ClientDetail = centralDb.model("client_details");
-      UserVisit = centralDb.model("user_visits");
-      PaymentApi = centralDb.model("payment_apis");
-      StockHistory = centralDb.model("stock_histories");
-    } catch (error) {
-      Admin = centralDb.model("admins", AdminSchema);
-      Employee = centralDb.model("employees", EmployeeSchema);
-      User = centralDb.model("users", UserSchema);
-      Product = centralDb.model("products", ProductsSchema);
-      ProductCategory = centralDb.model(
-        "product_categories",
-        ProductCategorySchema
-      );
-      ProductImages = centralDb.model("product_images", ProductImagesSchema);
-      Order = centralDb.model("orders", OrderSchema);
-      Cart = centralDb.model("carts", CartSchema);
-      ShippingTimeline = centralDb.model(
-        "shipping_timelines",
-        ShippingTimelineSchema
-      );
-      NotificationSettings = centralDb.model(
-        "notification_settings",
-        NotificationSchema
-      );
-      SMSSettings = centralDb.model("sms_settings", SMSSchema);
-      SMSHistory = centralDb.model("sms_history", SMSHistorySchema);
-      EmailHistory = centralDb.model("email_history", EmailHistorySchema);
-      WishList = centralDb.model("wishlistss", WishListSchema);
-      Address = centralDb.model("addresses", AddressSchema);
-      GeneralSettings = centralDb.model(
-        "general_settings",
-        GeneralSettingsSchema
-      );
-      Feature = centralDb.model("feature_requests", FeatureSchema);
-      ClientConnection = centralDb.model(
-        "client_connections",
-        ClientConnectionSchema
-      );
-      ClientDetail = centralDb.model("client_details", ClientDetailSchema);
-      UserVisit = centralDb.model("user_visits", VisitSchema);
-      PaymentApi = centralDb.model("payment_apis", PaymentApiSchema);
-      StockHistory = centralDb.model("stock_histories", StockHistorySchema);
-    }
-
-    return {
-      Cart,
-      User,
-      Admin,
-      Order,
-      Product,
-      Address,
-      Feature,
-      WishList,
-      Employee,
-      SMSHistory,
-      EmailHistory,
-      SMSSettings,
-      ProductImages,
-      GeneralSettings,
-      ProductCategory,
-      ShippingTimeline,
-      NotificationSettings,
-      ClientConnection,
-      ClientDetail,
-      UserVisit,
-      PaymentApi,
-      StockHistory,
-    };
+  try {
+    Admin = centralDb.model("admins");
+    Employee = centralDb.model("employees");
+    User = centralDb.model("users");
+    Product = centralDb.model("products");
+    ProductCategory = centralDb.model("product_categories");
+    ProductImages = centralDb.model("product_images");
+    Order = centralDb.model("orders");
+    Cart = centralDb.model("carts");
+    NotificationSettings = centralDb.model("notification_settings");
+    SMSSettings = centralDb.model("sms_settings");
+    SMSHistory = centralDb.model("sms_history");
+    EmailHistory = centralDb.model("email_history");
+    ShippingTimeline = centralDb.model("shipping_timelines");
+    WishList = centralDb.model("wishlistss");
+    Address = centralDb.model("addresses");
+    GeneralSettings = centralDb.model("general_settings");
+    Feature = centralDb.model("feature_requests");
+    ClientConnection = centralDb.model("client_connections");
+    ClientDetail = centralDb.model("client_details");
+    UserVisit = centralDb.model("user_visits");
+    PaymentApi = centralDb.model("payment_apis");
+    StockHistory = centralDb.model("stock_histories");
+  } catch (error) {
+    Admin = centralDb.model("admins", AdminSchema);
+    Employee = centralDb.model("employees", EmployeeSchema);
+    User = centralDb.model("users", UserSchema);
+    Product = centralDb.model("products", ProductsSchema);
+    ProductCategory = centralDb.model(
+      "product_categories",
+      ProductCategorySchema
+    );
+    ProductImages = centralDb.model("product_images", ProductImagesSchema);
+    Order = centralDb.model("orders", OrderSchema);
+    Cart = centralDb.model("carts", CartSchema);
+    ShippingTimeline = centralDb.model(
+      "shipping_timelines",
+      ShippingTimelineSchema
+    );
+    NotificationSettings = centralDb.model(
+      "notification_settings",
+      NotificationSchema
+    );
+    SMSSettings = centralDb.model("sms_settings", SMSSchema);
+    SMSHistory = centralDb.model("sms_history", SMSHistorySchema);
+    EmailHistory = centralDb.model("email_history", EmailHistorySchema);
+    WishList = centralDb.model("wishlistss", WishListSchema);
+    Address = centralDb.model("addresses", AddressSchema);
+    GeneralSettings = centralDb.model(
+      "general_settings",
+      GeneralSettingsSchema
+    );
+    Feature = centralDb.model("feature_requests", FeatureSchema);
+    ClientConnection = centralDb.model(
+      "client_connections",
+      ClientConnectionSchema
+    );
+    ClientDetail = centralDb.model("client_details", ClientDetailSchema);
+    UserVisit = centralDb.model("user_visits", VisitSchema);
+    PaymentApi = centralDb.model("payment_apis", PaymentApiSchema);
+    StockHistory = centralDb.model("stock_histories", StockHistorySchema);
   }
+
+  return {
+    Cart,
+    User,
+    Admin,
+    Order,
+    Product,
+    Address,
+    Feature,
+    WishList,
+    Employee,
+    SMSHistory,
+    EmailHistory,
+    SMSSettings,
+    ProductImages,
+    GeneralSettings,
+    ProductCategory,
+    ShippingTimeline,
+    NotificationSettings,
+    ClientConnection,
+    ClientDetail,
+    UserVisit,
+    PaymentApi,
+    StockHistory,
+  };
 };
 
 export {

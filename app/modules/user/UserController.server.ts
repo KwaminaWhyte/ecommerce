@@ -47,7 +47,7 @@ export default class UserController {
   }
 
   private async initializeModels() {
-    const { User, Address } = await connectToDomainDatabase(this.domain);
+    const { User, Address } = await connectToDomainDatabase();
     this.User = User;
     this.Address = Address;
   }

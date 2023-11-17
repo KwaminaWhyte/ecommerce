@@ -32,7 +32,7 @@ export default class OrderController {
 
   private async initializeModels() {
     const { User, Product, Order, Cart, ProductImages, ShippingTimeline } =
-      await connectToDomainDatabase(this.domain);
+      await connectToDomainDatabase();
 
     this.User = User;
     this.Product = Product;
