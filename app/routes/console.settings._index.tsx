@@ -15,7 +15,7 @@ import {
 import Container from "~/components/Container";
 import Input from "~/components/Input";
 import SimpleSelect from "~/components/SimpleSelect";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 
 export default function GeneralSettings() {
   const data = useActionData();

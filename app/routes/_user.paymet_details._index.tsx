@@ -1,8 +1,8 @@
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import PaymentDetailsController from "~/modules/payment/PaymentDetailsController.server";
-import UserController from "~/modules/user/UserController.server";
+import PaymentDetailsController from "~/server/payment/PaymentDetailsController.server";
+import UserController from "~/server/user/UserController.server";
 
 export default function UserOrders() {
   let {} = useLoaderData<{}>();

@@ -9,7 +9,7 @@ import Container from "~/components/Container";
 import Input from "~/components/Input";
 import TextArea from "~/components/TextArea";
 import Toggle from "~/components/Toggle";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 
 export default function AdminSettings() {
   let { notification_settings, sms_gateway } = useLoaderData();

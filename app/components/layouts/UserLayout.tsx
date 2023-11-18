@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@remix-run/react";
 import BottomNavigation from "../BottomNavigation";
-import type { PageInterface } from "~/modules/types";
+import type { PageInterface } from "~/server/types";
 
 export default function UserLayout({
   children,

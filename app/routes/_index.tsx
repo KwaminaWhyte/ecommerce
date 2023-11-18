@@ -1,8 +1,8 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import UserLayout from "~/components/layouts/UserLayout";
-import ProductController from "~/modules/product/ProductController.server";
-import UserController from "~/modules/user/UserController.server";
+import ProductController from "~/server/product/ProductController.server";
+import UserController from "~/server/user/UserController.server";
 import PublicLayout from "~/components/layouts/PublicLayout";
 import pattern from "../components/inc/pattern.png";
 import dashboard_image from "../components/inc/dashboard.png";
@@ -10,8 +10,8 @@ import type {
   ProductCategoryInterface,
   ProductInterface,
   UserInterface,
-} from "~/modules/types";
-import SenderController from "~/modules/notification/SenderController";
+} from "~/server/types";
+import SenderController from "~/server/notification/SenderController";
 
 const benefits = [
   {

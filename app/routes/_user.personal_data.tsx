@@ -16,12 +16,12 @@ import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
 import { Button } from "~/components/ui/button";
-import UserController from "~/modules/user/UserController.server";
+import UserController from "~/server/user/UserController.server";
 import {
   validateEmail,
   validateName,
   validateUsername,
-} from "~/modules/validators.server";
+} from "~/server/validators.server";
 
 export default function UserProfile() {
   const data = useActionData();

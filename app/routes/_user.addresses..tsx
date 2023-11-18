@@ -2,7 +2,7 @@ import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import LinkButton from "~/components/LinkButton";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import UserController from "~/modules/user/UserController.server";
+import UserController from "~/server/user/UserController.server";
 
 export default function UserOrders() {
   let { addresses } = useLoaderData<{

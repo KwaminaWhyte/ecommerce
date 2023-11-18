@@ -1,4 +1,4 @@
-import type { PageInterface } from "~/modules/types";
+import type { PageInterface } from "~/server/types";
 import PosSideNavigation from "../PosSideNavigation";
 import { useState } from "react";
 import SideCart from "../SideCart";

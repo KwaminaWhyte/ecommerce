@@ -11,9 +11,9 @@ import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import OrderCard from "~/components/OrderCard";
-import type { AdminInterface, OredrInterface } from "~/modules/types";
-import AdminController from "~/modules/admin/AdminController.server";
-import OrderController from "~/modules/order/OrderController.server";
+import type { AdminInterface, OredrInterface } from "~/server/types";
+import AdminController from "~/server/admin/AdminController.server";
+import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 import { Button } from "~/components/ui/button";
 

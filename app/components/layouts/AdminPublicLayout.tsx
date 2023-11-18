@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import BottomNavigation from "../BottomNavigation";
-import type { PageInterface } from "~/modules/types";
+import type { PageInterface } from "~/server/types";
 
 export default function AdminPublicLayout({
   children,

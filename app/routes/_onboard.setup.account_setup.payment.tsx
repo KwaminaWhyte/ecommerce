@@ -3,7 +3,7 @@ import { type MetaFunction, type ActionFunction } from "@remix-run/node";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import { Button } from "~/components/ui/button";
-import ClientSetupController from "~/modules/onboarding/ClientSetupController";
+import ClientSetupController from "~/server/onboarding/ClientSetupController";
 
 export default function SetupProfile() {
   return (

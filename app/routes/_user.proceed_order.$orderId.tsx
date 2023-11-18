@@ -10,11 +10,11 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import UserController from "~/modules/user/UserController.server";
-import OrderController from "~/modules/order/OrderController.server";
+import UserController from "~/server/user/UserController.server";
+import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 
-import type { AddressInterface, OredrInterface } from "~/modules/types";
+import type { AddressInterface, OredrInterface } from "~/server/types";
 import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
 // import Loader from "~/components/Loader";

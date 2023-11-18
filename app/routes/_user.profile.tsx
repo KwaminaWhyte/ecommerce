@@ -4,8 +4,8 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
 import UserLayout from "~/components/layouts/UserLayout";
 import { Button } from "~/components/ui/button";
-import type { UserInterface } from "~/modules/types";
-import UserController from "~/modules/user/UserController.server";
+import type { UserInterface } from "~/server/types";
+import UserController from "~/server/user/UserController.server";
 
 const pList = [
   {

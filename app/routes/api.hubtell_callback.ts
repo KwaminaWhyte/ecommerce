@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import PaymentController from "~/modules/payment/PaymentController";
+import PaymentController from "~/server/payment/PaymentController";
 
 export const action: ActionFunction = async ({ request }) => {
   if (request.method !== "POST") {

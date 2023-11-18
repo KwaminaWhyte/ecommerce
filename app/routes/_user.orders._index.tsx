@@ -3,9 +3,9 @@ import { Link, useLoaderData } from "@remix-run/react";
 import moment from "moment";
 import Container from "~/components/Container";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import OrderController from "~/modules/order/OrderController.server";
-import type { OredrInterface } from "~/modules/types";
-import UserController from "~/modules/user/UserController.server";
+import OrderController from "~/server/order/OrderController.server";
+import type { OredrInterface } from "~/server/types";
+import UserController from "~/server/user/UserController.server";
 
 export default function UserOrders() {
   let { orders } = useLoaderData<{

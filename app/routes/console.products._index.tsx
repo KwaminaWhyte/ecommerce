@@ -25,15 +25,15 @@ import Spacer from "~/components/Spacer";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import DeleteModal from "~/components/modals/DeleteModal";
-import AdminController from "~/modules/admin/AdminController.server";
-import ProductController from "~/modules/product/ProductController.server";
+import AdminController from "~/server/admin/AdminController.server";
+import ProductController from "~/server/product/ProductController.server";
 import type {
   AdminInterface,
   ProductCategoryInterface,
   ProductInterface,
-} from "~/modules/types";
-import { uploadImage } from "~/modules/cloudinary.server";
-import { validateName, validatePrice } from "~/modules/validators.server";
+} from "~/server/types";
+import { uploadImage } from "~/server/cloudinary.server";
+import { validateName, validatePrice } from "~/server/validators.server";
 import Container from "~/components/Container";
 import FancySelect from "~/components/FancySelect";
 import { Button } from "~/components/ui/button";

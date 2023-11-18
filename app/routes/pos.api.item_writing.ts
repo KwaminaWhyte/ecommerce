@@ -1,6 +1,6 @@
 import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import CartController from "~/modules/cart/CartController.server";
+import CartController from "~/server/cart/CartController.server";
 
 export const action = async ({ request }) => {
   if (request.method !== "POST") {

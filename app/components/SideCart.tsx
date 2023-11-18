@@ -1,5 +1,5 @@
 import React, { type ChangeEvent, useEffect, useState } from "react";
-import type { CartInterface } from "~/modules/types";
+import type { CartInterface } from "~/server/types";
 import { Form, useNavigation } from "@remix-run/react";
 import axios from "axios";
 import { Button } from "./ui/button";

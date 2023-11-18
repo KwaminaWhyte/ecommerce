@@ -4,9 +4,9 @@ import moment from "moment";
 import Container from "~/components/Container";
 import LinkButton from "~/components/LinkButton";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import OrderController from "~/modules/order/OrderController.server";
-import type { OredrInterface } from "~/modules/types";
-import UserController from "~/modules/user/UserController.server";
+import OrderController from "~/server/order/OrderController.server";
+import type { OredrInterface } from "~/server/types";
+import UserController from "~/server/user/UserController.server";
 
 export default function UserProfile() {
   let { order } = useLoaderData<{

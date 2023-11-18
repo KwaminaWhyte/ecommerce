@@ -4,15 +4,15 @@ import Input from "~/components/Input";
 import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import OrderCard from "~/components/OrderCard";
-import OrderController from "~/modules/order/OrderController.server";
+import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
-import EmployeeAuthController from "~/modules/employee/EmployeeAuthController";
+import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import PosLayout from "~/components/layouts/PosLayout";
-import type { EmployeeInterface, OredrInterface } from "~/modules/types";
-import CartController from "~/modules/cart/CartController.server";
+import type { EmployeeInterface, OredrInterface } from "~/server/types";
+import CartController from "~/server/cart/CartController.server";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 
 export default function PosOrdersDelivered() {
   const submit = useSubmit();

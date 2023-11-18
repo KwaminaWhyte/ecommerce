@@ -12,13 +12,12 @@ import {
   Legend,
   BarElement,
 } from "chart.js/auto";
-import { faker } from "@faker-js/faker";
 import Container from "~/components/Container";
 import AdminLayout from "~/components/layouts/AdminLayout";
-import AdminController from "~/modules/admin/AdminController.server";
-import OrderController from "~/modules/order/OrderController.server";
-import type { ProductInterface } from "~/modules/types";
-import SenderController from "~/modules/notification/SenderController";
+import AdminController from "~/server/admin/AdminController.server";
+import OrderController from "~/server/order/OrderController.server";
+import type { ProductInterface } from "~/server/types";
+import SenderController from "~/server/notification/SenderController";
 import { ClientOnly } from "~/components/ClientOnly";
 import Loader from "~/components/Loader";
 
@@ -264,7 +263,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     datasets: [
       {
         // label: "Dataset 1",
-        data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
+        data: [344, 600, 100, 894],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       // {

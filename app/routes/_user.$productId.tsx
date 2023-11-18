@@ -15,13 +15,13 @@ import {
 import Container from "~/components/Container";
 import Spacer from "~/components/Spacer";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import UserController from "~/modules/user/UserController.server";
-import ProductController from "~/modules/product/ProductController.server";
-import CartController from "~/modules/cart/CartController.server";
-import type { ProductInterface } from "~/modules/types";
-import WishlistController from "~/modules/wishlist/WishListController.server";
+import UserController from "~/server/user/UserController.server";
+import ProductController from "~/server/product/ProductController.server";
+import CartController from "~/server/cart/CartController.server";
+import type { ProductInterface } from "~/server/types";
+import WishlistController from "~/server/wishlist/WishListController.server";
 import { Button } from "~/components/ui/button";
-import GuestCartController from "~/modules/cart/GuestCartController.server";
+import GuestCartController from "~/server/cart/GuestCartController.server";
 
 export default function ProductDetails() {
   const { userId, product, guestId } = useLoaderData<{

@@ -19,12 +19,12 @@ import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
-import AdminController from "~/modules/admin/AdminController.server";
-import ProductController from "~/modules/product/ProductController.server";
-import { validateName } from "~/modules/validators.server";
+import AdminController from "~/server/admin/AdminController.server";
+import ProductController from "~/server/product/ProductController.server";
+import { validateName } from "~/server/validators.server";
 import DeleteModal from "~/components/modals/DeleteModal";
 import Container from "~/components/Container";
-import type { ProductCategoryInterface } from "~/modules/types";
+import type { ProductCategoryInterface } from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 

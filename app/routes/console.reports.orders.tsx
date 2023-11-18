@@ -1,7 +1,7 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
-import AdminController from "~/modules/admin/AdminController.server";
+import AdminController from "~/server/admin/AdminController.server";
 
 export default function OrdersReport() {
   let { user } = useLoaderData();

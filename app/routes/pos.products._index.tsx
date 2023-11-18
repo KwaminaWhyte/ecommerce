@@ -8,20 +8,20 @@ import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 
 import Container from "~/components/Container";
 import PosLayout from "~/components/layouts/PosLayout";
-import CartController from "~/modules/cart/CartController.server";
-import EmployeeAuthController from "~/modules/employee/EmployeeAuthController";
+import CartController from "~/server/cart/CartController.server";
+import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import { Transition, Dialog, Popover } from "@headlessui/react";
 
-import ProductController from "~/modules/product/ProductController.server";
+import ProductController from "~/server/product/ProductController.server";
 import type {
   ProductCategoryInterface,
   ProductInterface,
-} from "~/modules/types";
+} from "~/server/types";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 
 export default function Shop() {
   let { user, featured_categories, products, cart_items, generalSettings } =

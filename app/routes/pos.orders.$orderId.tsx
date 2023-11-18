@@ -20,9 +20,9 @@ import { useEffect, useState } from "react";
 import Container from "~/components/Container";
 import ItemStatus from "~/components/ItemStatus";
 import PosLayout from "~/components/layouts/PosLayout";
-import EmployeeAuthController from "~/modules/employee/EmployeeAuthController";
-import OrderController from "~/modules/order/OrderController.server";
-import type { OredrInterface, UserInterface } from "~/modules/types";
+import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
+import OrderController from "~/server/order/OrderController.server";
+import type { OredrInterface, UserInterface } from "~/server/types";
 
 export default function AdminOrderDetails() {
   let { user, order } = useLoaderData<{

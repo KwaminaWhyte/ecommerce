@@ -1,7 +1,7 @@
 import { type LoaderFunction } from "@remix-run/node";
 import React from "react";
 import UserLayout from "~/components/layouts/UserLayout";
-import UserController from "~/modules/user/UserController.server";
+import UserController from "~/server/user/UserController.server";
 
 export default function UserSearch() {
   return (

@@ -9,9 +9,9 @@ import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import { Button } from "~/components/ui/button";
-import AdminController from "~/modules/admin/AdminController.server";
-import type { CustomerInterface } from "~/modules/types";
-import UserController from "~/modules/user/UserController.server";
+import AdminController from "~/server/admin/AdminController.server";
+import type { CustomerInterface } from "~/server/types";
+import UserController from "~/server/user/UserController.server";
 
 export default function Customers() {
   let { user, customers, totalPages, page } = useLoaderData();

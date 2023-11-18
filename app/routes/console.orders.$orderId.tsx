@@ -24,12 +24,12 @@ import Container from "~/components/Container";
 import ItemStatus from "~/components/ItemStatus";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import { OrderReceipt } from "~/components/printables/OrderReceipt";
-import AdminController from "~/modules/admin/AdminController.server";
-import OrderController from "~/modules/order/OrderController.server";
-import type { OredrInterface, UserInterface } from "~/modules/types";
+import AdminController from "~/server/admin/AdminController.server";
+import OrderController from "~/server/order/OrderController.server";
+import type { OredrInterface, UserInterface } from "~/server/types";
 
 import pkg from "react-to-print";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 import { Button } from "~/components/ui/button";
 const { useReactToPrint } = pkg;
 

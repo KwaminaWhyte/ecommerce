@@ -1,7 +1,7 @@
 import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 
 export const action = async ({ request }) => {
   if (request.method !== "POST") {

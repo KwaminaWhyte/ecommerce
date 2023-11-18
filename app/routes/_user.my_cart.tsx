@@ -13,10 +13,10 @@ import {
 } from "@remix-run/react";
 
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
-import type { CartInterface } from "~/modules/types";
-import UserController from "~/modules/user/UserController.server";
-import CartController from "~/modules/cart/CartController.server";
-import OrderController from "~/modules/order/OrderController.server";
+import type { CartInterface } from "~/server/types";
+import UserController from "~/server/user/UserController.server";
+import CartController from "~/server/cart/CartController.server";
+import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 import DeleteModal from "~/components/modals/DeleteModal";
 import Loader from "~/components/Loader";

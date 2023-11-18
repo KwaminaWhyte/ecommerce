@@ -20,14 +20,14 @@ import {
 import Container from "~/components/Container";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
-import AdminController from "~/modules/admin/AdminController.server";
-import { uploadImage } from "~/modules/cloudinary.server";
-import ProductController from "~/modules/product/ProductController.server";
-import { validateName } from "~/modules/validators.server";
+import AdminController from "~/server/admin/AdminController.server";
+import { uploadImage } from "~/server/cloudinary.server";
+import ProductController from "~/server/product/ProductController.server";
+import { validateName } from "~/server/validators.server";
 import PosLayout from "~/components/layouts/PosLayout";
-import CartController from "~/modules/cart/CartController.server";
-import type { ProductImageInterface } from "~/modules/types";
-import EmployeeAuthController from "~/modules/employee/EmployeeAuthController";
+import CartController from "~/server/cart/CartController.server";
+import type { ProductImageInterface } from "~/server/types";
+import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import { Button } from "~/components/ui/button";
 
 export default function AdminProductDetails() {

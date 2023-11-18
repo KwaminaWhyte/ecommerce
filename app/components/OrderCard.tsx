@@ -1,7 +1,7 @@
 import { Popover } from "@headlessui/react";
 import { Form, Link, type SubmitFunction } from "@remix-run/react";
 import moment from "moment";
-import type { OredrInterface } from "~/modules/types";
+import type { OredrInterface } from "~/server/types";
 import ItemStatus from "./ItemStatus";
 import { useState } from "react";
 import Select from "./SimpleSelect";

@@ -1,7 +1,7 @@
 import { type LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import AdminLayout from "~/components/layouts/AdminLayout";
-import AdminController from "~/modules/admin/AdminController.server";
+import AdminController from "~/server/admin/AdminController.server";
 
 const settingLinks = [
   {

@@ -1,7 +1,7 @@
 import moment from "moment";
 import React from "react";
 import logo from "~/components/inc/logo.png";
-import { type OredrInterface } from "~/modules/types";
+import { type OredrInterface } from "~/server/types";
 
 export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { order, generalSettings } = props;

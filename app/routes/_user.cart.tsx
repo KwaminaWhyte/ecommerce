@@ -7,13 +7,13 @@ import {
 } from "@remix-run/node";
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 
-import type { CartInterface } from "~/modules/types";
+import type { CartInterface } from "~/server/types";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
 import Container from "~/components/Container";
 import { Button } from "~/components/ui/button";
-import UserController from "~/modules/user/UserController.server";
-import OrderController from "~/modules/order/OrderController.server";
-import GuestCartController from "~/modules/cart/GuestCartController.server";
+import UserController from "~/server/user/UserController.server";
+import OrderController from "~/server/order/OrderController.server";
+import GuestCartController from "~/server/cart/GuestCartController.server";
 import DeleteModal from "~/components/modals/DeleteModal";
 
 export default function UserCart() {

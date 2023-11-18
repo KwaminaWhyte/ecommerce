@@ -21,11 +21,11 @@ import Container from "~/components/Container";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
-import AdminController from "~/modules/admin/AdminController.server";
-import { uploadImage } from "~/modules/cloudinary.server";
-import ProductController from "~/modules/product/ProductController.server";
-import type { ProductImageInterface, ProductInterface } from "~/modules/types";
-import { validateName } from "~/modules/validators.server";
+import AdminController from "~/server/admin/AdminController.server";
+import { uploadImage } from "~/server/cloudinary.server";
+import ProductController from "~/server/product/ProductController.server";
+import type { ProductImageInterface, ProductInterface } from "~/server/types";
+import { validateName } from "~/server/validators.server";
 import { Button } from "~/components/ui/button";
 
 export default function AdminProductDetails() {

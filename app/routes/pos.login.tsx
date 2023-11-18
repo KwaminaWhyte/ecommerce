@@ -9,8 +9,8 @@ import { Form, useActionData, useNavigation } from "@remix-run/react";
 
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
-import { validateEmail, validatePassword } from "~/modules/validators.server";
-import EmployeeAuthController from "~/modules/employee/EmployeeAuthController";
+import { validateEmail, validatePassword } from "~/server/validators.server";
+import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import AdminPublicLayout from "~/components/layouts/AdminPublicLayout";
 import { Button } from "~/components/ui/button";
 

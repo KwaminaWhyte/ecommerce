@@ -11,8 +11,8 @@ import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import UserLayout from "~/components/layouts/UserLayout";
 import { Button } from "~/components/ui/button";
-import UserController from "~/modules/user/UserController.server";
-import { validateEmail, validatePassword } from "~/modules/validators.server";
+import UserController from "~/server/user/UserController.server";
+import { validateEmail, validatePassword } from "~/server/validators.server";
 
 export default function Login() {
   let data = useActionData();

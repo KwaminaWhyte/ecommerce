@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLoaderData } from "@remix-run/react";
 import { type LoaderFunction, type MetaFunction } from "@remix-run/node";
 import logo from "../components/inc/logo.png";
-import ClientSetupController from "~/modules/onboarding/ClientSetupController";
+import ClientSetupController from "~/server/onboarding/ClientSetupController";
 
 export default function Congratulation() {
   const { admin, connectionInfo } = useLoaderData();

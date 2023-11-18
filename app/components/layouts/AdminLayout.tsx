@@ -1,4 +1,4 @@
-import type { PageInterface } from "~/modules/types";
+import type { PageInterface } from "~/server/types";
 import SideNavigation from "../SideNavigation";
 
 export default function AdminLayout({ children, user }: PageInterface) {

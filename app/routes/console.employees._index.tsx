@@ -19,15 +19,15 @@ import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import DeleteModal from "~/components/modals/DeleteModal";
-import AdminController from "~/modules/admin/AdminController.server";
-import EmployeeController from "~/modules/employee/EmployeeController.server";
+import AdminController from "~/server/admin/AdminController.server";
+import EmployeeController from "~/server/employee/EmployeeController.server";
 import {
   validateEmail,
   validatePassword,
   validateUsername,
-} from "~/modules/validators.server";
+} from "~/server/validators.server";
 import Container from "~/components/Container";
-import type { EmployeeInterface } from "~/modules/types";
+import type { EmployeeInterface } from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 

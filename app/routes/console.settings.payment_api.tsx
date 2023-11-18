@@ -3,7 +3,7 @@ import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import { useState } from "react";
 import Container from "~/components/Container";
 import Toggle from "~/components/Toggle";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import SettingsController from "~/server/settings/SettingsController.server";
 import logo from "~/components/inc/logo.png";
 export default function AdminSettings() {
   const { payment_apis } = useLoaderData();

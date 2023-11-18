@@ -2,9 +2,9 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
 import PosLayout from "~/components/layouts/PosLayout";
-import CartController from "~/modules/cart/CartController.server";
-import EmployeeAuthController from "~/modules/employee/EmployeeAuthController";
-import SettingsController from "~/modules/settings/SettingsController.server";
+import CartController from "~/server/cart/CartController.server";
+import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
+import SettingsController from "~/server/settings/SettingsController.server";
 
 export default function Shop() {
   let { user, cart_items, generalSettings } = useLoaderData();
