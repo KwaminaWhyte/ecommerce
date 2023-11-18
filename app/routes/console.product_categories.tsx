@@ -158,10 +158,8 @@ export default function Products() {
                           Update
                         </Button>
                         <Button
-                          size="md"
-                          variant="solid"
+                          variant="destructive"
                           type="button"
-                          color="error"
                           onClick={() => {
                             setDeleteId(category?._id);
                             setIsOpenDelete(true);

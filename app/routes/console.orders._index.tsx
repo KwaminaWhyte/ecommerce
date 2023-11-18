@@ -4,7 +4,7 @@ import {
   type ActionFunction,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData, useSubmit } from "@remix-run/react";
-import { Pagination, PaginationItem } from "@mui/material";
+// import { Pagination, PaginationItem } from "@mui/material";
 
 import Input from "~/components/Input";
 import SimpleSelect from "~/components/SimpleSelect";
@@ -16,6 +16,7 @@ import AdminController from "~/server/admin/AdminController.server";
 import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 import { Button } from "~/components/ui/button";
+import Pagination from "~/components/Pagination";
 
 export default function Orders() {
   const submit = useSubmit();
@@ -121,14 +122,19 @@ export default function Orders() {
           shape="rounded"
           page={page}
           count={totalPages}
+          baseUrl="/console/orders"
+          component={Link}
           renderItem={(item) => (
-            <PaginationItem
-              component={Link}
+            <Link
+              className={`p-2 rounded-sm border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 ${
+                item.page === page ? "bg-slate-50 dark:bg-slate-800" : ""
+              }}`}
               to={`/console/orders${
                 item.page === 1 ? "" : `?page=${item.page}`
               }`}
-              {...item}
-            />
+            >
+              {item.page}
+            </Link>
           )}
         />
       </div>

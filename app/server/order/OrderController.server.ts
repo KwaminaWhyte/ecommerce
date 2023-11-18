@@ -87,8 +87,9 @@ export default class OrderController {
         .populate("user")
         .exec();
 
-      const totalOrdersCount =
-        await this.Order.countDocuments(searchFilter).exec();
+      const totalOrdersCount = await this.Order.countDocuments(
+        searchFilter
+      ).exec();
       const totalPages = Math.ceil(totalOrdersCount / limit);
 
       return { orders, totalPages };

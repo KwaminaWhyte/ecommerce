@@ -30,7 +30,7 @@ export default function OrdersShipped() {
   return (
     <AdminLayout user={user}>
       <div className="flex">
-        <h1 className="text-3xl font-bold">Orders </h1>
+        <h1 className="text-3xl font-bold">Orders /Shipped </h1>
 
         <section className="ml-auto flex">
           <Button variant="outline">Export</Button>

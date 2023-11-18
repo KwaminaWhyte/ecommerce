@@ -15,6 +15,7 @@ import {
   Link,
   useActionData,
   useLoaderData,
+  useNavigate,
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
@@ -35,7 +36,7 @@ const { useReactToPrint } = pkg;
 
 export default function AdminOrderDetails() {
   const submit = useSubmit();
-
+  const navigate = useNavigate();
   let { user, order, generalSettings } = useLoaderData<{
     order: OredrInterface;
     user: UserInterface;
@@ -49,11 +50,31 @@ export default function AdminOrderDetails() {
 
   return (
     <AdminLayout user={user}>
-      <div className="mb-3 flex">
-        <h1 className="text-3xl font-bold">Order Details </h1>
-      </div>
+      <section className="mb-3 flex items-center">
+        <div
+          onClick={() => navigate(-1)}
+          className="mr-4 flex border border-gray-400 rounded-md"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-6 w-6 m-1.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+            />
+          </svg>
+        </div>
 
-      <div className="flex gap-3">
+        <h1 className="text-3xl font-bold">Order Details </h1>
+      </section>
+
+      <section className="flex gap-3">
         <Container
           heading="Pacakge"
           contentClassName="flex-col"
@@ -250,7 +271,7 @@ export default function AdminOrderDetails() {
             <Link to="/">Show more</Link>
           </Container>
         </section>
-      </div>
+      </section>
 
       {/* <div className="flex gap-4 overflow-x-auto shadow-sm">
         <section className="w-1/2">

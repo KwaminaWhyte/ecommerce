@@ -198,24 +198,24 @@ export const loader: LoaderFunction = async ({ request }) => {
   // const senderController = await new SenderController(request);
   // await senderController.sendBatchEmail();
 
-  if (domain == process.env.CENTRAL_DOMAIN) {
-    return { isCentralDomain: true };
-  } else {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") as string) || 1;
-    const productController = await new ProductController(request);
-    const { products, totalPages } = await productController.getProducts({
-      page,
-    });
-    const featured_categories = await productController.getFeaturedCategories();
-    const userController = await new UserController(request);
-    const user = await userController.getUser();
-    let guestId = await userController.getGuestId();
+  // if (domain == process.env.CENTRAL_DOMAIN) {
+  //   return { isCentralDomain: true };
+  // } else {
+  const url = new URL(request.url);
+  const page = parseInt(url.searchParams.get("page") as string) || 1;
+  const productController = await new ProductController(request);
+  const { products, totalPages } = await productController.getProducts({
+    page,
+  });
+  const featured_categories = await productController.getFeaturedCategories();
+  const userController = await new UserController(request);
+  const user = await userController.getUser();
+  let guestId = await userController.getGuestId();
 
-    if (!user && !guestId) {
-      return await userController.createGuestSession("/");
-    }
-
-    return { products, user, totalPages, featured_categories };
+  if (!user && !guestId) {
+    return await userController.createGuestSession("/");
   }
+
+  return { products, user, totalPages, featured_categories };
+  // }
 };

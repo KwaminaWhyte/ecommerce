@@ -251,10 +251,8 @@ export default function Products() {
                         </Button>
 
                         <Button
-                          size="md"
-                          variant="solid"
+                          variant="destructive"
                           type="button"
-                          color="error"
                           onClick={() => handleDelete(product._id)}
                         >
                           Delete
@@ -592,9 +590,6 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   const imgSrc = formData.get("image") as string;
-  // if (!imgSrc) {
-  //   return json({ error: "something wrong" });
-  // }
 
   const name = formData.get("name");
   const price = formData.get("price");
