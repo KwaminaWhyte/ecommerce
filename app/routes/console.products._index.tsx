@@ -404,18 +404,18 @@ export default function Products() {
                     />
                     <Spacer />
 
-                    <label htmlFor="colors">Select Availabel Colors</label>
-                    <FancySelect
+                    {/* <label htmlFor="colors">Select Availabel Colors</label> */}
+                    {/* <FancySelect
                       isMulti
                       options={colorOptions}
                       value={selectedColors}
                       onChange={handleColorChange}
-                    />
-                    <label htmlFor="colors">Select Availabel Sizes</label>
+                    /> */}
+                    {/* <label htmlFor="colors">Select Availabel Sizes</label> */}
 
-                    <Spacer />
+                    {/* <Spacer /> */}
 
-                    {isUpdating ? null : (
+                    {/* {isUpdating ? null : (
                       <>
                         <Input
                           name="image"
@@ -429,7 +429,7 @@ export default function Products() {
                         />
                         <Spacer />
                       </>
-                    )}
+                    )} */}
 
                     <div className="flex items-center ">
                       <Button
@@ -572,22 +572,8 @@ export default function Products() {
 }
 
 export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
   const productController = await new ProductController(request);
-
-  const uploadHandler: UploadHandler = composeUploadHandlers(
-    async ({ name, data }) => {
-      if (name !== "image") {
-        return undefined;
-      }
-
-      const uploadedImage: { secure_url: string; asset_id: string } =
-        (await uploadImage(data)) as { secure_url: string; asset_id: string };
-
-      return uploadedImage?.secure_url + "|" + uploadedImage.asset_id;
-    },
-    createMemoryUploadHandler()
-  );
-  const formData = await parseMultipartFormData(request, uploadHandler);
 
   const imgSrc = formData.get("image") as string;
 

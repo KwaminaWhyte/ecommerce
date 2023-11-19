@@ -3,36 +3,28 @@ import { Dialog, Transition } from "@headlessui/react";
 import {
   json,
   type LoaderFunction,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-  type UploadHandler,
   type MetaFunction,
   type ActionFunction,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
+import { useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
+import axios from "axios";
 
 import Container from "~/components/Container";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
-import { uploadImage } from "~/server/cloudinary.server";
 import ProductController from "~/server/product/ProductController.server";
-import type { ProductImageInterface, ProductInterface } from "~/server/types";
-import { validateName } from "~/server/validators.server";
+import type { ProductInterface } from "~/server/types";
 import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
 
 export default function AdminProductDetails() {
-  let { user, product } = useLoaderData<{ product: ProductInterface }>();
+  const submit = useSubmit();
+  const navigate = useNavigate();
+  const { user, product } = useLoaderData<{ product: ProductInterface }>();
   const [activeImage, setActiveImage] = useState({});
-  let actionData = useActionData();
-  let navigation = useNavigation();
+  const [files, setFiles] = useState<{ file: any; previewUrl: string }[]>([]);
 
   let [isOpen, setIsOpen] = useState(false);
   function openModal() {
@@ -41,6 +33,54 @@ export default function AdminProductDetails() {
   function closeModal() {
     setIsOpen(false);
   }
+
+  const handleFileChange = (event) => {
+    const newImages = [...files];
+    for (const file of event.target.files) {
+      const image = {
+        file: file,
+        previewUrl: URL.createObjectURL(file),
+      };
+      newImages.push(image);
+    }
+    setFiles(newImages);
+  };
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    let index = 0;
+    while (index < files.length) {
+      formData.append("file", files[index].file);
+      formData.append("upload_preset", "hostel");
+
+      axios
+        .post(
+          "https://api.cloudinary.com/v1_1/app-deity/image/upload",
+          formData
+        )
+        .then((response) => {
+          console.log(response.data);
+          submit(
+            {
+              productId: product?._id,
+              image: JSON.stringify({
+                url: response.data.secure_url,
+                externalId: response.data.asset_id,
+              }),
+            },
+            {
+              method: "post",
+            }
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      index += 1;
+    }
+  };
+
   useEffect(() => {
     setActiveImage(product.images[0]);
   }, []);
@@ -49,11 +89,29 @@ export default function AdminProductDetails() {
     setIsOpen(false);
   }, [product]);
 
-  console.log(product);
-
   return (
     <AdminLayout user={user}>
-      <div className="mb-3 flex">
+      <div className="mb-3 flex items-center">
+        <div
+          className="border border-gray-400 rounded-sm p-1 mr-3"
+          onClick={() => navigate(-1)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-7 h-7 text-gray-500 hover:text-gray-700 cursor-pointer"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </div>
+
         <h1 className="text-3xl font-bold">Product Details </h1>
 
         <section className="ml-auto flex">
@@ -61,7 +119,7 @@ export default function AdminProductDetails() {
           <Spacer />
           {/* <Button variant="outline">Print</Button> */}
           <Spacer />
-          {product.images.length < 5 ? (
+          {product?.images.length < 5 ? (
             <Button onClick={() => openModal()}> + Add Image</Button>
           ) : null}
         </section>
@@ -71,17 +129,17 @@ export default function AdminProductDetails() {
         <section className="w-1/2">
           <img
             style={{ height: "35vw" }}
-            src={activeImage.url}
+            src={activeImage?.url}
             className="w-full rounded-lg object-cover"
             alt=""
           />
 
           <div className="mt-3 flex flex-wrap gap-3 p-1">
-            {product.images.map((image: ProductImageInterface) => (
+            {product?.images.map((image) => (
               <img
-                key={image._id}
+                key={image?._id}
                 onClick={() => setActiveImage(image)}
-                src={image.url}
+                src={image?.url}
                 className={`h-20 w-20 rounded-md object-cover ${
                   image._id == activeImage?._id
                     ? "ring-1 ring-blue-500 ring-offset-2"
@@ -142,30 +200,24 @@ export default function AdminProductDetails() {
                     as="h3"
                     className="text-lg font-bold leading-6 text-slate-900"
                   >
-                    New Product
+                    Upload Images
                   </Dialog.Title>
                   <div className="h-4"></div>
 
-                  <Form method="POST" encType="multipart/form-data">
-                    <Input
-                      name="productId"
-                      type="hidden"
-                      defaultValue={product._id}
-                    />
+                  <div className=" bg-white p-4 rounded-2xl  flex-col gap-5 items-center">
+                    <div className="grid flex-1 items-center gap-1.5 mb-5">
+                      <Label htmlFor="image">Add Images</Label>
+                      <Input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept=".png,.jpg,jpeg"
+                        multiple
+                        onChange={handleFileChange}
+                      />
+                    </div>
 
-                    <Input
-                      name="image"
-                      placeholder="Images"
-                      accept="image/*"
-                      label="Images"
-                      type="file"
-                      // multiple
-                      defaultValue={actionData?.fields?.images}
-                      error={actionData?.errors?.images}
-                    />
-                    <Spacer />
-
-                    <div className="flex items-center ">
+                    <div className="flex gap-3 ml-auto">
                       <Button
                         color="error"
                         type="button"
@@ -176,18 +228,11 @@ export default function AdminProductDetails() {
                         Close
                       </Button>
 
-                      <Button
-                        type="submit"
-                        disabled={
-                          navigation.state === "submitting" ? true : false
-                        }
-                      >
-                        {navigation.state === "submitting"
-                          ? "Uploading..."
-                          : "Upload"}
+                      <Button type="button" onClick={handleUpload}>
+                        Upload Images
                       </Button>
                     </div>
-                  </Form>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -197,6 +242,34 @@ export default function AdminProductDetails() {
     </AdminLayout>
   );
 }
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+
+  const image = formData.get("image") as string;
+  const productId = formData.get("productId") as string;
+
+  const productController = await new ProductController(request);
+  return await productController.addProductImage({
+    productId,
+    image: JSON.parse(image),
+  });
+};
+
+export const loader: LoaderFunction = async ({ request, params }) => {
+  let { productId } = params;
+  const adminController = await new AdminController(request);
+  await adminController.requireAdminId();
+
+  const user = await adminController.getAdmin();
+
+  const productController = await new ProductController(request);
+  const product = await productController.getProduct({
+    id: productId as string,
+  });
+
+  return { user, product };
+};
 
 export const meta: MetaFunction = ({ data }) => {
   let { product } = data;
@@ -220,69 +293,6 @@ export const meta: MetaFunction = ({ data }) => {
     },
     { name: "og:url", content: "https://single-ecommerce.vercel.app" },
   ];
-};
-
-export const action: ActionFunction = async ({ request }) => {
-  // const formData = await request.formData();
-
-  // if (formData.get("deleteId") != null) {
-  //   deleteProduct(formData.get("deleteId") as string);
-  //   return true;
-  // } else {
-  const uploadHandler: UploadHandler = composeUploadHandlers(
-    async ({ name, data }) => {
-      if (name !== "image") {
-        return undefined;
-      }
-
-      const uploadedImage: { secure_url: string; asset_id: string } =
-        (await uploadImage(data)) as { secure_url: string; asset_id: string };
-
-      return uploadedImage?.secure_url + "|" + uploadedImage.asset_id;
-    },
-    createMemoryUploadHandler()
-  );
-
-  const formDataI = await parseMultipartFormData(request, uploadHandler);
-  const imgSrc = formDataI.get("image") as string;
-  if (!imgSrc) {
-    return json({ error: "something wrong" });
-  }
-
-  if (typeof imgSrc !== "string") {
-    return json({ error: "Invalid image" }, { status: 400 });
-  }
-  const productId = formDataI.get("productId") as string;
-
-  const errors = {
-    name: validateName(imgSrc),
-  };
-
-  if (Object.values(errors).some(Boolean)) {
-    return json({ errors, fields: { imgSrc } }, { status: 400 });
-  }
-
-  const productController = await new ProductController(request);
-
-  return await productController.addProductImage({
-    productId,
-    imageUrl: imgSrc,
-  });
-};
-
-export const loader: LoaderFunction = async ({ request, params }) => {
-  let { productId } = params;
-  const adminController = await new AdminController(request);
-  await adminController.requireAdminId();
-
-  const user = await adminController.getAdmin();
-
-  const productController = await new ProductController(request);
-  const product = await productController.getProduct({
-    id: productId as string,
-  });
-
-  return { user, product };
 };
 
 export function ErrorBoundary({ error }) {

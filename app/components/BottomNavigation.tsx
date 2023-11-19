@@ -89,9 +89,9 @@ const navLinks = [
 export default function BottomNavigation() {
   return (
     <nav className="fixed bottom-0 left-1 right-1 mx-auto my-2 flex w-[96vw] items-center justify-evenly rounded-2xl border border-slate-400 bg-white py-1 shadow-md dark:bg-black/80 dark:text-white">
-      {navLinks.map((link) => (
+      {navLinks.map((link, index) => (
         <NavLink
-          key={link.id}
+          key={index}
           to={link.path}
           className={({ isActive, isPending }) =>
             isPending

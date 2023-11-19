@@ -65,8 +65,9 @@ export default class ProductController {
         .populate("category")
         .exec();
 
-      const totalProductsCount =
-        await this.Product.countDocuments(searchFilter).exec();
+      const totalProductsCount = await this.Product.countDocuments(
+        searchFilter
+      ).exec();
       const totalPages = Math.ceil(totalProductsCount / limit);
 
       return { products, totalPages };
@@ -115,12 +116,12 @@ export default class ProductController {
       );
     }
 
-    const myString = imgSrc;
-    const myArray = myString.split("|");
-    let image = await this.ProductImages.create({
-      url: myArray[0],
-      imageId: myArray[1],
-    });
+    // const myString = imgSrc;
+    // const myArray = myString.split("|");
+    // let image = await this.ProductImages.create({
+    //   url: myArray[0],
+    //   imageId: myArray[1],
+    // });
 
     // create new admin
     const product = await this.Product.create({
@@ -129,7 +130,7 @@ export default class ProductController {
       description,
       category: category ? category : "",
       availability: "available",
-      images: [image._id],
+      // images: [image._id],
       quantity: parseInt(quantity),
     });
 
@@ -284,8 +285,9 @@ export default class ProductController {
         .limit(limit)
         .exec();
 
-      const totalProductsCount =
-        await this.ProductCategory.countDocuments(searchFilter).exec();
+      const totalProductsCount = await this.ProductCategory.countDocuments(
+        searchFilter
+      ).exec();
       const totalPages = Math.ceil(totalProductsCount / limit);
 
       return { categories, totalPages };
@@ -413,35 +415,24 @@ export default class ProductController {
 
   public addProductImage = async ({
     productId,
-    imageUrl,
+    image,
   }: {
     productId: string;
-    imageUrl: string;
+    image: string;
   }) => {
     try {
-      // Find the product by its ID
       const product = await this.Product.findById(productId);
 
-      if (!product) {
-        throw new Error("Product not found");
-      }
-
-      // Create a new product image
-      const myString = imageUrl;
-      const myArray = myString.split("|");
-      let image = await this.ProductImages.create({
-        url: myArray[0],
-        imageId: myArray[1],
+      let imageRes = await this.ProductImages.create({
+        url: image.url,
+        imageId: image.externalId,
         product: product._id,
       });
 
-      // Add the new image to the product's images array
-      product.images.push(image);
-
-      // Save the updated product
+      product.images.push(imageRes);
       await product.save();
 
-      return redirect(`/console/products/${product._id}`, 200);
+      return redirect(`/console/products/${product._id}`);
     } catch (err) {
       throw err;
     }
