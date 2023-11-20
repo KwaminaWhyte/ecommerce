@@ -14,36 +14,36 @@ const settingLinks = [
     name: "Notifications",
     path: "/console/settings/notifications",
   },
-  {
-    id: 3,
-    name: "Themes",
-    path: "/console/settings/themes",
-  },
-  {
-    id: 4,
-    name: "Billing",
-    path: "/console/settings/billing",
-  },
-  {
-    id: 8,
-    name: "Shop Branches",
-    path: "/console/settings/shop_branches",
-  },
-  {
-    id: 9,
-    name: "Customers",
-    path: "/console/settings/customers",
-  },
-  {
-    id: 7,
-    name: "Payment API",
-    path: "/console/settings/payment_api",
-  },
-  {
-    id: 5,
-    name: "Integrations",
-    path: "/console/settings/integrations",
-  },
+  // {
+  //   id: 3,
+  //   name: "Themes",
+  //   path: "/console/settings/themes",
+  // },
+  // {
+  //   id: 4,
+  //   name: "Billing",
+  //   path: "/console/settings/billing",
+  // },
+  // {
+  //   id: 8,
+  //   name: "Shop Branches",
+  //   path: "/console/settings/shop_branches",
+  // },
+  // {
+  //   id: 9,
+  //   name: "Customers",
+  //   path: "/console/settings/customers",
+  // },
+  // {
+  //   id: 7,
+  //   name: "Payment API",
+  //   path: "/console/settings/payment_api",
+  // },
+  // {
+  //   id: 5,
+  //   name: "Integrations",
+  //   path: "/console/settings/integrations",
+  // },
 ];
 
 export default function AdminSettings() {

@@ -47,7 +47,7 @@ export default function AdminProfile() {
 
   return (
     <AdminLayout user={user}>
-      <div className="mt-3 flex mb-5 justify-between gap-2 rounded-lg border border-slate-400 bg-white px-3 py-2 shadow-sm dark:bg-black/95">
+      {/* <div className="mt-3 flex mb-5 justify-between gap-2 rounded-lg border border-slate-400 bg-white px-3 py-2 shadow-sm dark:bg-black/95">
         {settingLinks.map((link) => (
           <NavLink
             key={link.id}
@@ -64,7 +64,7 @@ export default function AdminProfile() {
             {link.name}
           </NavLink>
         ))}
-      </div>
+      </div> */}
 
       <Outlet />
     </AdminLayout>
