@@ -11,8 +11,7 @@ services:
       - mongodb
     environment:
       NODE_ENV: production # Set your desired NODE_ENV
-      CENTRAL_DATABASE_URL: "mongodb://mongodb:27017/comclo_central"
-      RAW_DATABASE_URL: "mongodb://mongodb:27017/"
+      DATABASE_URL: "mongodb://mongodb:27017/comclo_central"
       CLOUDINARY_NAME: "app-deity"
       CLOUDINARY_API_KEY: "452945375646228"
       CLOUDINARY_API_SECRET: "0d01yn4bWvTIJZeShhPyw2XXdZo"

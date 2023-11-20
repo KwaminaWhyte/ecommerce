@@ -1,16 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "@remix-run/react";
 import BottomNavigation from "../BottomNavigation";
-import type { PageInterface } from "~/server/types";
+import type { UserInterface } from "~/server/types";
 
 export default function UserLayout({
   children,
-  message,
   user,
   title = "",
-}: PageInterface) {
-  const [open, setOpen] = useState(false);
-  const eventDateRef = useRef(new Date());
+}: {
+  children: React.ReactNode;
+  user: UserInterface;
+  title?: string;
+}) {
+  // const eventDateRef = useRef(new Date());
   const timerRef = useRef(0);
 
   useEffect(() => {

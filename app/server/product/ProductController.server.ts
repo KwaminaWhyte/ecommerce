@@ -1,9 +1,8 @@
 import { json, redirect } from "@remix-run/node";
 import { connectToDomainDatabase } from "../mongoose.server";
-import UserController from "../user/UserController.server";
 import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
-// import { ReviewsSchema } from "./models/Reviews";
+import { ProductInterface } from "../types";
 
 export default class ProductController {
   private request: Request;
@@ -44,7 +43,7 @@ export default class ProductController {
   }: {
     page: number;
     search_term?: string;
-  }) {
+  }): Promise<{ products: ProductInterface[]; totalPages: number }> {
     const limit = 10; // Number of orders per page
     const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
 

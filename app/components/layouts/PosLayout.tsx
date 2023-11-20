@@ -1,4 +1,4 @@
-import type { PageInterface } from "~/server/types";
+import type { EmployeeInterface } from "~/server/types";
 import PosSideNavigation from "../PosSideNavigation";
 import { useState } from "react";
 import SideCart from "../SideCart";
@@ -8,7 +8,13 @@ export default function PosLayout({
   user,
   cart_items = [],
   settings,
-}: PageInterface) {
+}: {
+  children: React.ReactNode;
+  user?: EmployeeInterface;
+  title?: string;
+  settings?: any;
+  cart_items?: any;
+}) {
   const [showCart, setShowCart] = useState(false);
 
   return (

@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import BottomNavigation from "../BottomNavigation";
-import type { PageInterface } from "~/server/types";
+import type { AdminInterface } from "~/server/types";
 
 export default function AdminPublicLayout({
   children,
-  message,
   user,
   title = "",
-}: PageInterface) {
-  const [open, setOpen] = useState(false);
-  const eventDateRef = useRef(new Date());
+}: {
+  children: React.ReactNode;
+  user?: AdminInterface;
+  title?: string;
+}) {
+  // const eventDateRef = useRef(new Date());
   const timerRef = useRef(0);
 
   useEffect(() => {

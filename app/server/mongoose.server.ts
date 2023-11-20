@@ -24,7 +24,7 @@ import { EmailHistorySchema } from "./notification/EmailHistory";
 import { PaymentApiSchema } from "./settings/PaymentApi";
 
 // Establish the default connection to the central database
-mongoose.connect(process.env.CENTRAL_DATABASE_URL as string);
+mongoose.connect(process.env.DATABASE_URL as string);
 const centralDb = mongoose.connection;
 
 // Handle connection events for the central database

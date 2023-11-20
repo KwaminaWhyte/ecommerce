@@ -150,7 +150,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const page = parseInt(url.searchParams.get("page") as string) || 1;
   const search_term = url.searchParams.get("search_term") as string;
-  const order_status = url.searchParams.get("order_status") as string;
+  const status = url.searchParams.get("order_status") as string;
 
   const adminController = await new AdminController(request);
   await adminController.requireAdminId();
@@ -159,7 +159,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const orderController = await new OrderController(request);
   const { orders, totalPages } = await orderController.getOrders({
     page,
-    order_status,
+    status,
     search_term,
   });
 

@@ -63,16 +63,6 @@ export interface CustomerInterface extends Document {
   updatedAt: Date;
 }
 
-export interface PageInterface extends Document {
-  children: React.ReactNode;
-  user?: AdminInterface | UserInterface | EmployeeInterface;
-  title?: string;
-  message?: {
-    type: "success" | "error";
-    message: string;
-  };
-}
-
 export interface EmployeeInterface extends Document {
   _id: string;
   firstName: string;

@@ -1,10 +1,8 @@
 import { Popover } from "@headlessui/react";
-import { Form, Link, type SubmitFunction } from "@remix-run/react";
+import { Link, type SubmitFunction } from "@remix-run/react";
 import moment from "moment";
 import type { OredrInterface } from "~/server/types";
 import ItemStatus from "./ItemStatus";
-import { useState } from "react";
-import Select from "./SimpleSelect";
 
 const OrderCard = ({
   order,
@@ -15,24 +13,6 @@ const OrderCard = ({
   root_path: string;
   submit: SubmitFunction;
 }) => {
-  const [deliveryStatus, setDeliveryStatus] = useState("");
-
-  // const handleOrderStatus = ({
-  //   status,
-  //   _id,
-  // }: {
-  //   status: string;
-  //   _id: string;
-  // }) => {
-  //   axios
-  //     .post("/api/order_status", { status, _id })
-  //     .then(({ data }) => {
-  //       console.log(data);
-  //       return redirect(`/orders/${_id}`);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
-
   return (
     <tr className="cursor-pointer text-sm rounded-xl hover:rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600">
       {/* <td className="px-3 py-3">
@@ -123,8 +103,6 @@ const OrderCard = ({
                         encType: "application/x-www-form-urlencoded",
                       }
                     );
-
-                    setDeliveryStatus(status.label.toLowerCase());
                   }}
                   className="p-2 hover:bg-slate-200 dark:hover:bg-black rounded-lg cursor-pointer"
                 >
