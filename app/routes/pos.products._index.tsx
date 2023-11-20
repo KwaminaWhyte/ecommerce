@@ -76,31 +76,34 @@ export default function Shop() {
             <section className="p-1 flex flex-col">
               <p className="font-bold text-base">{product?.name}</p>
               <p className="line-clamp-3 mb-2">{product?.description}</p>
-              <Popover className="relative mt-auto">
-                <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
-                  {product.stockHistory.length > 0 &&
-                    product.stockHistory.length}{" "}
-                  Stocks
-                </Popover.Button>
 
-                <Popover.Panel className="absolute right-6 z-10 ">
-                  <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
-                    {product.stockHistory.map((stock) => (
-                      <p
-                        key={stock?._id}
-                        className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
-                      >
-                        {stock.quantity} items @ GH₵‎ {stock.price} each
-                      </p>
-                    ))}
-                  </div>
-                </Popover.Panel>
-              </Popover>
+              <div className="flex justify-between items-center mt-3">
+                <Popover className="relative mt-auto">
+                  <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
+                    {product.stockHistory.length > 0 &&
+                      product.stockHistory.length}{" "}
+                    Stocks
+                  </Popover.Button>
+
+                  <Popover.Panel className="absolute right-6 z-10 ">
+                    <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
+                      {product.stockHistory.map((stock) => (
+                        <p
+                          key={stock?._id}
+                          className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
+                        >
+                          {stock.quantity} items @ GH₵‎ {stock.price} each
+                        </p>
+                      ))}
+                    </div>
+                  </Popover.Panel>
+                </Popover>
+
+                <p className="font-bold">$ {product?.price}</p>
+              </div>
               {/* <p className="">Qty: {product?.quantity}</p> */}
 
               <div className="flex justify-between items-center mt-3">
-                <p className="font-bold">$ {product?.price}</p>
-
                 <Link to={`/pos/products/${product?._id}`}>View</Link>
                 <Button
                   onClick={() => {

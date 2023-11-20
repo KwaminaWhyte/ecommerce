@@ -228,7 +228,7 @@ export default class OrderController {
       // await order.save();
 
       for (const item of cartItems) {
-        const product = await this.Product.findById(item.product?.id);
+        const product = await this.Product.findById(item.product?._id);
         const stock = await this.StockHistory.findById(item.stock?._id);
 
         if (product) {
