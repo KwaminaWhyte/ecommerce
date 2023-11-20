@@ -16,7 +16,7 @@ import Container from "~/components/Container";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import OrderController from "~/server/order/OrderController.server";
-import type { ProductInterface } from "~/server/types";
+import type { AdminInterface, ProductInterface } from "~/server/types";
 import SenderController from "~/server/notification/SenderController";
 import { ClientOnly } from "~/components/ClientOnly";
 
@@ -42,7 +42,15 @@ export default function Dashboard() {
     bestsellingProducts,
     visitsOptions,
     visitUpdate,
-  } = useLoaderData();
+    totalOrdersToday,
+    totalTodayRevenue,
+  } = useLoaderData<{
+    user: AdminInterface;
+    totalRevenue: number;
+    completedCount: number;
+    totalOrdersToday: number;
+    totalTodayRevenue: numbner;
+  }>();
 
   const topTotals = [
     {
@@ -57,17 +65,23 @@ export default function Dashboard() {
       color: "bg-green-300/70",
       textColor: "text-green-700",
     },
-    {
-      title: "Total Store Visits",
-      value: "328",
-      color: "bg-blue-300/70",
-      textColor: "text-blue-700",
-    },
+    // {
+    //   title: "Total Store Visits",
+    //   value: "328",
+    //   color: "bg-blue-300/70",
+    //   textColor: "text-blue-700",
+    // },
     {
       title: "Pending Orders",
       value: pendingCount,
       color: "bg-yellow-300/70",
       textColor: "text-yellow-700",
+    },
+    {
+      title: "Today's Sales",
+      value: pendingCount,
+      color: "bg-blue-300/70",
+      textColor: "text-blue-700",
     },
   ];
 
@@ -123,8 +137,17 @@ export default function Dashboard() {
           </ClientOnly>
         </Container>
 
-        <Container heading="Recent Review" className="w-2/5">
+        {/* <Container heading="Recent Review" className="w-2/5">
           <p className=" "></p>
+        </Container> */}
+
+        <Container
+          heading="Recent Review"
+          className="w-2/5 "
+          contentClassName="flex-col"
+        >
+          <p className=" ">Total Orders Today: {totalOrdersToday}</p>
+          <p className=" ">Total Revenue Today: {totalTodayRevenue}</p>
         </Container>
       </div>
 
@@ -194,7 +217,7 @@ export default function Dashboard() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const sender = await new SenderController(request);
+  // const sender = await new SenderController(request);
   // await sender.createSMS({
   //   subject: "asfasf",
   //   body: "asfsf",
@@ -206,8 +229,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const orderController = await new OrderController(request);
   const salesUpdate = await orderController.getOrderStats();
-  const { totalRevenue, completedCount, pendingCount, bestsellingProducts } =
-    await orderController.getTotals();
+  const {
+    totalRevenue,
+    completedCount,
+    pendingCount,
+    bestsellingProducts,
+    totalOrdersToday,
+    totalTodayRevenue,
+  } = await orderController.getTotals();
 
   const salesOptions = {
     responsive: true,
@@ -261,6 +290,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     bestsellingProducts,
     visitsOptions,
     visitUpdate,
+    totalOrdersToday,
+    totalTodayRevenue,
   };
 };
 

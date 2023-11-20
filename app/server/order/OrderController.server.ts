@@ -372,22 +372,20 @@ export default class OrderController {
   };
 
   public getOrderStats = async () => {
-    // Calculate the start date for the last 5 months from the current date
     const currentDate = new Date();
     const startOfLast7Months = moment(currentDate)
       .subtract(7, "months")
       .startOf("month")
       .toDate();
 
-    let orderStats; // Variable to store the result
+    let orderStats;
 
     // Create an aggregation pipeline to calculate revenue and expenses
     const result = await this.Order.aggregate([
       {
         $match: {
-          // Filter orders within the last 7 months
           deliveryDate: { $gte: startOfLast7Months },
-          status: "paid", // You can adjust this based on your criteria for "paid" orders
+          status: "paid",
         },
       },
       {
@@ -395,8 +393,8 @@ export default class OrderController {
           _id: {
             $dateToString: { format: "%Y-%m", date: "$deliveryDate" },
           },
-          revenue: { $sum: "$totalPrice" }, // Calculate total revenue
-          expenses: { $sum: 0 }, // You can add logic to calculate expenses if available
+          revenue: { $sum: "$totalPrice" },
+          expenses: { $sum: 0 },
         },
       },
       {
@@ -468,13 +466,69 @@ export default class OrderController {
     const pendingCount = await this.Order.countDocuments({
       status: { $in: ["unpaid", "paid"] },
     });
-
     const bestsellingProducts = await this.Product.find()
       .populate("images")
       .sort({ quantitySold: -1 })
       .limit(5)
       .exec();
 
-    return { totalRevenue, completedCount, pendingCount, bestsellingProducts };
+    const today = new Date();
+    today.setHours(0, 0, 0);
+    const tomorrow = new Date();
+    tomorrow.setHours(23, 59, 59);
+
+    const ordersCountPipeline = [
+      {
+        $match: {
+          status: "paid",
+          createdAt: {
+            $gte: today,
+            $lt: tomorrow,
+          },
+        },
+      },
+      {
+        $count: "totalOrdersToday",
+      },
+    ];
+
+    // Pipeline to calculate total revenue
+    const ordersRevenuePipeline = [
+      {
+        $match: {
+          status: "paid",
+          createdAt: {
+            $gte: today,
+            $lt: tomorrow,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalTodayRevenue: { $sum: "$totalPrice" },
+        },
+      },
+    ];
+
+    // Execute both pipelines and combine results
+    const ordersCountResult = await this.Order.aggregate(ordersCountPipeline);
+    const ordersRevenueResult = await this.Order.aggregate(
+      ordersRevenuePipeline
+    );
+
+    // const combinedResult = {
+    //   totalOrdersToday: ordersCountResult[0].totalOrdersToday,
+    //   totalTodayRevenue: ordersRevenueResult[0].totalTodayRevenue,
+    // };
+
+    return {
+      totalRevenue,
+      completedCount,
+      pendingCount,
+      bestsellingProducts,
+      totalOrdersToday: ordersCountResult[0].totalOrdersToday,
+      totalTodayRevenue: ordersRevenueResult[0].totalTodayRevenue,
+    };
   };
 }
