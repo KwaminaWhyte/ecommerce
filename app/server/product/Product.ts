@@ -44,7 +44,6 @@ const ProductsSchema: Schema = new mongoose.Schema(
     description: String,
     price: {
       type: Number,
-      required: true,
     },
     quantity: {
       type: Number,
@@ -66,6 +65,12 @@ const ProductsSchema: Schema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    stockHistory: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "stock_histories",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -82,6 +87,7 @@ const StockHistorySchema: Schema = new mongoose.Schema(
       ref: "products",
       required: true,
     },
+    price: Number,
     quantity: Number,
     operation: String,
   },

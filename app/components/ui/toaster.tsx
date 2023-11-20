@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Toast,
   ToastClose,
@@ -5,17 +6,27 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "~/components/ui/toast"
-import { useToast } from "~/components/ui/use-toast"
+} from "~/components/ui/toast";
+import { useToast } from "~/components/ui/use-toast";
+
+function generateRandomIds(n) {
+  let randomIds = [];
+  for (let i = 0; i < n; i++) {
+    let randomId = Math.random().toString(36).substring(2, 15);
+    randomIds.push(randomId);
+  }
+  return randomIds;
+}
 
 export function Toaster() {
-  const { toasts } = useToast()
+  const { toasts } = useToast();
+  const [uniqueId, setUniqueId] = useState(generateRandomIds(10));
 
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
-          <Toast key={id} {...props}>
+          <Toast key={`${id}_${uniqueId}`} {...props}>
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
@@ -25,9 +36,9 @@ export function Toaster() {
             {action}
             <ToastClose />
           </Toast>
-        )
+        );
       })}
       <ToastViewport />
     </ToastProvider>
-  )
+  );
 }

@@ -52,7 +52,7 @@ export default function Index() {
               />
               <div className="flex flex-col p-1">
                 <p className="font-semibold">{product?.name}</p>
-                <p className="">{product?.description}</p>
+                <p className="line-clamp-3">{product?.description}</p>
                 <p className="ml-auto">${product?.price}</p>
               </div>
             </Link>

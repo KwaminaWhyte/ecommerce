@@ -1,5 +1,6 @@
 import { useNavigate } from "@remix-run/react";
 import React from "react";
+import { Toaster } from "../ui/toaster";
 
 export default function UserDetailLayout({
   children,
@@ -39,6 +40,8 @@ export default function UserDetailLayout({
       <section className="mb-11 flex w-full flex-col gap-2 px-3">
         {children}
       </section>
+
+      <Toaster />
     </div>
   );
 }

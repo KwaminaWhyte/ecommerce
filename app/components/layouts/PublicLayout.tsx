@@ -1,6 +1,7 @@
 import { Link, NavLink } from "@remix-run/react";
 import React from "react";
 import logo from "../inc/logo.png";
+import { Toaster } from "../ui/toaster";
 
 export default function PublicLayout({
   children,
@@ -61,6 +62,8 @@ export default function PublicLayout({
         </h3>
         <p className="mt-4">ComClo - Made with ❤️ by @KwaminaWhyte</p>
       </footer>
+
+      <Toaster />
     </div>
   );
 }

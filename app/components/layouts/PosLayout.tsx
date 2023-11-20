@@ -2,6 +2,7 @@ import type { EmployeeInterface } from "~/server/types";
 import PosSideNavigation from "../PosSideNavigation";
 import { useState } from "react";
 import SideCart from "../SideCart";
+import { Toaster } from "../ui/toaster";
 
 export default function PosLayout({
   children,
@@ -57,6 +58,8 @@ export default function PosLayout({
           settings={settings}
         />
       </section>
+
+      <Toaster />
     </div>
   );
 }

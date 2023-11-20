@@ -2,7 +2,7 @@ import { json, redirect } from "@remix-run/node";
 import { connectToDomainDatabase } from "../mongoose.server";
 import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
-import { ProductInterface } from "../types";
+import type { ProductInterface } from "../types";
 import { commitSession, getSession } from "~/session";
 
 export default class ProductController {
@@ -63,6 +63,7 @@ export default class ProductController {
         .limit(limit)
         .populate("images")
         .populate("category")
+        .populate("stockHistory")
         .exec();
 
       const totalProductsCount = await this.Product.countDocuments(
@@ -127,13 +128,28 @@ export default class ProductController {
     // create new admin
     const product = await this.Product.create({
       name,
-      price: parseFloat(price),
+      // price: parseFloat(price),
       description,
       category: category ? category : null,
       availability: "available",
       // images: [image._id],
       quantity: parseInt(quantity),
     });
+
+    const adminController = await new AdminController(this.request);
+    const adminId = await adminController.getAdminId();
+
+    const productt = await this.Product.findById(product?._id);
+
+    let stockk = await this.StockHistory.create({
+      user: adminId,
+      product: productt?._id,
+      quantity,
+      price: parseFloat(price),
+    });
+
+    productt.stockHistory.push(stockk);
+    await productt.save();
 
     if (!product) {
       return json(
@@ -162,13 +178,17 @@ export default class ProductController {
     price,
     description,
     category,
+    quantity,
   }: {
     _id: string;
     name: string;
     price: string;
     description: string;
     category: string;
+    quantity: string;
   }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     try {
       await this.Product.findOneAndUpdate(
         { _id },
@@ -177,9 +197,19 @@ export default class ProductController {
           price,
           description,
           category,
+          quantity,
         }
       );
-      return redirect(`/console/products/${_id}`, 200);
+
+      session.flash("message", {
+        title: "Product Updated Successful",
+        status: "success",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     } catch (error) {
       return json(
         {
@@ -198,31 +228,40 @@ export default class ProductController {
     _id,
     quantity,
     operation,
+    price,
   }: {
     _id: string;
     quantity: string;
     operation: string;
+    price: string;
   }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
     const product = await this.Product.findById(_id);
-
-    if (operation == "add") {
-      product.quantity += parseInt(quantity);
-      await product.save();
-    } else {
-      product.quantity -= parseInt(quantity);
-      await product.save();
-    }
 
     const adminController = await new AdminController(this.request);
     const adminId = await adminController.getAdminId();
     if (adminId) {
-      await this.StockHistory.create({
+      let stockk = await this.StockHistory.create({
         user: adminId,
         product: _id,
         quantity,
         operation,
+        price: parseFloat(price),
       });
-      return redirect(`/console/products/${_id}`, 200);
+
+      product.quantity += parseInt(quantity);
+      product.stockHistory.push(stockk);
+      await product.save();
+
+      session.flash("message", {
+        title: "Product Stocked Successful",
+        status: "success",
+      });
+      return redirect(`/console/products/${_id}`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
 
     const employeeAuthController = await new EmployeeAuthController(
@@ -231,34 +270,28 @@ export default class ProductController {
     const userId = await employeeAuthController.getEmployeeId();
 
     if (userId) {
-      await this.StockHistory.create({
+      let stockk = await this.StockHistory.create({
         user: userId,
         product: _id,
         quantity,
         operation,
+        price: parseFloat(price),
       });
-      return redirect(`/console/products/${_id}`, 200);
-    }
 
-    // try {
-    //   await this.Product.findOneAndUpdate(
-    //     { _id },
-    //     {
-    //       quantity,
-    //     }
-    //   );
-    // } catch (error) {
-    //   return json(
-    //     {
-    //       errors: {
-    //         name: "Error occured while updating product",
-    //         error: error,
-    //       },
-    //       fields: { quantity },
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
+      product.quantity += parseInt(quantity);
+      product.stockHistory.push(stockk);
+      await product.save();
+
+      session.flash("message", {
+        title: "Product Stocked Successful",
+        status: "success",
+      });
+      return redirect(`/console/products/${_id}`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
+    }
   };
 
   public deleteProduct = async (id: string) => {

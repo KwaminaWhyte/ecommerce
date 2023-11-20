@@ -1,6 +1,15 @@
 import type { Document } from "mongodb";
 // import type { Types } from "mongoose";
 
+export interface StockHistoryInterface extends Document {
+  _id: string; //Types.ObjectId
+  user: AdminInterface;
+  product: ProductInterface;
+  price: number;
+  quantity: number;
+  oeperation: string;
+}
+
 export interface ProductInterface extends Document {
   _id: string; //Types.ObjectId
   name: string;
@@ -12,6 +21,7 @@ export interface ProductInterface extends Document {
   availability: string;
   createdAt: Date;
   updatedAt: Date;
+  stockHistory: StockHistoryInterface[];
 }
 
 export interface ProductImageInterface extends Document {

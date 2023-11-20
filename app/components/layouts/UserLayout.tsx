@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "@remix-run/react";
 import BottomNavigation from "../BottomNavigation";
 import type { UserInterface } from "~/server/types";
+import { Toaster } from "../ui/toaster";
 
 export default function UserLayout({
   children,
@@ -54,6 +55,7 @@ export default function UserLayout({
       </main>
 
       {user && <BottomNavigation />}
+      <Toaster />
     </div>
   );
 }

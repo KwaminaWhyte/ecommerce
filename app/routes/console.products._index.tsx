@@ -3,10 +3,6 @@ import { Transition, Dialog, Popover } from "@headlessui/react";
 import {
   json,
   type LoaderFunction,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-  type UploadHandler,
   type MetaFunction,
   type ActionFunction,
 } from "@remix-run/node";
@@ -32,7 +28,6 @@ import type {
   ProductCategoryInterface,
   ProductInterface,
 } from "~/server/types";
-import { uploadImage } from "~/server/cloudinary.server";
 import { validateName, validatePrice } from "~/server/validators.server";
 import Container from "~/components/Container";
 import FancySelect from "~/components/FancySelect";
@@ -47,28 +42,30 @@ export default function Products() {
     page: number;
   }>();
 
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
+  console.log(products);
 
-  const colorOptions = [
-    { value: "red", label: "Red" },
-    { value: "blue", label: "Blue" },
-    { value: "green", label: "Green" },
-  ];
+  // const [selectedColors, setSelectedColors] = useState([]);
+  // const [selectedSizes, setSelectedSizes] = useState([]);
 
-  const sizeOptions = [
-    { value: "small", label: "Small" },
-    { value: "medium", label: "Medium" },
-    { value: "large", label: "Large" },
-  ];
+  // const colorOptions = [
+  //   { value: "red", label: "Red" },
+  //   { value: "blue", label: "Blue" },
+  //   { value: "green", label: "Green" },
+  // ];
 
-  const handleColorChange = (selectedOptions) => {
-    setSelectedColors(selectedOptions);
-  };
+  // const sizeOptions = [
+  //   { value: "small", label: "Small" },
+  //   { value: "medium", label: "Medium" },
+  //   { value: "large", label: "Large" },
+  // ];
 
-  const handleSizeChange = (selectedOptions) => {
-    setSelectedSizes(selectedOptions);
-  };
+  // const handleColorChange = (selectedOptions) => {
+  //   setSelectedColors(selectedOptions);
+  // };
+
+  // const handleSizeChange = (selectedOptions) => {
+  //   setSelectedSizes(selectedOptions);
+  // };
 
   const actionData = useActionData();
   const navigation = useNavigation();
@@ -82,6 +79,7 @@ export default function Products() {
 
   function closeDeleteModal() {
     setIsOpenDelete(false);
+    setDeleteId(null);
   }
   function openModal() {
     setIsOpen(true);
@@ -100,6 +98,7 @@ export default function Products() {
     setIsOpen(false);
     setIsOpenDelete(false);
     setIsStockOpen(false);
+    setActiveProduct({});
   }, [products, actionData]);
 
   return (
@@ -195,7 +194,28 @@ export default function Products() {
                 <td className="px-3 py-3">{product?.category?.name}</td>
                 <td className="px-3 py-3 ">{product?.quantity}</td>
                 {/* <td className="px-3 py-3 ">{product?.price}</td> */}
-                <td className="px-3 py-3 ">{product?.price}</td>
+                <td className="px-3 py-3 ">
+                  <Popover className="relative">
+                    <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
+                      {product.stockHistory.length > 0 &&
+                        product.stockHistory.length}{" "}
+                      Stocks
+                    </Popover.Button>
+
+                    <Popover.Panel className="absolute right-6 z-10 ">
+                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-40">
+                        {product.stockHistory.map((stock) => (
+                          <p
+                            key={stock?._id}
+                            className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
+                          >
+                            {stock.quantity} items @ GH₵‎ {stock.price} each
+                          </p>
+                        ))}
+                      </div>
+                    </Popover.Panel>
+                  </Popover>
+                </td>
                 <td className="px-3 py-3">
                   <p
                     className={` w-fit  rounded-xl px-2 py-1 capitalize ${
@@ -290,7 +310,10 @@ export default function Products() {
         <Dialog
           as="div"
           className="relative z-50 "
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            setActiveProduct({});
+          }}
         >
           <Transition.Child
             as={Fragment}
@@ -510,7 +533,7 @@ export default function Products() {
                       Enter the quantity to add or subtrack
                     </p>
                     <Spacer />
-
+                    {/* 
                     <SimpleSelect
                       name="operation"
                       className="w-full"
@@ -518,8 +541,8 @@ export default function Products() {
                     >
                       <option value="add">Add</option>
                       <option value="deduct">Deduct</option>
-                    </SimpleSelect>
-                    <Spacer />
+                    </SimpleSelect> */}
+                    {/* <Spacer /> */}
                     <Input
                       name="quantity"
                       placeholder="Quantity"
@@ -530,6 +553,15 @@ export default function Products() {
                     />
                     <Spacer />
 
+                    <Input
+                      name="price"
+                      placeholder="Price"
+                      label="Price"
+                      type="number"
+                      defaultValue={activeProduct.price}
+                      error={actionData?.errors?.price}
+                    />
+                    <Spacer />
                     <div className="flex items-center ">
                       <Button
                         color="error"
@@ -578,7 +610,7 @@ export const action: ActionFunction = async ({ request }) => {
   const imgSrc = formData.get("image") as string;
 
   const name = formData.get("name");
-  const price = formData.get("price");
+  const price = formData.get("price") as string;
   const quantity = formData.get("quantity") as string;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
@@ -590,7 +622,9 @@ export const action: ActionFunction = async ({ request }) => {
     await productController.stockProduct({
       _id: formData.get("stockId") as string,
       quantity,
-      operation: formData.get("operation") as string,
+      price,
+      // operation: formData.get("operation") as string,
+      operation: "add",
     });
     return true;
   }
@@ -615,6 +649,7 @@ export const action: ActionFunction = async ({ request }) => {
       price,
       description,
       category,
+      quantity,
     });
   } else {
     return await productController.createProduct({

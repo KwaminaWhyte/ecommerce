@@ -1,5 +1,6 @@
 import type { AdminInterface } from "~/server/types";
 import SideNavigation from "../SideNavigation";
+import { Toaster } from "../ui/toaster";
 
 export default function AdminLayout({
   children,
@@ -26,6 +27,7 @@ export default function AdminLayout({
           {children}
         </main>
       </section>
+      <Toaster />
     </div>
   );
 }

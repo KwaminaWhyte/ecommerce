@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import BottomNavigation from "../BottomNavigation";
 import type { AdminInterface } from "~/server/types";
+import { Toaster } from "../ui/toaster";
 
 export default function AdminPublicLayout({
   children,
@@ -25,6 +26,7 @@ export default function AdminPublicLayout({
       </main>
 
       {user && <BottomNavigation />}
+      <Toaster />
     </div>
   );
 }
