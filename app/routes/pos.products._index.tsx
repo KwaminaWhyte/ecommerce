@@ -77,15 +77,15 @@ export default function Shop() {
               <p className="font-bold text-base">{product?.name}</p>
               <p className="line-clamp-3 mb-2">{product?.description}</p>
 
-              <div className="flex justify-between items-center mt-3">
-                <Popover className="relative mt-auto">
+              <div className="flex justify-between items-center mt-3 mt-auto">
+                <Popover className="relative ">
                   <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
                     {product.stockHistory.length > 0 &&
                       product.stockHistory.length}{" "}
                     Stocks
                   </Popover.Button>
 
-                  <Popover.Panel className="absolute right-6 z-10 ">
+                  <Popover.Panel className="absolute z-10 ">
                     <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
                       {product.stockHistory.map((stock) => (
                         <p
@@ -99,12 +99,7 @@ export default function Shop() {
                   </Popover.Panel>
                 </Popover>
 
-                <p className="font-bold">$ {product?.price}</p>
-              </div>
-              {/* <p className="">Qty: {product?.quantity}</p> */}
-
-              <div className="flex justify-between items-center mt-3">
-                <Link to={`/pos/products/${product?._id}`}>View</Link>
+                {/* <p className="font-bold">$ {product?.price}</p> */}
                 <Button
                   onClick={() => {
                     setIsStockOpen(true);
@@ -113,6 +108,12 @@ export default function Shop() {
                 >
                   Restock
                 </Button>
+              </div>
+              {/* <p className="">Qty: {product?.quantity}</p> */}
+
+              <div className="flex justify-between items-center mt-3">
+                <Link to={`/pos/products/${product?._id}`}>View</Link>
+
                 <Form method="POST">
                   <input type="hidden" name="product_id" value={product?._id} />
                   <input type="hidden" name="user_id" value={user?._id} />

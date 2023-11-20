@@ -142,9 +142,6 @@ export default function Products() {
           <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
             <tr>
               <th scope="col" className="px-3 py-3">
-                <input type="checkbox" name="all" id="all" />
-              </th>
-              <th scope="col" className="px-3 py-3">
                 Product
               </th>
               <th scope="col" className="px-3 py-3">
@@ -173,9 +170,6 @@ export default function Products() {
                 key={product?._id}
                 className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
               >
-                <td className="px-3 py-3">
-                  <input type="checkbox" name="" id="" />
-                </td>
                 <th
                   scope="row"
                   className="flex flex-nowrap items-center whitespace-nowrap px-3 py-3 font-medium text-slate-900 dark:text-white"

@@ -66,7 +66,7 @@ export default function PosLayout({
           <SheetTrigger asChild className="ml-auto">
             <Button variant="outline">Cart</Button>
           </SheetTrigger>
-          <SheetContent className="w-[700px] ">
+          <SheetContent className="w-[800px] ">
             <SheetHeader>
               <SheetTitle>Edit profile</SheetTitle>
               <SheetDescription>
