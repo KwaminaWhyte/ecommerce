@@ -34,7 +34,7 @@ ChartJS.register(
 export default function Dashboard() {
   let {
     user,
-    salesOprions,
+    salesOptions,
     salesUpdate,
     totalRevenue,
     completedCount,
@@ -119,7 +119,7 @@ export default function Dashboard() {
       <div className="flex w-full gap-3">
         <Container heading="Sales update" className="flex-1">
           <ClientOnly fallback={<div>Generating Chart</div>}>
-            {() => <Line options={salesOprions} data={salesUpdate} />}
+            {() => <Line options={salesOptions} data={salesUpdate} />}
           </ClientOnly>
         </Container>
 
@@ -193,34 +193,12 @@ export default function Dashboard() {
   );
 }
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "ComClo - Console Dashboard" },
-    {
-      name: "description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    { name: "og:title", content: "ComClo" },
-    { property: "og:type", content: "websites" },
-    {
-      name: "og:description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    {
-      name: "og:image",
-      content:
-        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
-    },
-    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
-  ];
-};
-
 export const loader: LoaderFunction = async ({ request }) => {
   const sender = await new SenderController(request);
-  await sender.createSMS({
-    subject: "asfasf",
-    body: "asfsf",
-  });
+  // await sender.createSMS({
+  //   subject: "asfasf",
+  //   body: "asfsf",
+  // });
 
   const adminControlle = await new AdminController(request);
   await adminControlle.requireAdminId();
@@ -231,7 +209,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { totalRevenue, completedCount, pendingCount, bestsellingProducts } =
     await orderController.getTotals();
 
-  const salesOprions = {
+  const salesOptions = {
     responsive: true,
     plugins: {
       legend: {
@@ -275,7 +253,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   return {
     user,
-    salesOprions,
+    salesOptions,
     salesUpdate,
     totalRevenue,
     completedCount,
@@ -286,19 +264,24 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 };
 
-export function ErrorBoundary({ error }) {
-  console.error(error);
-  return (
-    <Container
-      heading="Error"
-      className="bg-red-300 dark:bg-red-500"
-      contentClassName="flex-col grid grid-cols-2 gap-3"
-    >
-      <p>Something went wrong!</p>
-    </Container>
-  );
-}
-
-// function Fallback() {
-//   return <div>Generating Chart</div> ;
-// }
+export const meta: MetaFunction = () => {
+  return [
+    { title: "ComClo - Console Dashboard" },
+    {
+      name: "description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    { name: "og:title", content: "ComClo" },
+    { property: "og:type", content: "websites" },
+    {
+      name: "og:description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    {
+      name: "og:image",
+      content:
+        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
+    },
+    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
+  ];
+};
