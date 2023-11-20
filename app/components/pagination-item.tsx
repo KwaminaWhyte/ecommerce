@@ -9,7 +9,6 @@ export default function PaginationItem({
   children: any;
 }) {
   const Component = component ? component : "a";
-  console.log({ children, to: props.to });
 
   return (
     <>

@@ -34,7 +34,7 @@ export interface ProductImageInterface extends Document {
   updatedAt: Date;
 }
 
-export interface ProductCategoryInterface extends Document {
+export interface CategoryInterface extends Document {
   _id: string;
   name: string;
   description: string;
@@ -91,6 +91,7 @@ export interface CartInterface extends Document {
   _id: string;
   user: string;
   product: ProductInterface;
+  stock: StockHistoryInterface;
   quantity: number;
   color: number;
   createdAt: Date;

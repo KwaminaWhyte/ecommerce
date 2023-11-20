@@ -24,7 +24,7 @@ import ProductController from "~/server/product/ProductController.server";
 import { validateName } from "~/server/validators.server";
 import DeleteModal from "~/components/modals/DeleteModal";
 import Container from "~/components/Container";
-import type { ProductCategoryInterface } from "~/server/types";
+import type { CategoryInterface } from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 
@@ -112,7 +112,7 @@ export default function Products() {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category: ProductCategoryInterface) => (
+            {categories.map((category: CategoryInterface) => (
               <tr
                 key={category?._id}
                 className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
@@ -187,7 +187,7 @@ export default function Products() {
           renderItem={(item) => (
             <PaginationItem
               component={Link}
-              to={`/console/product_categories${
+              to={`/console/categories${
                 item.page === 1 ? "" : `?page=${item.page}`
               }`}
               {...item}

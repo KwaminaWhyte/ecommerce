@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { UserSchema } from "./user/User";
 import {
-  ProductCategorySchema,
+  CategorySchema,
   ProductImagesSchema,
   ProductsSchema,
   StockHistorySchema,
@@ -64,7 +64,7 @@ const connectToDomainDatabase = async () => {
     Employee = centralDb.model("employees");
     User = centralDb.model("users");
     Product = centralDb.model("products");
-    ProductCategory = centralDb.model("product_categories");
+    ProductCategory = centralDb.model("categories");
     ProductImages = centralDb.model("product_images");
     Order = centralDb.model("orders");
     Cart = centralDb.model("carts");
@@ -85,10 +85,7 @@ const connectToDomainDatabase = async () => {
     Employee = centralDb.model("employees", EmployeeSchema);
     User = centralDb.model("users", UserSchema);
     Product = centralDb.model("products", ProductsSchema);
-    ProductCategory = centralDb.model(
-      "product_categories",
-      ProductCategorySchema
-    );
+    ProductCategory = centralDb.model("categories", CategorySchema);
     ProductImages = centralDb.model("product_images", ProductImagesSchema);
     Order = centralDb.model("orders", OrderSchema);
     Cart = centralDb.model("carts", CartSchema);

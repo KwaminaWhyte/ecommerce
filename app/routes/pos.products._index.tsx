@@ -14,18 +14,27 @@ import { Transition, Dialog, Popover } from "@headlessui/react";
 
 import ProductController from "~/server/product/ProductController.server";
 import type {
-  ProductCategoryInterface,
+  EmployeeInterface,
+  CategoryInterface,
   ProductInterface,
+  CartInterface,
 } from "~/server/types";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
+import OrderController from "~/server/order/OrderController.server";
 
 export default function Shop() {
   let { user, featured_categories, products, cart_items, generalSettings } =
-    useLoaderData();
+    useLoaderData<{
+      user: EmployeeInterface;
+      featured_categories: CategoryInterface[];
+      products: ProductInterface[];
+      generalSettings: any;
+      cart_items: CartInterface[];
+    }>();
   const navigation = useNavigation();
   const [isStockOpen, setIsStockOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState({});
@@ -34,10 +43,12 @@ export default function Shop() {
     setIsStockOpen(false);
   }, [products]);
 
+  console.log(cart_items);
+
   return (
     <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
       <section className="my-3 flex w-full gap-2 overflow-x-hidden">
-        {featured_categories?.map((category: ProductCategoryInterface) => (
+        {featured_categories?.map((category) => (
           <Link
             to={`/pos/category/${category?._id}`}
             key={category?._id}
@@ -51,7 +62,7 @@ export default function Shop() {
       </section>
 
       <section className="grid grid-cols-4 gap-3">
-        {products?.map((product: ProductInterface) => (
+        {products?.map((product) => (
           <div
             key={product?._id}
             to={`/${product._id}`}
@@ -62,10 +73,30 @@ export default function Shop() {
               src={product?.images[0]?.url}
               alt="product"
             />
-            <section className="p-1">
-              <p className="font-bold">{product?.name}</p>
-              <p className="">{product?.description}</p>
-              <p className="">Qty: {product?.quantity}</p>
+            <section className="p-1 flex flex-col">
+              <p className="font-bold text-base">{product?.name}</p>
+              <p className="line-clamp-3 mb-2">{product?.description}</p>
+              <Popover className="relative mt-auto">
+                <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
+                  {product.stockHistory.length > 0 &&
+                    product.stockHistory.length}{" "}
+                  Stocks
+                </Popover.Button>
+
+                <Popover.Panel className="absolute right-6 z-10 ">
+                  <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
+                    {product.stockHistory.map((stock) => (
+                      <p
+                        key={stock?._id}
+                        className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
+                      >
+                        {stock.quantity} items @ GH₵‎ {stock.price} each
+                      </p>
+                    ))}
+                  </div>
+                </Popover.Panel>
+              </Popover>
+              {/* <p className="">Qty: {product?.quantity}</p> */}
 
               <div className="flex justify-between items-center mt-3">
                 <p className="font-bold">$ {product?.price}</p>
@@ -191,28 +222,6 @@ export default function Shop() {
   );
 }
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "ComClo - Products" },
-    {
-      name: "description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    { name: "og:title", content: "ComClo" },
-    { property: "og:type", content: "websites" },
-    {
-      name: "og:description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    {
-      name: "og:image",
-      content:
-        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
-    },
-    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
-  ];
-};
-
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const productController = await new ProductController(request);
@@ -224,17 +233,31 @@ export const action: ActionFunction = async ({ request }) => {
   // const user = formData.get("user_id") as string;
 
   const cartController = await new CartController(request);
+  const orderController = await new OrderController(request);
 
   if (formData.get("stockId") != null) {
     await productController.stockProduct({
       _id: formData.get("stockId") as string,
       quantity: formData.get("quantity") as string,
       operation: formData.get("operation") as string,
+      price: formData.get("price") as string,
     });
     return true;
   }
 
-  if ((formData.get("type") as string) == "increase") {
+  if ((formData.get("type") as string) == "complete") {
+    return await orderController.checkout({
+      user,
+      customerName: formData.get("customer_name") as string,
+      customerPhone: formData.get("customer_phone") as string,
+    });
+  } else if ((formData.get("type") as string) == "set_stock") {
+    return await cartController.setStock({
+      product,
+      user,
+      stockId: formData.get("stock_id") as string,
+    });
+  } else if ((formData.get("type") as string) == "increase") {
     return await cartController.increaseItem({ product, user });
   } else if ((formData.get("type") as string) == "decrease") {
     return await cartController.decreaseItem({ product, user });
@@ -280,15 +303,24 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 };
 
-export function ErrorBoundary({ error }) {
-  console.error(error);
-  return (
-    <Container
-      heading="Error"
-      className="bg-red-300 dark:bg-red-500"
-      contentClassName="flex-col grid grid-cols-2 gap-3"
-    >
-      <p>Something went wrong!</p>
-    </Container>
-  );
-}
+export const meta: MetaFunction = () => {
+  return [
+    { title: "ComClo - Products" },
+    {
+      name: "description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    { name: "og:title", content: "ComClo" },
+    { property: "og:type", content: "websites" },
+    {
+      name: "og:description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    {
+      name: "og:image",
+      content:
+        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
+    },
+    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
+  ];
+};

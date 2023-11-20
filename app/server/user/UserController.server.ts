@@ -80,7 +80,6 @@ export default class UserController {
 
     const session = await this.storage.getSession();
     session.set("guestId", guestId);
-    console.log("create:", { guestId });
     return redirect(redirectTo, {
       headers: {
         "Set-Cookie": await this.storage.commitSession(session),

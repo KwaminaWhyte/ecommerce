@@ -12,7 +12,7 @@ const ProductImagesSchema: Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ProductCategorySchema: Schema = new mongoose.Schema(
+const CategorySchema: Schema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -52,7 +52,7 @@ const ProductsSchema: Schema = new mongoose.Schema(
     availability: String,
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "product_categories",
+      ref: "categories",
       required: false,
     },
     images: [
@@ -96,7 +96,7 @@ const StockHistorySchema: Schema = new mongoose.Schema(
 
 export {
   ProductImagesSchema,
-  ProductCategorySchema,
+  CategorySchema,
   ProductsSchema,
   StockHistorySchema,
 };

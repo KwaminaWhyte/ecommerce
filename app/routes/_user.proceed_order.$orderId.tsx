@@ -120,16 +120,3 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   return { order, addresses };
 };
-
-export function ErrorBoundary({ error }) {
-  console.error(error);
-  return (
-    <Container
-      heading="Error"
-      className="bg-red-300 dark:bg-red-500"
-      contentClassName="flex-col grid grid-cols-2 gap-3"
-    >
-      <p>Something went wrong!</p>
-    </Container>
-  );
-}

@@ -25,7 +25,7 @@ import AdminController from "~/server/admin/AdminController.server";
 import ProductController from "~/server/product/ProductController.server";
 import type {
   AdminInterface,
-  ProductCategoryInterface,
+  CategoryInterface,
   ProductInterface,
 } from "~/server/types";
 import { validateName, validatePrice } from "~/server/validators.server";
@@ -36,13 +36,11 @@ import { Button } from "~/components/ui/button";
 export default function Products() {
   const { user, products, categories, page, totalPages } = useLoaderData<{
     products: ProductInterface[];
-    categories: ProductCategoryInterface[];
+    categories: CategoryInterface[];
     user: AdminInterface;
     totalPages: number;
     page: number;
   }>();
-
-  console.log(products);
 
   // const [selectedColors, setSelectedColors] = useState([]);
   // const [selectedSizes, setSelectedSizes] = useState([]);
@@ -203,7 +201,7 @@ export default function Products() {
                     </Popover.Button>
 
                     <Popover.Panel className="absolute right-6 z-10 ">
-                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-40">
+                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
                         {product.stockHistory.map((stock) => (
                           <p
                             key={stock?._id}
@@ -393,7 +391,7 @@ export default function Products() {
                       }
                     >
                       <option value="">Select category</option>
-                      {categories.map((category: ProductCategoryInterface) => (
+                      {categories.map((category: CategoryInterface) => (
                         <option key={category._id} value={category._id}>
                           {category.name}
                         </option>

@@ -105,13 +105,20 @@ export default class CartController {
 
   public getUserCart = async ({ user }: { user: string }) => {
     try {
-      const carts = await this.Cart.find({ user }).populate({
-        path: "product",
-        populate: {
-          path: "images",
-          model: "product_images",
-        },
-      });
+      const carts = await this.Cart.find({ user })
+        .populate({
+          path: "product",
+          populate: [
+            { path: "images", model: "product_images" },
+            { path: "category", model: "categories" },
+            { path: "stockHistory", model: "stock_histories" },
+          ],
+        })
+        .populate({
+          path: "stock",
+          model: "stock_histories",
+        })
+        .exec();
 
       return carts;
     } catch (error) {
@@ -145,6 +152,36 @@ export default class CartController {
         { status: 400 }
       );
       // Handle the error appropriately
+    }
+  };
+
+  public setStock = async ({
+    product,
+    user,
+    stockId,
+  }: {
+    product: string;
+    user: string;
+    stockId: string;
+  }) => {
+    try {
+      await this.Cart.findOneAndUpdate(
+        { product, user },
+        {
+          stock: stockId,
+        }
+      ).exec();
+
+      return redirect(`/cart`, 200);
+    } catch (error) {
+      console.error("Error decreasing item:", error);
+      return json(
+        {
+          error: "Error creating cart",
+          fields: {},
+        },
+        { status: 400 }
+      );
     }
   };
 

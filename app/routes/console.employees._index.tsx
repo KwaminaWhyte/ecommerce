@@ -401,28 +401,6 @@ export default function Employees() {
   );
 }
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "ComClo - Employees" },
-    {
-      name: "description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    { name: "og:title", content: "ComClo" },
-    { property: "og:type", content: "websites" },
-    {
-      name: "og:description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    {
-      name: "og:image",
-      content:
-        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
-    },
-    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
-  ];
-};
-
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const employeesController = await new EmployeeController(request);
@@ -433,25 +411,6 @@ export const action: ActionFunction = async ({ request }) => {
     );
     return true;
   }
-  // const uploadHandler: UploadHandler = composeUploadHandlers(
-  //   async ({ name, data }) => {
-  //     if (name !== "image") {
-  //       return undefined;
-  //     }
-
-  //     const uploadedImage: { secure_url: string; asset_id: string } =
-  //       (await uploadImage(data)) as { secure_url: string; asset_id: string };
-
-  //     return uploadedImage?.secure_url + "|" + uploadedImage.asset_id;
-  //   },
-  //   createMemoryUploadHandler()
-  // );
-
-  // const formDataI = await parseMultipartFormData(request, uploadHandler);
-  // const imgSrc = formDataI.get("image") as string;
-  // if (!imgSrc) {
-  //   return json({ error: "something wrong" });
-  // }
 
   const username = formData.get("username") as string;
   const firstName = formData.get("firstName") as string;
@@ -543,3 +502,25 @@ export function ErrorBoundary({ error }) {
     </Container>
   );
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "ComClo - Employees" },
+    {
+      name: "description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    { name: "og:title", content: "ComClo" },
+    { property: "og:type", content: "websites" },
+    {
+      name: "og:description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    {
+      name: "og:image",
+      content:
+        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
+    },
+    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
+  ];
+};

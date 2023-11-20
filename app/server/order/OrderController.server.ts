@@ -12,6 +12,7 @@ export default class OrderController {
   private Product: any;
   private Cart: any;
   private User: any;
+  private StockHistory: any;
   private ShippingTimeline: any;
   private ProductImages: any;
 
@@ -31,9 +32,17 @@ export default class OrderController {
   }
 
   private async initializeModels() {
-    const { User, Product, Order, Cart, ProductImages, ShippingTimeline } =
-      await connectToDomainDatabase();
+    const {
+      User,
+      Product,
+      Order,
+      Cart,
+      ProductImages,
+      ShippingTimeline,
+      StockHistory,
+    } = await connectToDomainDatabase();
 
+    this.StockHistory = StockHistory;
     this.User = User;
     this.Product = Product;
     this.Order = Order;
@@ -160,15 +169,27 @@ export default class OrderController {
    * @param param0 user: userId
    * @returns null
    */
-  public checkout = async ({ user }: { user: string }) => {
+  public checkout = async ({
+    user,
+    customerName,
+    customerPhone,
+  }: {
+    user: string;
+    customerName: string;
+    customerPhone: string;
+  }) => {
+    console.log({ customerName, customerPhone });
+
     try {
-      // Step 1: Retrieve cart items for the user
       const cartItems = await this.Cart.find({ user })
         .populate("product")
+        .populate({
+          path: "stock",
+          model: "stock_histories",
+        })
         .exec();
 
       if (cartItems.length === 0) {
-        // Handle case where the cart is empty
         return json(
           {
             error: "Cart is empty.",
@@ -180,7 +201,7 @@ export default class OrderController {
 
       let totalPrice = 0;
       cartItems.forEach((cartItem) => {
-        const productPrice = cartItem.product.price;
+        const productPrice = cartItem.stock.price;
         const quantity = cartItem.quantity;
         totalPrice += productPrice * quantity;
       });
@@ -188,17 +209,14 @@ export default class OrderController {
       const generalSettings = await new SettingsController(this.request);
       const settings = await generalSettings.getGeneralSettings();
 
-      const orderId = this.generateOrderId(settings?.orderIdPrefix);
+      // const orderId = this.generateOrderId(settings?.orderIdPrefix);
+      const orderId = this.generateOrderId("order");
       const order = await this.Order.create({
         orderId,
         user,
         orderItems: cartItems,
         totalPrice,
-        // Set other relevant order details such as total price, shipping address, payment info, etc.
       });
-
-      // // Step 3: Move cart items to the order
-      // await order.save();
 
       // Step 4: Empty the cart for the user
       await this.Cart.deleteMany({ user }).exec();
@@ -210,19 +228,25 @@ export default class OrderController {
       // await order.save();
 
       for (const item of cartItems) {
-        const product = await this.Product.findById(item.product);
+        const product = await this.Product.findById(item.product?.id);
+        const stock = await this.StockHistory.findById(item.stock?._id);
 
         if (product) {
-          // Increment quantitySold for the product
           product.quantitySold += item.quantity;
           product.quantity -= item.quantity;
-          // Save the updated product document
           await product.save();
+        }
+
+        if (stock) {
+          stock.quantity -= item.quantity;
+          await stock.save();
         }
       }
 
-      return redirect(`/proceed_order/${order?._id}`);
+      return redirect(`/pos/products`);
     } catch (error) {
+      console.log(error);
+
       return json(
         {
           error: { message: "Error during checkout:", error },

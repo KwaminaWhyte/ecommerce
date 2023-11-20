@@ -59,7 +59,6 @@ export default function AdminProductDetails() {
           formData
         )
         .then((response) => {
-          console.log(response.data);
           submit(
             {
               productId: product?._id,

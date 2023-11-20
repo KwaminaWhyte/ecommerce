@@ -14,6 +14,10 @@ const CartSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    stock: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "stock_histories",
+    },
     color: String,
     inscription: String,
   },

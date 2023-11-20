@@ -403,7 +403,7 @@ export default class ProductController {
         { status: 400 }
       );
     }
-    return redirect("/console/product_categories", 200);
+    return redirect("/console/categories", 200);
   }
 
   public async updateCategory({
@@ -429,7 +429,7 @@ export default class ProductController {
           featured: featured == "true" ? true : false,
         }
       );
-      return redirect(`/console/product_categories`, 200);
+      return redirect(`/console/categories`, 200);
     } catch (error) {
       return json(
         {

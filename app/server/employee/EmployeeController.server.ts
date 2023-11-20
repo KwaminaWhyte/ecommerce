@@ -131,7 +131,7 @@ export default class EmployeeController {
         { status: 400 }
       );
     }
-    return redirect("/console/employees", 200);
+    return redirect("/console/employees");
   };
 
   /**

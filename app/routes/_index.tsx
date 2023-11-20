@@ -4,7 +4,7 @@ import UserLayout from "~/components/layouts/UserLayout";
 import ProductController from "~/server/product/ProductController.server";
 import UserController from "~/server/user/UserController.server";
 import type {
-  ProductCategoryInterface,
+  CategoryInterface,
   ProductInterface,
   UserInterface,
 } from "~/server/types";
@@ -13,7 +13,7 @@ export default function Index() {
   let { user, products, featured_categories } = useLoaderData<{
     products: ProductInterface[];
     user: UserInterface;
-    featured_categories: ProductCategoryInterface[];
+    featured_categories: CategoryInterface[];
     isCentralDomain: Boolean;
   }>();
 
@@ -74,7 +74,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   const userController = await new UserController(request);
   const user = await userController.getUser();
   let guestId = await userController.getGuestId();
-  console.log({ guestId });
 
   if (!user && !guestId) {
     return await userController.createGuestSession("/");
