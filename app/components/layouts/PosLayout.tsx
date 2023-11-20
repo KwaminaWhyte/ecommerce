@@ -64,13 +64,18 @@ export default function PosLayout({
 
         <Sheet>
           <SheetTrigger asChild className="ml-auto">
-            <Button variant="outline">Cart</Button>
+            <Button variant="outline" className="relative">
+              <span className="absolute -left-2 -top-1 bg-blue-600 text-white px-2 py-0.5 rounded-xl">
+                {cart_items?.length}
+              </span>{" "}
+              Cart
+            </Button>
           </SheetTrigger>
           <SheetContent className="w-[800px] ">
             <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
+              <SheetTitle>Cart</SheetTitle>
               <SheetDescription>
-                Make changes to your profile here. Click save when you're done.
+                {/* Make changes to your profile here. Click save when you're done. */}
               </SheetDescription>
             </SheetHeader>
 
@@ -79,16 +84,13 @@ export default function PosLayout({
                 {cart_items?.map((item) => (
                   <div key={item?._id} className="flex justify-center">
                     <img
-                      className="w-28 h-28 rounded-md"
+                      className="w-28 h-28 rounded-md object-cover"
                       src={item?.product?.images[0]?.url}
                       alt=""
                     />
 
                     <div className="px-2 flex-1">
                       <p className="text-lg font-bold">{item?.product?.name}</p>
-                      <p className="text-slate-500 line-clamp-2">
-                        {item?.product?.description}
-                      </p>
 
                       <div className="flex flex-col gap-2 rounded-lg w-60">
                         {item?.product?.stockHistory.map((stock) => (

@@ -19,7 +19,6 @@ import OrderController from "~/server/order/OrderController.server";
 import type { ProductInterface } from "~/server/types";
 import SenderController from "~/server/notification/SenderController";
 import { ClientOnly } from "~/components/ClientOnly";
-import Loader from "~/components/Loader";
 
 ChartJS.register(
   CategoryScale,

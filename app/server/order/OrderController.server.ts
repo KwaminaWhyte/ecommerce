@@ -70,6 +70,7 @@ export default class OrderController {
   }) {
     const limit = 10; // Number of orders per page
     const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
+    console.log({ search_term, status });
 
     const searchFilter = search_term
       ? {
@@ -78,9 +79,7 @@ export default class OrderController {
             { deliveryStatus: { $regex: status, $options: "i" } },
           ],
         }
-      : {
-          $or: [{ deliveryStatus: { $regex: status, $options: "i" } }],
-        };
+      : {};
 
     try {
       const orders = await this.Order.find(searchFilter)

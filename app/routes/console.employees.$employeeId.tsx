@@ -15,6 +15,7 @@ import {
   Form,
   useActionData,
   useLoaderData,
+  useNavigate,
   useNavigation,
 } from "@remix-run/react";
 
@@ -26,11 +27,16 @@ import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import EmployeeController from "~/server/employee/EmployeeController.server";
 import { Button } from "~/components/ui/button";
+import type { AdminInterface, EmployeeInterface } from "~/server/types";
 
 export default function ProductDetails() {
-  let { user, employee } = useLoaderData();
+  let { user, employee } = useLoaderData<{
+    user: AdminInterface;
+    employee: EmployeeInterface;
+  }>();
   let actionData = useActionData();
   let navigation = useNavigation();
+  const navigate = useNavigate();
 
   let [isOpen, setIsOpen] = useState(false);
   function openModal() {
@@ -42,7 +48,26 @@ export default function ProductDetails() {
 
   return (
     <AdminLayout user={user}>
-      <div className="mb-3 flex">
+      <div className="mb-3 flex items-center">
+        <div
+          className="border border-gray-400 rounded-sm p-1 mr-3"
+          onClick={() => navigate(-1)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-7 h-7 text-gray-500 hover:text-gray-700 cursor-pointer"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </div>
         <h1 className="text-3xl font-bold">Employee Details</h1>
 
         <section className="ml-auto flex">
@@ -168,6 +193,18 @@ export default function ProductDetails() {
               defaultValue={actionData?.fields?.password}
               error={actionData?.errors?.password}
             />
+          </div>
+
+          <div className="flex items-center mt-3">
+            <Button
+              type="submit"
+              className="ml-auto"
+              disabled={navigation.state === "submitting" ? true : false}
+            >
+              {navigation.state === "submitting"
+                ? "Submitting..."
+                : "Change Password"}
+            </Button>
           </div>
         </Form>
       </Container>

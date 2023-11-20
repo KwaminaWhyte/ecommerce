@@ -54,7 +54,7 @@ const OrderCard = ({
                             {item?.quantity} x {item?.product.price}
                           </p>
                         </div>
-                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-1">
                           {item?.product.description}
                         </p>
                       </div>

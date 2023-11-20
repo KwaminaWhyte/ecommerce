@@ -171,7 +171,7 @@ export default function Employees() {
                           View
                         </Link>
                         <Button
-                          variant="solid"
+                          variant="outline"
                           type="button"
                           color="primary"
                           onClick={() => {
@@ -182,7 +182,7 @@ export default function Employees() {
                           Update
                         </Button>
                         <Button
-                          variant="solid"
+                          variant="destructive"
                           type="button"
                           color="error"
                           onClick={() => handleDelete(employee._id)}

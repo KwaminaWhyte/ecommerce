@@ -19,7 +19,6 @@ import CartController from "~/server/cart/CartController.server";
 import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 import DeleteModal from "~/components/modals/DeleteModal";
-import Loader from "~/components/Loader";
 import { Button } from "~/components/ui/button";
 
 export default function UserCart() {
@@ -58,7 +57,6 @@ export default function UserCart() {
 
   return (
     <UserDetailLayout title="Cart">
-      {/* <Loader /> */}
       {carts?.length === 0 ? <p className="text-center">No item here</p> : null}
       {carts?.map((item) => (
         <div

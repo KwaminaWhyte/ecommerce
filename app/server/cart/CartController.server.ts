@@ -5,6 +5,7 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import { connectToDomainDatabase } from "../mongoose.server";
+import { commitSession, getSession } from "~/session";
 
 export default class CartController {
   private request: Request;
@@ -68,6 +69,8 @@ export default class CartController {
     user: string;
     product: string;
   }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     const existingCart = await this.Cart.findOne({
       user,
       product,
@@ -97,6 +100,16 @@ export default class CartController {
         );
       }
     }
+
+    session.flash("message", {
+      title: "Product Added Successful",
+      status: "success",
+    });
+    return redirect(`/pos/products`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
 
     return json({
       status: "success",

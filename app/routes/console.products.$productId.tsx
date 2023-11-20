@@ -15,14 +15,17 @@ import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import ProductController from "~/server/product/ProductController.server";
-import type { ProductInterface } from "~/server/types";
+import type { AdminInterface, ProductInterface } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
 export default function AdminProductDetails() {
   const submit = useSubmit();
   const navigate = useNavigate();
-  const { user, product } = useLoaderData<{ product: ProductInterface }>();
+  const { user, product } = useLoaderData<{
+    product: ProductInterface;
+    user: AdminInterface;
+  }>();
   const [activeImage, setActiveImage] = useState({});
   const [files, setFiles] = useState<{ file: any; previewUrl: string }[]>([]);
 
@@ -75,7 +78,6 @@ export default function AdminProductDetails() {
         .catch((error) => {
           console.error(error);
         });
-
       index += 1;
     }
   };

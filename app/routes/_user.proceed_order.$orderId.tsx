@@ -17,7 +17,6 @@ import Container from "~/components/Container";
 import type { AddressInterface, OredrInterface } from "~/server/types";
 import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
-// import Loader from "~/components/Loader";
 
 export default function UserCart() {
   const navigation = useNavigation();
@@ -30,7 +29,6 @@ export default function UserCart() {
   return (
     <UserDetailLayout title="Proceed with order">
       {/* allow user to select payment method and proceed */}
-      {/* <Loader /> */}
 
       <section>
         {order?.orderItems?.map(({ product, quantity, _id }) => (
