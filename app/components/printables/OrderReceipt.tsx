@@ -5,6 +5,7 @@ import { type OredrInterface } from "~/server/types";
 
 export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { order, generalSettings } = props;
+
   return (
     <div
       className="container mx-auto mt-10 p-5 border rounded-lg shadow-lg hidden print:block"
@@ -39,7 +40,7 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
       <div className="mt-6">
         <h3 className="text-md font-semibold">Items:</h3>
         <ul className="mt-2">
-          {order.orderItems?.map((item) => (
+          {order?.orderItems?.map((item) => (
             <li className="flex justify-between" key={item?._id}>
               <span>{item?.product?.name}</span>
               <span className="font-semibold">Quantity: {item?.quantity}</span>

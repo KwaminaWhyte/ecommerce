@@ -1,17 +1,22 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type {
   ActionFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
+import { Transition, Dialog, Popover } from "@headlessui/react";
 
 import Container from "~/components/Container";
 import PosLayout from "~/components/layouts/PosLayout";
 import CartController from "~/server/cart/CartController.server";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
-import { Transition, Dialog, Popover } from "@headlessui/react";
-
 import ProductController from "~/server/product/ProductController.server";
 import type {
   EmployeeInterface,
@@ -25,6 +30,10 @@ import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
 import OrderController from "~/server/order/OrderController.server";
+import pkg from "react-to-print";
+import { OrderReceipt } from "~/components/printables/OrderReceipt";
+
+const { useReactToPrint } = pkg;
 
 export default function Shop() {
   let { user, featured_categories, products, cart_items, generalSettings } =
@@ -36,14 +45,25 @@ export default function Shop() {
       cart_items: CartInterface[];
     }>();
   const navigation = useNavigation();
+  const actionData = useActionData();
   const [isStockOpen, setIsStockOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState({});
+  console.log({ actionData });
 
   useEffect(() => {
     setIsStockOpen(false);
   }, [products]);
 
-  console.log(cart_items);
+  useEffect(() => {
+    if (actionData) {
+      handlePrint();
+    }
+  }, [actionData]);
+
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   return (
     <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
@@ -222,6 +242,12 @@ export default function Shop() {
           </div>
         </Dialog>
       </Transition>
+
+      <OrderReceipt
+        order={actionData}
+        generalSettings={generalSettings}
+        ref={componentRef}
+      />
     </PosLayout>
   );
 }
@@ -250,11 +276,13 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   if ((formData.get("type") as string) == "complete") {
-    return await orderController.checkout({
+    const ress = await orderController.checkout({
       user,
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
     });
+
+    return ress;
   } else if ((formData.get("type") as string) == "set_stock") {
     return await cartController.setStock({
       product,

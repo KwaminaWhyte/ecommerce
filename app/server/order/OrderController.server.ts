@@ -4,6 +4,7 @@ import SettingsController from "../settings/SettingsController.server";
 import moment from "moment";
 import PaymentController from "../payment/PaymentController";
 import SenderController from "../notification/SenderController";
+import { commitSession, getSession } from "~/session";
 
 export default class OrderController {
   private request: Request;
@@ -177,7 +178,7 @@ export default class OrderController {
     customerName: string;
     customerPhone: string;
   }) => {
-    console.log({ customerName, customerPhone });
+    const session = await getSession(this.request.headers.get("Cookie"));
 
     try {
       const cartItems = await this.Cart.find({ user })
@@ -208,8 +209,7 @@ export default class OrderController {
       const generalSettings = await new SettingsController(this.request);
       const settings = await generalSettings.getGeneralSettings();
 
-      // const orderId = this.generateOrderId(settings?.orderIdPrefix);
-      const orderId = this.generateOrderId("order");
+      const orderId = this.generateOrderId(settings?.orderIdPrefix);
       const order = await this.Order.create({
         orderId,
         user,
@@ -217,14 +217,7 @@ export default class OrderController {
         totalPrice,
       });
 
-      // Step 4: Empty the cart for the user
       await this.Cart.deleteMany({ user }).exec();
-
-      // Step 5: Update order status (optional)
-      // You can set the order status as needed, e.g., 'paid', 'processing', etc.
-      // order.status = "paid";
-      // order.status = "pending";
-      // await order.save();
 
       for (const item of cartItems) {
         const product = await this.Product.findById(item.product?._id);
@@ -242,18 +235,34 @@ export default class OrderController {
         }
       }
 
-      return redirect(`/pos/products`);
+      return await this.Order.findById(order?._id)
+        .populate({
+          path: "orderItems.product",
+          populate: {
+            path: "images",
+            model: "product_images",
+          },
+        })
+        .populate({
+          path: "user",
+          select: "_id firstName lastName email phone address",
+        })
+        .populate({
+          path: "shippingAddress",
+        })
+        .exec();
     } catch (error) {
       console.log(error);
 
-      return json(
-        {
-          error: { message: "Error during checkout:", error },
-          fields: {},
+      session.flash("message", {
+        title: "Checkout Failed",
+        status: "error",
+      });
+      return redirect(`/pos/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
-      // Handle error accordingly
+      });
     }
   };
 

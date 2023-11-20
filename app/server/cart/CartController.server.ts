@@ -102,7 +102,7 @@ export default class CartController {
     }
 
     session.flash("message", {
-      title: "Product Added Successful",
+      title: "Product Added to Cart",
       status: "success",
     });
     return redirect(`/pos/products`, {
