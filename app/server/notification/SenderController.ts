@@ -10,7 +10,6 @@ import nodemailer from "nodemailer";
 
 export default class SenderController {
   private request: Request;
-  private domain: string;
   private session: any;
   private storage: SessionStorage;
   private SMSHistory: any;
@@ -242,7 +241,7 @@ export default class SenderController {
           request_type,
         }
       );
-      return redirect(`/console/feature_requests`);
+      return redirect(`/console`);
     } catch (error) {
       return json(
         {

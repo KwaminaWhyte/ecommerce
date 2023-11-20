@@ -3,6 +3,7 @@ import { connectToDomainDatabase } from "../mongoose.server";
 import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
 import { ProductInterface } from "../types";
+import { commitSession, getSession } from "~/session";
 
 export default class ProductController {
   private request: Request;
@@ -103,6 +104,7 @@ export default class ProductController {
     category: string;
     quantity: string;
   }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
     const existingProduct = await this.Product.findOne({ name });
 
     if (existingProduct) {
@@ -127,7 +129,7 @@ export default class ProductController {
       name,
       price: parseFloat(price),
       description,
-      category: category ? category : "",
+      category: category ? category : null,
       availability: "available",
       // images: [image._id],
       quantity: parseInt(quantity),
@@ -142,7 +144,16 @@ export default class ProductController {
         { status: 400 }
       );
     }
-    return redirect("/console/products", 200);
+
+    session.flash("message", {
+      title: "Product Added Successful",
+      status: "success",
+    });
+    return redirect(`/console/products`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   };
 
   public updateProduct = async ({

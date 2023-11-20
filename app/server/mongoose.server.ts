@@ -1,4 +1,4 @@
-import mongoose, { type Connection } from "mongoose";
+import mongoose from "mongoose";
 import { UserSchema } from "./user/User";
 import {
   ProductCategorySchema,
@@ -7,7 +7,7 @@ import {
   StockHistorySchema,
 } from "./product/Product";
 import { OrderSchema, ShippingTimelineSchema } from "./order/Order";
-import { CartSchema, GuestCartsSchema } from "./cart/Cart";
+import { CartSchema } from "./cart/Cart";
 import { AdminSchema } from "./admin/Admin";
 import { EmployeeSchema } from "./employee/Employee";
 import { NotificationSchema } from "./settings/Notification";
@@ -15,8 +15,6 @@ import { SMSSchema } from "./settings/SMS";
 import { WishListSchema } from "./wishlist/WishList";
 import { AddressSchema } from "./user/Address";
 import { GeneralSettingsSchema } from "./settings/GeneralSettings";
-import { FeatureSchema } from "./feature/Feature";
-import { ClientConnectionSchema } from "./onboarding/ClientConnection";
 import { ClientDetailSchema } from "./onboarding/ClientDetail";
 import { VisitSchema } from "./user/Visit";
 import { SMSHistorySchema } from "./notification/SMSHistory";
@@ -30,59 +28,11 @@ const centralDb = mongoose.connection;
 // Handle connection events for the central database
 centralDb.on(
   "error",
-  console.error.bind(console, "Central Database connection error:")
+  console.error.bind(console, "Database connection error:")
 );
 centralDb.once("open", () => {
-  console.log("Connected to Central Database");
+  console.log("Connected to Database");
 });
-
-/** Fetch the domain details from the central database
- * @param domain The domian name string
- * @return databaseUri string
- * @return username string
- * @return password string
- */
-const fetchDomainConnectionDetails = async (domain: string) => {
-  try {
-    // Assuming you have a "domains" collection in the central database with connection details
-    const domainInfo = await centralDb
-      .collection("client_connections")
-      .findOne({ domain });
-
-    if (!domainInfo) {
-      throw new Error("Domain not found");
-    }
-
-    // Extract the necessary connection details, such as MongoDB URI
-    const {
-      databaseUri,
-      username,
-      password,
-      _id,
-      admin,
-      storeName,
-      email,
-      phone,
-      createdAt,
-    } = domainInfo;
-
-    // Return the connection details as an object
-    return {
-      databaseUri,
-      username,
-      password,
-      _id,
-      admin,
-      storeName,
-      email,
-      phone,
-      createdAt,
-    };
-  } catch (error) {
-    console.error("Error fetching domain connection details:", error);
-    throw error;
-  }
-};
 
 /** Establish connection to the appropriate database based on the domain
  */
@@ -92,7 +42,6 @@ const connectToDomainDatabase = async () => {
     User,
     Order,
     Product,
-    Feature, // main only
     Address,
     WishList,
     Employee,
@@ -108,8 +57,7 @@ const connectToDomainDatabase = async () => {
     UserVisit,
     StockHistory,
     GuestCart,
-    ClientDetail, //main only
-    ClientConnection; //main only
+    ClientDetail;
 
   try {
     Admin = centralDb.model("admins");
@@ -128,8 +76,6 @@ const connectToDomainDatabase = async () => {
     WishList = centralDb.model("wishlistss");
     Address = centralDb.model("addresses");
     GeneralSettings = centralDb.model("general_settings");
-    Feature = centralDb.model("feature_requests");
-    ClientConnection = centralDb.model("client_connections");
     ClientDetail = centralDb.model("client_details");
     UserVisit = centralDb.model("user_visits");
     PaymentApi = centralDb.model("payment_apis");
@@ -163,11 +109,6 @@ const connectToDomainDatabase = async () => {
       "general_settings",
       GeneralSettingsSchema
     );
-    Feature = centralDb.model("feature_requests", FeatureSchema);
-    ClientConnection = centralDb.model(
-      "client_connections",
-      ClientConnectionSchema
-    );
     ClientDetail = centralDb.model("client_details", ClientDetailSchema);
     UserVisit = centralDb.model("user_visits", VisitSchema);
     PaymentApi = centralDb.model("payment_apis", PaymentApiSchema);
@@ -181,7 +122,6 @@ const connectToDomainDatabase = async () => {
     Order,
     Product,
     Address,
-    Feature,
     WishList,
     Employee,
     SMSHistory,
@@ -192,7 +132,6 @@ const connectToDomainDatabase = async () => {
     ProductCategory,
     ShippingTimeline,
     NotificationSettings,
-    ClientConnection,
     ClientDetail,
     UserVisit,
     PaymentApi,
@@ -200,12 +139,7 @@ const connectToDomainDatabase = async () => {
   };
 };
 
-export {
-  centralDb,
-  fetchDomainConnectionDetails,
-  connectToDomainDatabase,
-  mongoose,
-};
+export { centralDb, connectToDomainDatabase, mongoose };
 
 // import mongoose from "mongoose";
 

@@ -74,6 +74,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const userController = await new UserController(request);
   const user = await userController.getUser();
   let guestId = await userController.getGuestId();
+  console.log({ guestId });
 
   if (!user && !guestId) {
     return await userController.createGuestSession("/");
