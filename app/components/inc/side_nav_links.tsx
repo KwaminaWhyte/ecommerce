@@ -242,7 +242,7 @@ const sideNavLinks = [
     ),
     children: [
       {
-        id: 1,
+        id: 0,
         name: "General",
         path: "/console/reports",
       },
