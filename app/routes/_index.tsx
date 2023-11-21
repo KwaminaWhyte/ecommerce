@@ -84,7 +84,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "ComClo - Home" },
+    { title: "ComClo" },
     {
       name: "description",
       content: "The best e-Commerce platform for your business.",

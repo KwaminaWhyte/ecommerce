@@ -13,7 +13,6 @@ import {
 } from "@remix-run/react";
 import { Transition, Dialog, Popover } from "@headlessui/react";
 
-import Container from "~/components/Container";
 import PosLayout from "~/components/layouts/PosLayout";
 import CartController from "~/server/cart/CartController.server";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
@@ -85,7 +84,6 @@ export default function Shop() {
         {products?.map((product) => (
           <div
             key={product?._id}
-            to={`/${product._id}`}
             className="w-full border border-slate-400 bg-white/95 dark:bg-black/95 dark:text-white p-1 rounded-lg"
           >
             <img
@@ -97,7 +95,7 @@ export default function Shop() {
               <p className="font-bold text-base">{product?.name}</p>
               <p className="line-clamp-3 mb-2">{product?.description}</p>
 
-              <div className="flex justify-between items-center mt-3 mt-auto">
+              <div className="flex justify-between items-center mt-auto">
                 <Popover className="relative ">
                   <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
                     {product.stockHistory.length > 0 &&

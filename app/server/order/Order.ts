@@ -22,6 +22,11 @@ const OrderSchema = new mongoose.Schema(
           ref: "products",
           required: true,
         },
+        stock: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "stock_histories",
+          required: true,
+        },
         quantity: {
           type: Number,
           required: true,

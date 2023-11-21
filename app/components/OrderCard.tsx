@@ -51,11 +51,11 @@ const OrderCard = ({
                             {item?.product.name}
                           </h3>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
-                            {item?.quantity} x {item?.product.price}
+                            {item?.quantity} x {item?.stock?.price}
                           </p>
                         </div>
                         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-1">
-                          {item?.product.description}
+                          {item?.product?.description}
                         </p>
                       </div>
                     </div>
@@ -67,6 +67,8 @@ const OrderCard = ({
         ) : (
           <p className="text-slate-900 dark:text-white">
             {order.orderItems[0]?.product.name}
+            {/* x {" "} */}
+            {/* {order?.orderItems[0]?.stock.price} */}
           </p>
         )}
       </th>

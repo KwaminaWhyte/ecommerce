@@ -5,7 +5,6 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import { connectToDomainDatabase } from "../mongoose.server";
-import { type ObjectId } from "mongoose";
 import nodemailer from "nodemailer";
 
 export default class SenderController {
@@ -14,17 +13,6 @@ export default class SenderController {
   private storage: SessionStorage;
   private SMSHistory: any;
   private EmailHistory: any;
-  private connectionDetails: {
-    databaseUri: string;
-    username: string;
-    password: string;
-    _id: ObjectId;
-    admin: string;
-    storeName: string;
-    email: string;
-    phone: string;
-    createdAt: string;
-  };
   private transporter = nodemailer.createTransport({
     host: "server1.medsov.com",
     port: 465,
@@ -43,8 +31,6 @@ export default class SenderController {
    */
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
-
     const secret = process.env.SESSION_SECRET;
     if (!secret) {
       throw new Error("No session secret provided");
@@ -67,12 +53,10 @@ export default class SenderController {
   }
 
   private async initializeModels() {
-    const { SMSHistory, EmailHistory, connectionDetails } =
-      await connectToDomainDatabase();
+    const { SMSHistory, EmailHistory } = await connectToDomainDatabase();
 
     this.SMSHistory = SMSHistory;
     this.EmailHistory = EmailHistory;
-    this.connectionDetails = connectionDetails;
   }
 
   /**
@@ -86,21 +70,21 @@ export default class SenderController {
     subject: string;
     body: string;
   }) => {
-    const storeDetails = this.connectionDetails;
+    // const storeDetails = this.connectionDetails;
     // const session = await this.storage.getSession(
     //   this.request.headers.get("Cookie")
     // );
     // const client_details = session.get("store_details");
 
-    const feature = await this.SMSHistory.create({
-      from: storeDetails?.phone,
-      to: "asfa",
-      body,
-      storeId: storeDetails?._id,
-      status: "NEW",
-    });
+    // const feature = await this.SMSHistory.create({
+    //   from: storeDetails?.phone,
+    //   to: "asfa",
+    //   body,
+    //   storeId: storeDetails?._id,
+    //   status: "NEW",
+    // });
 
-    return feature;
+    return null;
   };
 
   /**

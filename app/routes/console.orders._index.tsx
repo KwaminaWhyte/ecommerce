@@ -26,6 +26,7 @@ export default function Orders() {
     totalPages: number;
     page: number;
   }>();
+  console.log(orders);
 
   return (
     <AdminLayout user={user}>

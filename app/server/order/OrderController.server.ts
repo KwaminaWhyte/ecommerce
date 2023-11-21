@@ -82,29 +82,30 @@ export default class OrderController {
         }
       : {};
 
-    try {
-      const orders = await this.Order.find(searchFilter)
-        .skip(skipCount)
-        .limit(limit)
-        .populate({
-          path: "orderItems.product",
-          populate: {
-            path: "images",
-            model: "product_images",
-          },
-        })
-        .populate("user")
-        .exec();
+    const orders = await this.Order.find(searchFilter)
+      .skip(skipCount)
+      .limit(limit)
+      .populate({
+        path: "orderItems.stock",
+        // model: "stock_histories",
+      })
+      .populate({
+        path: "orderItems.product",
+        populate: {
+          path: "images",
+          model: "product_images",
+        },
+      })
+      .populate("user")
+      .sort({ createdAt: "desc" })
+      .exec();
 
-      const totalOrdersCount = await this.Order.countDocuments(
-        searchFilter
-      ).exec();
-      const totalPages = Math.ceil(totalOrdersCount / limit);
+    const totalOrdersCount = await this.Order.countDocuments(
+      searchFilter
+    ).exec();
+    const totalPages = Math.ceil(totalOrdersCount / limit);
 
-      return { orders, totalPages };
-    } catch (error) {
-      console.error("Error retrieving orders:", error);
-    }
+    return { orders, totalPages };
   }
 
   /**
@@ -200,7 +201,7 @@ export default class OrderController {
       }
 
       let totalPrice = 0;
-      cartItems.forEach((cartItem) => {
+      cartItems.forEach((cartItem: any) => {
         const productPrice = cartItem.stock.price;
         const quantity = cartItem.quantity;
         totalPrice += productPrice * quantity;
@@ -274,7 +275,7 @@ export default class OrderController {
     orderId: string;
   }) => {
     const paymentController = await new PaymentController(this.request);
-    const senderController = await new SenderController(request);
+    const senderController = await new SenderController(this.request);
     let order = await this.Order.findOne({ _id: orderId })
       .populate("user")
       .exec();
@@ -411,9 +412,9 @@ export default class OrderController {
     ]);
 
     // Process 'result' to create your chart data
-    const labels = result.map((entry) => entry.month);
-    const revenueData = result.map((entry) => entry.revenue);
-    const expensesData = result.map((entry) => entry.expenses);
+    const labels = result.map((entry: any) => entry.month);
+    const revenueData = result.map((entry: any) => entry.revenue);
+    const expensesData = result.map((entry: any) => entry.expenses);
 
     // Create your chart data object
     orderStats = {
@@ -527,8 +528,8 @@ export default class OrderController {
       completedCount,
       pendingCount,
       bestsellingProducts,
-      totalOrdersToday: ordersCountResult[0].totalOrdersToday,
-      totalTodayRevenue: ordersRevenueResult[0].totalTodayRevenue,
+      totalOrdersToday: ordersCountResult[0]?.totalOrdersToday,
+      totalTodayRevenue: ordersRevenueResult[0]?.totalTodayRevenue,
     };
   };
 }

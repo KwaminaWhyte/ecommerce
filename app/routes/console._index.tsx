@@ -17,8 +17,9 @@ import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import OrderController from "~/server/order/OrderController.server";
 import type { AdminInterface, ProductInterface } from "~/server/types";
-import SenderController from "~/server/notification/SenderController";
+// import SenderController from "~/server/notification/SenderController";
 import { ClientOnly } from "~/components/ClientOnly";
+import { useEffect, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -49,10 +50,11 @@ export default function Dashboard() {
     totalRevenue: number;
     completedCount: number;
     totalOrdersToday: number;
-    totalTodayRevenue: numbner;
+    totalTodayRevenue: number;
+    pendingCount: number;
+    bestsellingProducts: ProductInterface[];
   }>();
-
-  const topTotals = [
+  const [topTotals, setTopTotals] = useState([
     {
       title: "Total Revenue",
       value: `$${totalRevenue}`,
@@ -77,13 +79,21 @@ export default function Dashboard() {
       color: "bg-yellow-300/70",
       textColor: "text-yellow-700",
     },
-    {
-      title: "Today's Sales",
-      value: pendingCount,
-      color: "bg-blue-300/70",
-      textColor: "text-blue-700",
-    },
-  ];
+  ]);
+
+  useEffect(() => {
+    if (totalOrdersToday) {
+      setTopTotals([
+        ...topTotals,
+        {
+          title: "Today's Sales",
+          value: totalOrdersToday,
+          color: "bg-blue-300/70",
+          textColor: "text-blue-700",
+        },
+      ]);
+    }
+  }, [totalOrdersToday]);
 
   return (
     <AdminLayout user={user}>
@@ -142,7 +152,7 @@ export default function Dashboard() {
         </Container> */}
 
         <Container
-          heading="Recent Review"
+          heading="Today's Statistics"
           className="w-2/5 "
           contentClassName="flex-col"
         >
