@@ -87,7 +87,13 @@ const StockHistorySchema: Schema = new mongoose.Schema(
       ref: "products",
       required: true,
     },
-    price: Number,
+    costPrice: {
+      type: Number,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
     quantity: Number,
     operation: String,
   },

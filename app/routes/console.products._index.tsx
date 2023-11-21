@@ -361,9 +361,24 @@ export default function Products() {
                       error={actionData?.errors?.name}
                     />
                     <Spacer />
+
+                    <Input
+                      name="cost_price"
+                      placeholder="cost pricce"
+                      label="Cost Pricce"
+                      type="number"
+                      defaultValue={
+                        actionData?.fields
+                          ? actionData?.fields?.cost_price
+                          : activeProduct.cost_price
+                      }
+                      error={actionData?.errors?.cost_price}
+                    />
+                    <Spacer />
+
                     <Input
                       name="price"
-                      placeholder="Price"
+                      placeholder="Selling Price"
                       label="Price"
                       type="number"
                       defaultValue={
@@ -546,9 +561,19 @@ export default function Products() {
                     <Spacer />
 
                     <Input
+                      name="cost_price"
+                      placeholder="cost pricce"
+                      label="Cost Pricce"
+                      type="number"
+                      defaultValue={activeProduct.cost_price}
+                      error={actionData?.errors?.cost_price}
+                    />
+                    <Spacer />
+
+                    <Input
                       name="price"
                       placeholder="Price"
-                      label="Price"
+                      label="Selling Price"
                       type="number"
                       defaultValue={activeProduct.price}
                       error={actionData?.errors?.price}
@@ -602,6 +627,7 @@ export const action: ActionFunction = async ({ request }) => {
   const imgSrc = formData.get("image") as string;
 
   const name = formData.get("name");
+  const cost_price = formData.get("cost_price") as string;
   const price = formData.get("price") as string;
   const quantity = formData.get("quantity") as string;
   const description = formData.get("description") as string;
@@ -615,6 +641,7 @@ export const action: ActionFunction = async ({ request }) => {
       _id: formData.get("stockId") as string,
       quantity,
       price,
+      cost_price,
       // operation: formData.get("operation") as string,
       operation: "add",
     });
@@ -651,6 +678,7 @@ export const action: ActionFunction = async ({ request }) => {
       imgSrc,
       category,
       quantity,
+      cost_price,
     });
   }
 };

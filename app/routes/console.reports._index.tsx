@@ -84,9 +84,9 @@ export default function AdminProfile() {
         </div>
       </Container>
 
-      <Container heading="Inventory">
+      {/* <Container heading="Inventory">
         <p>include all available reports</p>
-      </Container>
+      </Container> */}
     </div>
   );
 }
