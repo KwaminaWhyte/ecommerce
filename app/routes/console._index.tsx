@@ -157,7 +157,7 @@ export default function Dashboard() {
                     className="flex px-3 items-center py-3 font-medium text-slate-900 dark:text-white"
                   >
                     <img
-                      src={product.images[0].url}
+                      src={product.images[0]?.url}
                       className="w-12 h-12 mr-3 rounded-md object-cover"
                       alt=""
                     />

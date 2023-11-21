@@ -41,6 +41,8 @@ export default function Products() {
 
   function closeModal() {
     setIsOpen(false);
+    setActiveCategory({});
+    setIsUpdating(false);
   }
 
   function openModal() {
@@ -100,12 +102,12 @@ export default function Products() {
               <th scope="col" className="px-3 py-3">
                 Description
               </th>
-              <th scope="col" className="px-3 py-3">
+              {/* <th scope="col" className="px-3 py-3">
                 Featured
               </th>
               <th scope="col" className="px-3 py-3">
                 Status
-              </th>
+              </th> */}
               <th scope="col" className="px-3 py-3">
                 <span className="sr-only">Action</span>
               </th>
@@ -125,10 +127,10 @@ export default function Products() {
                 </th>
 
                 <td className="px-3 py-3">{category?.description}</td>
-                <td className="px-3 py-3">
+                {/* <td className="px-3 py-3">
                   {category?.featured ? "True" : "False"}
-                </td>
-                <td className="px-3 py-3">
+                </td> */}
+                {/* <td className="px-3 py-3">
                   <p
                     className={` w-fit  rounded-xl px-2 py-1 font-medium capitalize ${
                       category?.status == "inactive"
@@ -138,7 +140,7 @@ export default function Products() {
                   >
                     {category?.status}
                   </p>
-                </td>
+                </td> */}
 
                 <td className="gap-1 px-3 py-3">
                   <Popover className="relative">
@@ -264,7 +266,7 @@ export default function Products() {
                     />
                     <Spacer />
 
-                    <SimpleSelect
+                    {/* <SimpleSelect
                       name="featured"
                       label="Featured"
                       variant="ghost"
@@ -277,9 +279,9 @@ export default function Products() {
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </SimpleSelect>
-                    <Spacer />
+                    <Spacer /> */}
 
-                    <SimpleSelect
+                    {/* <SimpleSelect
                       name="status"
                       label="Status"
                       variant="ghost"
@@ -293,7 +295,7 @@ export default function Products() {
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
                     </SimpleSelect>
-                    <Spacer />
+                    <Spacer /> */}
 
                     <div className="flex items-center ">
                       <Button

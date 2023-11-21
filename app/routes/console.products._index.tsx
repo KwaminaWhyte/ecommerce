@@ -305,6 +305,7 @@ export default function Products() {
           onClose={() => {
             setIsOpen(false);
             setActiveProduct({});
+            setIsUpdating(false);
           }}
         >
           <Transition.Child
