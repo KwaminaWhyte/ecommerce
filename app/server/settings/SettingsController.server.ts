@@ -1,5 +1,5 @@
 import axios from "axios";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import { json } from "@remix-run/node";
 
 export default class SettingsController {
@@ -26,7 +26,7 @@ export default class SettingsController {
 
   private async initializeModels() {
     const { NotificationSettings, SMSSettings, GeneralSettings, PaymentApi } =
-      await connectToDomainDatabase();
+      await modelsConnector();
     this.PaymentApi = PaymentApi;
     this.Notification = NotificationSettings;
     this.SMSSettings = SMSSettings;

@@ -36,7 +36,7 @@ centralDb.once("open", () => {
 
 /** Establish connection to the appropriate database based on the domain
  */
-const connectToDomainDatabase = async () => {
+const modelsConnector = async () => {
   let Admin,
     Cart,
     User,
@@ -136,7 +136,7 @@ const connectToDomainDatabase = async () => {
   };
 };
 
-export { centralDb, connectToDomainDatabase, mongoose };
+export { centralDb, modelsConnector, mongoose };
 
 // import mongoose from "mongoose";
 

@@ -1,5 +1,5 @@
 import { json, redirect } from "@remix-run/node";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
 import type { ProductInterface } from "../types";
@@ -30,7 +30,7 @@ export default class ProductController {
 
   private async initializeModels() {
     const { Product, ProductImages, ProductCategory, StockHistory } =
-      await connectToDomainDatabase();
+      await modelsConnector();
 
     this.Product = Product;
     this.ProductImages = ProductImages;

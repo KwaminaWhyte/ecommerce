@@ -4,7 +4,7 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import nodemailer from "nodemailer";
 
 export default class SenderController {
@@ -53,7 +53,7 @@ export default class SenderController {
   }
 
   private async initializeModels() {
-    const { SMSHistory, EmailHistory } = await connectToDomainDatabase();
+    const { SMSHistory, EmailHistory } = await modelsConnector();
 
     this.SMSHistory = SMSHistory;
     this.EmailHistory = EmailHistory;

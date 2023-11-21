@@ -73,7 +73,6 @@ const OrderSchema = new mongoose.Schema(
     },
     paymentReff: String,
   },
-
   {
     timestamps: true,
   }

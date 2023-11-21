@@ -5,7 +5,7 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 // import type { EmployeeInterface } from "./types";
 
 export default class EmployeeController {
@@ -41,7 +41,7 @@ export default class EmployeeController {
   }
 
   private async initializeModels() {
-    const { Employee } = await connectToDomainDatabase();
+    const { Employee } = await modelsConnector();
     this.Employee = Employee;
   }
 

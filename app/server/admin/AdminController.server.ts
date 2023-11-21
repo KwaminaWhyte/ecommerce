@@ -5,7 +5,7 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import { type ObjectId } from "mongoose";
 
 export default class AdminController {
@@ -57,7 +57,7 @@ export default class AdminController {
   }
 
   private async initializeModels() {
-    const { Admin, connectionDetails } = await connectToDomainDatabase();
+    const { Admin, connectionDetails } = await modelsConnector();
     this.Admin = Admin;
     this.connectionDetails = connectionDetails;
   }
@@ -169,7 +169,7 @@ export default class AdminController {
 // ) => {
 //   let domain = (request.headers.get("host") as string).split(":")[0];
 
-//   const clientDb = await connectToDomainDatabase(domain);
+//   const clientDb = await modelsConnector(domain);
 //   const Admin = clientDb.model("admins", AdminSchema);
 
 //   const hashedPassword = await bcrypt.hash(password, 10);
@@ -191,7 +191,7 @@ export default class AdminController {
 //   action: string;
 // }) => {
 //   let domain = (request.headers.get("host") as string).split(":")[0];
-//   const clientDb = await connectToDomainDatabase(domain);
+//   const clientDb = await modelsConnector(domain);
 //   const Admin = clientDb.model("admins", AdminSchema);
 
 //   const adminId = await requireAdminId(request);

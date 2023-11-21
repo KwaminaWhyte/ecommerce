@@ -4,7 +4,7 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 
 export default class GuestCartController {
   private request: Request;
@@ -46,8 +46,7 @@ export default class GuestCartController {
   }
 
   private async initializeModels() {
-    const { Product, ProductImages, GuestCart } =
-      await connectToDomainDatabase();
+    const { Product, ProductImages, GuestCart } = await modelsConnector();
 
     this.Product = Product;
     this.ProductImages = ProductImages;

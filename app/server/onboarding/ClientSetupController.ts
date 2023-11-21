@@ -5,7 +5,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import SenderController from "../notification/SenderController";
 
 export default class ClientSetupController {
@@ -46,7 +46,7 @@ export default class ClientSetupController {
   }
 
   private async initializeModels() {
-    const { ClientConnection, ClientDetail } = await connectToDomainDatabase();
+    const { ClientConnection, ClientDetail } = await modelsConnector();
     this.ClientConnection = ClientConnection;
     this.ClientDetail = ClientDetail;
   }

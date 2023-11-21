@@ -1,7 +1,7 @@
 import { json, createCookieSessionStorage, redirect } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import { EmployeesSchema } from "./models/Employee";
-import { connectToDomainDatabase } from "./mongoose.server";
+import { modelsConnector } from "./mongoose.server";
 import { EmployeeInterface } from "./types";
 
 const secret = process.env.SESSION_SECRET;
@@ -29,7 +29,7 @@ export const login = async ({
   request: Request;
 }) => {
   let domain = (request.headers.get("host") as string).split(":")[0];
-  const clientDb = await connectToDomainDatabase(domain);
+  const clientDb = await modelsConnector(domain);
   const Employees = clientDb.model("admins", EmployeesSchema);
 
   const employee = await Employees.findOne({
@@ -71,7 +71,7 @@ export const changePassword = async ({
   request: Request;
 }) => {
   let domain = (request.headers.get("host") as string).split(":")[0];
-  const clientDb = await connectToDomainDatabase(domain);
+  const clientDb = await modelsConnector(domain);
   const Employees = clientDb.model("admins", EmployeesSchema);
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -130,7 +130,7 @@ export const getEmployeeId = async (request: Request) => {
 
 export const getEmployee = async (request: Request) => {
   let domain = (request.headers.get("host") as string).split(":")[0];
-  const clientDb = await connectToDomainDatabase(domain);
+  const clientDb = await modelsConnector(domain);
   const Employees = clientDb.model("admins", EmployeesSchema);
 
   const adminId = await getEmployeeId(request);
@@ -158,7 +158,7 @@ export const logout = async (request: Request) => {
 
 export const requirePermission = async (request: Request, action: string) => {
   let domain = (request.headers.get("host") as string).split(":")[0];
-  const clientDb = await connectToDomainDatabase(domain);
+  const clientDb = await modelsConnector(domain);
   const Employees = clientDb.model("admins", EmployeesSchema);
 
   const adminId = await getEmployeeId(request);

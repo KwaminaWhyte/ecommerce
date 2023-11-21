@@ -5,7 +5,7 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 // import { getClientIPAddress } from "remix-utils";
 
 export default class UserController {
@@ -47,7 +47,7 @@ export default class UserController {
   }
 
   private async initializeModels() {
-    const { User, Address } = await connectToDomainDatabase();
+    const { User, Address } = await modelsConnector();
     this.User = User;
     this.Address = Address;
   }

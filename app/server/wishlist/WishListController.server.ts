@@ -4,7 +4,7 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 
 export default class WishlistController {
   private request: Request;
@@ -46,8 +46,7 @@ export default class WishlistController {
   }
 
   private async initializeModels() {
-    const { WishList, Product, ProductImages } =
-      await connectToDomainDatabase();
+    const { WishList, Product, ProductImages } = await modelsConnector();
 
     this.WishList = WishList;
     this.Product = Product;

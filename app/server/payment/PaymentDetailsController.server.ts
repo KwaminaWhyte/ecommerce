@@ -4,7 +4,7 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import { UserSchema } from "../user/User";
 import { PaymentDetailSchema } from "./PaymentDetails";
 
@@ -47,7 +47,7 @@ export default class PaymentDetailsController {
   }
 
   private async initializeModels() {
-    const clientDb = await connectToDomainDatabase();
+    const clientDb = await modelsConnector();
     try {
       this.PaymentDetails = clientDb.model("payment_details");
       this.User = clientDb.model("users");

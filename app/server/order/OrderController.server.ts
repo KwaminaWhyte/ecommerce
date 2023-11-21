@@ -1,5 +1,5 @@
 import { redirect, json } from "@remix-run/node";
-import { connectToDomainDatabase } from "../mongoose.server";
+import { modelsConnector } from "../mongoose.server";
 import SettingsController from "../settings/SettingsController.server";
 import moment from "moment";
 import PaymentController from "../payment/PaymentController";
@@ -41,7 +41,7 @@ export default class OrderController {
       ProductImages,
       ShippingTimeline,
       StockHistory,
-    } = await connectToDomainDatabase();
+    } = await modelsConnector();
 
     this.StockHistory = StockHistory;
     this.User = User;
