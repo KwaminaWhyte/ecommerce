@@ -40,7 +40,7 @@ export default function UserProfile() {
                 {product?.name}
               </p>
               <p>
-                ${product.price} x {quantity}
+                GH₵ {product.price} x {quantity}
               </p>
             </div>
           </div>

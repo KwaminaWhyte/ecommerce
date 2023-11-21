@@ -71,7 +71,6 @@ export default class OrderController {
   }) {
     const limit = 10; // Number of orders per page
     const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
-    console.log({ search_term, status });
 
     const searchFilter = search_term
       ? {
@@ -129,6 +128,10 @@ export default class OrderController {
         })
         .populate({
           path: "shippingAddress",
+        })
+        .populate({
+          path: "orderItems.stock",
+          model: "stock_histories",
         })
         .exec();
 
@@ -214,8 +217,10 @@ export default class OrderController {
       const order = await this.Order.create({
         orderId,
         user,
-        orderItems: cartItems,
         totalPrice,
+        orderItems: cartItems,
+        deliveryStatus: "delivered",
+        status: "paid",
       });
 
       await this.Cart.deleteMany({ user }).exec();

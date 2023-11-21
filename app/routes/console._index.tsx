@@ -57,7 +57,7 @@ export default function Dashboard() {
   const [topTotals, setTopTotals] = useState([
     {
       title: "Total Revenue",
-      value: `$${totalRevenue}`,
+      value: `GH₵ ${totalRevenue}`,
       color: "bg-red-300/70",
       textColor: "text-red-700",
     },
@@ -73,12 +73,12 @@ export default function Dashboard() {
     //   color: "bg-blue-300/70",
     //   textColor: "text-blue-700",
     // },
-    {
-      title: "Pending Orders",
-      value: pendingCount,
-      color: "bg-yellow-300/70",
-      textColor: "text-yellow-700",
-    },
+    // {
+    //   title: "Pending Orders",
+    //   value: pendingCount,
+    //   color: "bg-yellow-300/70",
+    //   textColor: "text-yellow-700",
+    // },
   ]);
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function Dashboard() {
         },
       ]);
     }
-  }, [totalOrdersToday]);
+  }, []);
 
   return (
     <AdminLayout user={user}>
@@ -122,44 +122,16 @@ export default function Dashboard() {
                 {total.title}
               </p>
             </div>
-            <div className="rounded-full bg-slate-100 p-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-slate-500"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 3a7 7 0 100 14 7 7 0 000-14zM8 9a2 2 0 114 0 2 2 0 01-4 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            <div className="rounded-full bg-slate-100 p-2">
+              <img
+                className="h-24 w-24 text-slate-500"
+                src="https://cdn0.iconfinder.com/data/icons/simple-office/944/Chart-512.png"
+                alt=""
+              />
             </div>
           </div>
         ))}
       </section>
-
-      <div className="flex w-full gap-3">
-        <Container heading="Sales update" className="flex-1">
-          <ClientOnly fallback={<div>Generating Chart</div>}>
-            {() => <Line options={salesOptions} data={salesUpdate} />}
-          </ClientOnly>
-        </Container>
-
-        {/* <Container heading="Recent Review" className="w-2/5">
-          <p className=" "></p>
-        </Container> */}
-
-        <Container
-          heading="Today's Statistics"
-          className="w-2/5 "
-          contentClassName="flex-col"
-        >
-          <p className=" ">Total Orders Today: {totalOrdersToday}</p>
-          <p className=" ">Total Revenue Today: {totalTodayRevenue}</p>
-        </Container>
-      </div>
 
       <div className="mt-5 flex w-full gap-3">
         <Container
@@ -175,7 +147,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {bestsellingProducts.map((product: ProductInterface) => (
+              {bestsellingProducts.map((product) => (
                 <tr
                   key={product?._id}
                   className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
@@ -191,14 +163,15 @@ export default function Dashboard() {
                     />
                     <div>
                       <p>{product?.name}</p>
-                      <p>
-                        ${product?.price}/each * {product?.quantitySold}
-                      </p>
+                      {/* <p>
+                        GH₵ {product?.price} / each * {product?.quantitySold}
+                      </p> */}
                     </div>
                   </th>
 
                   <td className="px-3 py-3 text-blue-700">
-                    ${product?.quantitySold * product?.price}{" "}
+                    {product?.quantitySold}
+                    {/* GH₵ {product?.quantitySold * product?.price}{" "} */}
                   </td>
                 </tr>
               ))}
@@ -210,18 +183,40 @@ export default function Dashboard() {
           </Link> */}
         </Container>
 
-        <Container heading="Visitors" className="w-1/2">
+        <Container
+          heading="Today's Statistics"
+          className="w-1/2 "
+          contentClassName="flex-col"
+        >
+          <p className="font-bold text-lg ">Total Orders: {totalOrdersToday}</p>
+          <p className="font-bold text-lg ">
+            Total Revenue: GH₵ {totalTodayRevenue}
+          </p>
+        </Container>
+        {/* <Container heading="Visitors" className="w-1/2">
           <ClientOnly fallback={<div>Generating Chart</div>}>
             {() => <Bar options={visitsOptions} data={visitUpdate} />}
           </ClientOnly>
-        </Container>
+        </Container> */}
       </div>
 
-      <div className="mt-5 flex w-full gap-3">
+      <div className="flex w-full gap-3">
+        <Container heading="Sales update" className="flex-1">
+          <ClientOnly fallback={<div>Generating Chart</div>}>
+            {() => <Line options={salesOptions} data={salesUpdate} />}
+          </ClientOnly>
+        </Container>
+
+        {/* <Container heading="Recent Review" className="w-2/5">
+          <p className=" "></p>
+        </Container> */}
+      </div>
+
+      {/* <div className="mt-5 flex w-full gap-3">
         <Container heading="Support Inbox" className="w-[60%]">
           <p className=" "></p>
         </Container>
-      </div>
+      </div> */}
     </AdminLayout>
   );
 }

@@ -147,7 +147,7 @@ export default function ProductDetails() {
       </Container>
 
       <div className="fixed bottom-0 left-1 right-1 mx-auto my-2 flex w-[96vw] items-center justify-evenly rounded-2xl border border-slate-400 bg-white px-2 py-3 shadow-md dark:bg-black/80 dark:text-white">
-        <h1 className="text-xl font-semibold">${product?.price} </h1>
+        <h1 className="text-xl font-semibold">GH₵ {product?.price} </h1>
 
         <section className="ml-auto flex">
           {/* <Button variant="outline">Export</Button> */}

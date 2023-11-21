@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Roboto+Mono:wght@400;600;700&family=VT323&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -60,6 +61,18 @@
   }
 }
 
+@font-face {
+  font-family: IBM Plex Mono;
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://fonts.gstatic.com/s/ibm-plex-mono/v1/ibmPlexMono-Regular.woff2")
+      format("woff2"),
+    url("https://fonts.gstatic.com/s/ibm-plex-mono/v1/ibmPlexMono-Regular.woff")
+      format("woff"),
+    url("https://fonts.gstatic.com/s/ibm-plex-mono/v1/ibmPlexMono-Regular.otf")
+      format("opentype");
+}
+
 /*
 font-family: 'Montserrat', sans-serif;
 font-family: 'Poppins', sans-serif;
@@ -106,4 +119,24 @@ html {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+}
+
+/* 
+font-family: 'IBM Plex Mono', monospace;
+font-family: 'Roboto Mono', monospace;
+font-family: 'VT323', monospace;
+ */
+
+@media print {
+  @font-face {
+    font-family: "IBM Plex Sans";
+    src: url("https://fonts.gstatic.com/s/ibm-plex-sans/v14/ibmPlexSans-Regular.woff2")
+        format("woff2"),
+      url("https://fonts.gstatic.com/s/ibm-plex-sans/v14/ibmPlexSans-Regular.woff")
+        format("woff");
+  }
+
+  body {
+    font-family: "IBM Plex Sans", sans-serif;
+  }
 }

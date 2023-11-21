@@ -1,14 +1,33 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
+import { DatePickerWithRange } from "~/components/date-range";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 import AdminController from "~/server/admin/AdminController.server";
+import ReportController from "~/server/report/ReportController.server";
+import type { UserInterface } from "~/server/types";
 
 export default function AdminProfile() {
-  let { user } = useLoaderData();
+  let { user, reports } = useLoaderData<{
+    user: UserInterface;
+    reports: any;
+  }>();
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">General Report</h1>
+      <section className="mb-3 flex items-center gap-3">
+        <h1 className="text-3xl font-bold">General Report</h1>
+        <Form
+          method="GET"
+          className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+        >
+          {/* <Input placeholder="product name..." name="product_name" /> */}
+          <DatePickerWithRange />
+          <Button>Filter</Button>
+        </Form>
+      </section>
+
       <Container heading="All Products Sold Today">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -18,54 +37,76 @@ export default function AdminProfile() {
                   Product name
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Stock
+                  Stock Price
                 </th>
-                <th scope="col" className="px-6 py-3">
+                {/* <th scope="col" className="px-6 py-3">
                   Category
-                </th>
+                </th> */}
                 <th scope="col" className="px-6 py-3">
                   Quantity
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Price
                 </th>
-                <th scope="col" className="px-6 py-3">
+                {/* <th scope="col" className="px-6 py-3">
                   <span className="sr-only">Edit</span>
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              {reports.map((report) => (
+                <tr
+                  key={report.stock}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  Apple MacBook Pro 17"
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">Laptop</td>
-                <td className="px-6 py-4">Laptop</td>
-                <td className="px-6 py-4">$2999</td>
-                <td className="px-6 py-4 text-right">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    Edit
-                  </a>
-                </td>
-              </tr>
+                    {report.product.name}
+                  </th>
+                  <td className="px-6 py-4">GH₵ {report?.stock?.price}</td>
+                  {/* <td className="px-6 py-4">Laptop</td> */}
+                  <td className="px-6 py-4">{report?.quantity}</td>
+                  <td className="px-6 py-4">GH₵ {report?.totalPrice}</td>
+                  {/* <td className="px-6 py-4 text-right">
+                    <a
+                      href="asfaf"
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </a>
+                  </td> */}
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </Container>
 
-      <Container>
+      <Container heading="Inventory">
         <p>include all available reports</p>
       </Container>
     </div>
   );
 }
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+
+  const adminController = await new AdminController(request);
+  await adminController.requireAdminId();
+  const user = await adminController.getAdmin();
+
+  // const product_name = url.searchParams.get("product_name") as string;
+  const from = url.searchParams.get("from") as string;
+  const to = url.searchParams.get("to") as string;
+
+  const reportController = await new ReportController(request);
+  const reports = await reportController.getToday({ from, to });
+
+  return { user, reports };
+};
 
 export const meta: MetaFunction = () => {
   return [
@@ -88,30 +129,3 @@ export const meta: MetaFunction = () => {
     { name: "og:url", content: "https://single-ecommerce.vercel.app" },
   ];
 };
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const adminController = await new AdminController(request);
-  await adminController.requireAdminId();
-  const user = await adminController.getAdmin();
-
-  // const bestsellingProducts = await this.Product.find()
-  // .populate("images")
-  // .sort({ quantitySold: -1 })
-  // .limit(5)
-  // .exec();
-
-  return { user };
-};
-
-export function ErrorBoundary({ error }) {
-  console.error(error);
-  return (
-    <Container
-      heading="Error"
-      className="bg-red-300 dark:bg-red-500"
-      contentClassName="flex-col grid grid-cols-2 gap-3"
-    >
-      <p>Something went wrong!</p>
-    </Container>
-  );
-}

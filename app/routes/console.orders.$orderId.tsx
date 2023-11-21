@@ -32,6 +32,7 @@ import type { OredrInterface, UserInterface } from "~/server/types";
 import pkg from "react-to-print";
 import SettingsController from "~/server/settings/SettingsController.server";
 import { Button } from "~/components/ui/button";
+import moment from "moment";
 const { useReactToPrint } = pkg;
 
 export default function AdminOrderDetails() {
@@ -89,7 +90,7 @@ export default function AdminOrderDetails() {
               <Popover.Button className="focus:outline-none">
                 <ItemStatus status={order?.deliveryStatus} />
               </Popover.Button>
-              <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
+              {/* <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
                 <div className="flex w-52 flex-col rounded-md bg-white p-3 shadow-sm dark:bg-slate-900 dark:text-white">
                   {[
                     { id: 1, label: "Pending" },
@@ -118,7 +119,7 @@ export default function AdminOrderDetails() {
                     </p>
                   ))}
                 </div>
-              </Popover.Panel>
+              </Popover.Panel> */}
             </Popover>
 
             <Button className="ml-auto" type="button" onClick={handlePrint}>
@@ -216,20 +217,21 @@ export default function AdminOrderDetails() {
             <div className="mb-2">
               <p className="font-medium">Date</p>
               <p className="text-slate-500 dark:text-slate-400">
-                {order?.paymentInfo?.createdAt}
+                {moment(order?.createdAt).format("DD MMMM YYYY")}
+                {/* {order?.paymentInfo?.createdAt} */}
               </p>
             </div>
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <p className="font-medium">Tracking #</p>
               <p className="text-slate-500 dark:text-slate-400">
                 {order?.paymentInfo?.id}
               </p>
-            </div>
+            </div> */}
 
             <div className="mb-2">
               <p className="font-medium">Method</p>
-              <p className="text-slate-500 dark:text-slate-400">Mobile Money</p>
+              <p className="text-slate-500 dark:text-slate-400">Cash</p>
             </div>
 
             <div className="mb-2">
@@ -239,22 +241,22 @@ export default function AdminOrderDetails() {
               </p>
             </div>
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <p className="font-medium">Shipping Charge</p>
               <p className="text-slate-500 dark:text-slate-400">
                 $ {order?.shippingPrice}
               </p>
-            </div>
+            </div> */}
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <p className="font-medium">Status</p>
               <p className="text-slate-500 dark:text-slate-400">
                 {order?.paymentInfo?.status}
               </p>
-            </div>
+            </div> */}
           </Container>
 
-          <Container
+          {/* <Container
             heading="Shipment Timeline"
             contentClassName="flex-col gap-4"
           >
@@ -269,7 +271,7 @@ export default function AdminOrderDetails() {
               </div>
             ))}
             <Link to="/">Show more</Link>
-          </Container>
+          </Container> */}
         </section>
       </section>
 

@@ -47,7 +47,6 @@ export default function Shop() {
   const actionData = useActionData();
   const [isStockOpen, setIsStockOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState({});
-  console.log({ actionData });
 
   useEffect(() => {
     setIsStockOpen(false);
@@ -110,14 +109,14 @@ export default function Shop() {
                           key={stock?._id}
                           className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
                         >
-                          {stock.quantity} items @ GH₵‎ {stock.price} each
+                          {stock.quantity} items @ GH₵ {stock.price} each
                         </p>
                       ))}
                     </div>
                   </Popover.Panel>
                 </Popover>
 
-                {/* <p className="font-bold">$ {product?.price}</p> */}
+                {/* <p className="font-bold">GH₵ {product?.price}</p> */}
                 <Button
                   onClick={() => {
                     setIsStockOpen(true);

@@ -73,16 +73,16 @@ const posNavLinks = [
         name: "New Order",
         path: "/pos/orders",
       },
-      {
-        id: 2,
-        name: "Shipped",
-        path: "/pos/orders/shipped",
-      },
-      {
-        id: 2,
-        name: "Delivered",
-        path: "/pos/orders/delivered",
-      },
+      // {
+      //   id: 2,
+      //   name: "Shipped",
+      //   path: "/pos/orders/shipped",
+      // },
+      // {
+      //   id: 2,
+      //   name: "Delivered",
+      //   path: "/pos/orders/delivered",
+      // },
     ],
   },
   // {

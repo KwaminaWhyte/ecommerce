@@ -79,9 +79,9 @@ export default function Orders() {
               <th scope="col" className="px-3 py-3">
                 Product
               </th>
-              <th scope="col" className="px-3 py-3">
+              {/* <th scope="col" className="px-3 py-3">
                 Customer
-              </th>
+              </th> */}
               <th scope="col" className="px-3 py-3">
                 Status
               </th>

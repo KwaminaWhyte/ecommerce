@@ -8,7 +8,7 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
 
   return (
     <div
-      className="container mx-auto mt-10 p-5 border rounded-lg shadow-lg hidden print:block"
+      className="container mx-auto mt-10 p-5 rounded-lg hidden print:block"
       ref={ref}
     >
       <div className="text-center">
@@ -25,9 +25,9 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
           <p>
             Order ID: <span className="font-semibold">{order?.orderId}</span>
           </p>
-          <p>
+          {/* <p>
             Transaction ID: <span className="font-semibold">7890ABC</span>
-          </p>
+          </p> */}
         </div>
         <p className="mt-3">
           Date:{" "}
@@ -41,9 +41,15 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
         <h3 className="text-md font-semibold">Items:</h3>
         <ul className="mt-2">
           {order?.orderItems?.map((item) => (
-            <li className="flex justify-between" key={item?._id}>
+            <li className="flex gap-5" key={item?._id}>
               <span>{item?.product?.name}</span>
-              <span className="font-semibold">Quantity: {item?.quantity}</span>
+              <span>
+                Qty: {item?.quantity} * GH₵ {item?.stock?.price}
+              </span>
+              {" = "}
+              <span className="font-semibold">
+                GH₵ {item?.quantity * item?.stock?.price}
+              </span>
             </li>
           ))}
         </ul>

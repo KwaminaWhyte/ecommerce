@@ -51,7 +51,7 @@ const OrderCard = ({
                             {item?.product.name}
                           </h3>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
-                            {item?.quantity} x {item?.stock?.price}
+                            {item?.quantity} x GH₵ {item?.stock?.price}
                           </p>
                         </div>
                         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-1">
@@ -72,9 +72,9 @@ const OrderCard = ({
           </p>
         )}
       </th>
-      <td className="px-3 py-3 text-slate-900 dark:text-white">
+      {/* <td className="px-3 py-3 text-slate-900 dark:text-white">
         {order?.user?.firstName} {order?.user?.lastName}
-      </td>
+      </td> */}
 
       <td className="px-3 py-3 capitalize">
         <ItemStatus status={order?.status} />
@@ -85,7 +85,7 @@ const OrderCard = ({
             <ItemStatus status={order?.deliveryStatus} />
           </Popover.Button>
 
-          <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
+          {/* <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
             <div className="flex w-52 flex-col rounded-md bg-white p-3 shadow-sm dark:bg-slate-900 dark:text-white">
               {[
                 { id: 1, label: "Pending" },
@@ -112,7 +112,7 @@ const OrderCard = ({
                 </p>
               ))}
             </div>
-          </Popover.Panel>
+          </Popover.Panel> */}
         </Popover>
       </td>
       <td className="px-3 py-3">

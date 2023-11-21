@@ -40,7 +40,7 @@ export default function UserCart() {
             />
             <div>
               <p>{product?.name}</p>
-              <p>{product?.price}</p>
+              <p>GH₵ {product?.price}</p>
               <p>Qty: {quantity} </p>
             </div>
           </div>

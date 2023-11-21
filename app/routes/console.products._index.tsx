@@ -201,7 +201,7 @@ export default function Products() {
                             key={stock?._id}
                             className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
                           >
-                            {stock.quantity} items @ GH₵‎ {stock.price} each
+                            {stock.quantity} items @ GH₵ {stock.price} each
                           </p>
                         ))}
                       </div>

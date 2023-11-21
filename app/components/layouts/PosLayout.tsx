@@ -113,13 +113,16 @@ export default function PosLayout({
                               "bg-slate-700 text-white"
                             }`}
                           >
-                            {stock?.quantity} items @ GH₵‎ {stock?.price} each
+                            {stock?.quantity} items @ GH₵ {stock?.price} each
                           </p>
                         ))}
                       </div>
 
                       <div className="flex justify-between">
-                        <p className="font-medium">$ {item?.stock?.price} </p>
+                        <p className="font-medium">
+                          {" "}
+                          GH₵ {item?.stock?.price}{" "}
+                        </p>
 
                         <div className="flex">
                           {item.quantity <= 1 ? null : (

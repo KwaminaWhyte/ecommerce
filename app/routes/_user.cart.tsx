@@ -85,7 +85,7 @@ export default function UserCart() {
               </button>
             </div>
             <div className="flex items-center justify-between">
-              <p>${item.product.price * item.quantity}</p>
+              <p>GH₵ {item.product.price * item.quantity}</p>
 
               <div className="flex">
                 {item.quantity <= 1 ? null : (
