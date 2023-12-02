@@ -5,8 +5,6 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { modelsConnector } from "../mongoose.server";
-// import { getClientIPAddress } from "remix-utils";
 
 export default class UserController {
   private request: Request;
@@ -39,17 +37,6 @@ export default class UserController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<UserController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as UserController;
-  }
-
-  private async initializeModels() {
-    const { User, Address } = await modelsConnector();
-    this.User = User;
-    this.Address = Address;
   }
 
   private async getUserSession() {
@@ -224,7 +211,6 @@ export default class UserController {
       });
       return user;
     } catch {
-      // throw new Error("Error retrieving products");
       throw this.logout();
     }
   };
@@ -345,7 +331,6 @@ export default class UserController {
       const user = await this.Address.find({ user: userId });
       return user;
     } catch {
-      // throw new Error("Error retrieving products");
       throw this.logout();
     }
   };
@@ -371,29 +356,7 @@ export default class UserController {
 
       return redirect("/addresses");
     } catch {
-      // throw new Error("Error retrieving products");
       throw this.logout();
     }
-  };
-
-  public trackVisit = async () => {
-    // let ipAddress = getClientIPAddress(this.request);
-    // let ipAddresss = getClientIPAddress(this.request.headers);
-    // const userAgent = this.request.headers["user-agent"];
-    // const timestamp = new Date();
-    // // Create a new visit record
-    // const visit = new Visit({
-    //   ipAddress: ip,
-    //   userAgent,
-    //   timestamp,
-    // });
-    // try {
-    //   // Save the visit record to MongoDB
-    //   await visit.save();
-    // } catch (error) {
-    //   console.error('Error tracking visit:', error);
-    // }
-    // // Continue processing the request
-    // next();
   };
 }

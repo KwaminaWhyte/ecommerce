@@ -1,7 +1,13 @@
 import type { Schema } from "mongoose";
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
+import type {
+  CategoryInterface,
+  ImageInterface,
+  ProductInterface,
+  StockHistoryInterface,
+} from "../types";
 
-const ProductImagesSchema: Schema = new mongoose.Schema(
+const ProductImageSchema: Schema = new mongoose.Schema(
   {
     name: String,
     url: String,
@@ -38,7 +44,7 @@ const CategorySchema: Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ProductsSchema: Schema = new mongoose.Schema(
+const ProductSchema: Schema = new mongoose.Schema(
   {
     name: String,
     description: String,
@@ -58,7 +64,7 @@ const ProductsSchema: Schema = new mongoose.Schema(
     images: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "product_images",
+        ref: "images",
       },
     ],
     quantitySold: {
@@ -100,9 +106,23 @@ const StockHistorySchema: Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export {
-  ProductImagesSchema,
-  CategorySchema,
-  ProductsSchema,
-  StockHistorySchema,
-};
+let Product: mongoose.Model<ProductInterface>;
+let ProductImage: mongoose.Model<ImageInterface>;
+let Category: mongoose.Model<CategoryInterface>;
+let StockHistory: mongoose.Model<StockHistoryInterface>;
+try {
+  Product = mongoose.model<ProductInterface>("products");
+  ProductImage = mongoose.model<ImageInterface>("images");
+  Category = mongoose.model<CategoryInterface>("categories");
+  StockHistory = mongoose.model<StockHistoryInterface>("categories");
+} catch (error) {
+  Product = mongoose.model<ProductInterface>("products", ProductSchema);
+  ProductImage = mongoose.model<ImageInterface>("images", ProductImageSchema);
+  Category = mongoose.model<CategoryInterface>("categories", CategorySchema);
+  StockHistory = mongoose.model<StockHistoryInterface>(
+    "stock_histories",
+    StockHistorySchema
+  );
+}
+
+export { Product, ProductImage, Category, StockHistory };

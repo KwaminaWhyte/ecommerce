@@ -4,7 +4,6 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
 
 export default class GuestCartController {
   private request: Request;
@@ -38,19 +37,6 @@ export default class GuestCartController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<GuestCartController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as GuestCartController;
-  }
-
-  private async initializeModels() {
-    const { Product, ProductImages, GuestCart } = await modelsConnector();
-
-    this.Product = Product;
-    this.ProductImages = ProductImages;
-    this.GuestCart = GuestCart;
   }
 
   private async generateOrderId(prefix: string) {
@@ -111,7 +97,7 @@ export default class GuestCartController {
       path: "product",
       populate: {
         path: "images",
-        model: "product_images",
+        model: "images",
       },
     });
     return carts;

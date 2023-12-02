@@ -5,26 +5,11 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { modelsConnector } from "../mongoose.server";
-import { type ObjectId } from "mongoose";
+import { Admin } from "./Admin";
 
 export default class AdminController {
   private request: Request;
-  private domain: string;
-  private session: any;
-  private Admin: any;
   private storage: SessionStorage;
-  private connectionDetails: {
-    databaseUri: string;
-    username: string;
-    password: string;
-    _id: ObjectId;
-    admin: string;
-    storeName: string;
-    email: string;
-    phone: string;
-    createdAt: string;
-  };
 
   /**
    * Initialize a AdminController instance
@@ -33,7 +18,6 @@ export default class AdminController {
    */
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
 
     const secret = process.env.SESSION_SECRET;
     if (!secret) {
@@ -49,23 +33,11 @@ export default class AdminController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<AdminController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as AdminController;
-  }
-
-  private async initializeModels() {
-    const { Admin, connectionDetails } = await modelsConnector();
-    this.Admin = Admin;
-    this.connectionDetails = connectionDetails;
   }
 
   private async createAdminSession(adminId: string, redirectTo: string) {
     const session = await this.storage.getSession();
     session.set("adminId", adminId);
-    session.set("store_details", this.connectionDetails);
 
     return redirect(redirectTo, {
       headers: {
@@ -98,7 +70,7 @@ export default class AdminController {
     }
 
     try {
-      const admin = await this.Admin.findById(adminId).select("-password");
+      const admin = await Admin.findById(adminId).select("-password");
       return admin;
     } catch {
       throw this.logout();
@@ -112,7 +84,7 @@ export default class AdminController {
     email: string;
     password: string;
   }) {
-    const admin = await this.Admin.findOne({ email });
+    const admin = await Admin.findOne({ email });
 
     if (!admin) {
       return json(
@@ -169,7 +141,6 @@ export default class AdminController {
 // ) => {
 //   let domain = (request.headers.get("host") as string).split(":")[0];
 
-//   const clientDb = await modelsConnector(domain);
 //   const Admin = clientDb.model("admins", AdminSchema);
 
 //   const hashedPassword = await bcrypt.hash(password, 10);
@@ -191,7 +162,6 @@ export default class AdminController {
 //   action: string;
 // }) => {
 //   let domain = (request.headers.get("host") as string).split(":")[0];
-//   const clientDb = await modelsConnector(domain);
 //   const Admin = clientDb.model("admins", AdminSchema);
 
 //   const adminId = await requireAdminId(request);

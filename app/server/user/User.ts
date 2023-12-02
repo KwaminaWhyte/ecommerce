@@ -1,4 +1,4 @@
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
 import type { UserInterface } from "../types";
 
 const UserSchema: mongoose.Schema<UserInterface> =

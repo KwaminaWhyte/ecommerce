@@ -31,18 +31,25 @@ import SettingsController from "~/server/settings/SettingsController.server";
 import OrderController from "~/server/order/OrderController.server";
 import pkg from "react-to-print";
 import { OrderReceipt } from "~/components/printables/OrderReceipt";
+import EmployeeController from "~/server/employee/EmployeeController.server";
 
 const { useReactToPrint } = pkg;
 
 export default function Shop() {
-  let { user, featured_categories, products, cart_items, generalSettings } =
-    useLoaderData<{
-      user: EmployeeInterface;
-      featured_categories: CategoryInterface[];
-      products: ProductInterface[];
-      generalSettings: any;
-      cart_items: CartInterface[];
-    }>();
+  let {
+    user,
+    featured_categories,
+    products,
+    cart_items,
+    generalSettings,
+    sales_persons,
+  } = useLoaderData<{
+    user: EmployeeInterface;
+    featured_categories: CategoryInterface[];
+    products: ProductInterface[];
+    generalSettings: any;
+    cart_items: CartInterface[];
+  }>();
   const navigation = useNavigation();
   const actionData = useActionData();
   const [isStockOpen, setIsStockOpen] = useState(false);
@@ -64,7 +71,12 @@ export default function Shop() {
   });
 
   return (
-    <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
+    <PosLayout
+      user={user}
+      cart_items={cart_items}
+      settings={generalSettings}
+      sales_persons={sales_persons}
+    >
       <section className="my-3 flex w-full gap-2 overflow-x-hidden">
         {featured_categories?.map((category) => (
           <Link
@@ -131,7 +143,7 @@ export default function Shop() {
               <div className="flex justify-between items-center mt-3">
                 {/* <Link to={`/pos/products/${product?._id}`}>View</Link> */}
 
-                <Form method="POST">
+                <Form method="POST" className="ml-auto">
                   <input type="hidden" name="product_id" value={product?._id} />
                   <input type="hidden" name="user_id" value={user?._id} />
                   <Button type="submit">Add to Cart</Button>
@@ -141,7 +153,7 @@ export default function Shop() {
           </div>
         ))}
       </section>
-
+      {/* 
       <Transition appear show={isStockOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -238,7 +250,7 @@ export default function Shop() {
             </div>
           </div>
         </Dialog>
-      </Transition>
+      </Transition> */}
 
       <OrderReceipt
         order={actionData}
@@ -251,7 +263,7 @@ export default function Shop() {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  const productController = await new ProductController(request);
+  // const productController = await new ProductController(request);
 
   const authControlle = await new EmployeeAuthController(request);
   const user = await authControlle.requireEmployeeId();
@@ -262,21 +274,22 @@ export const action: ActionFunction = async ({ request }) => {
   const cartController = await new CartController(request);
   const orderController = await new OrderController(request);
 
-  if (formData.get("stockId") != null) {
-    await productController.stockProduct({
-      _id: formData.get("stockId") as string,
-      quantity: formData.get("quantity") as string,
-      operation: formData.get("operation") as string,
-      price: formData.get("price") as string,
-    });
-    return true;
-  }
+  // if (formData.get("stockId") != null) {
+  //   await productController.stockProduct({
+  //     _id: formData.get("stockId") as string,
+  //     quantity: formData.get("quantity") as string,
+  //     operation: formData.get("operation") as string,
+  //     price: formData.get("price") as string,
+  //   });
+  //   return true;
+  // }
 
   if ((formData.get("type") as string) == "complete") {
     const ress = await orderController.checkout({
       user,
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
+      sales_person: formData.get("sales_person") as string,
     });
 
     return ress;
@@ -305,6 +318,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const authControlle = await new EmployeeAuthController(request);
 
+  const employeeController = await new EmployeeController(request);
+  const sales_persons = await employeeController.getSalesPerson();
+
   await authControlle.requireEmployeeId();
   const user = await authControlle.getEmployee();
 
@@ -329,12 +345,13 @@ export const loader: LoaderFunction = async ({ request }) => {
     totalPages,
     cart_items,
     generalSettings,
+    sales_persons,
   };
 };
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "ComClo - Products" },
+    { title: "ComClo | POS - Products" },
     {
       name: "description",
       content: "The best e-Commerce platform for your business.",

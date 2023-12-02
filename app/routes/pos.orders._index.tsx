@@ -29,14 +29,6 @@ export default function PosOrders() {
     <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
       <div className="flex">
         <h1 className="text-3xl font-bold">Orders </h1>
-
-        <section className="ml-auto flex">
-          <Button variant="outline">Export</Button>
-          <Spacer />
-          <Button variant="outline">Print</Button>
-          {/* <Spacer /> */}
-          {/* <Button> + New Order</Button> */}
-        </section>
       </div>
       <div className="my-3 flex rounded-lg bg-slate-50 p-2 dark:bg-slate-900">
         <Input type="search" placeholder="Search anything..." name="term" />

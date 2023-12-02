@@ -1,6 +1,3 @@
-import { addDays } from "date-fns";
-import { modelsConnector } from "../mongoose.server";
-
 export default class ReportController {
   private request: Request;
   private Employee: any;
@@ -8,17 +5,6 @@ export default class ReportController {
 
   constructor(request: Request) {
     this.request = request;
-
-    return (async (): Promise<ReportController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as ReportController;
-  }
-
-  private async initializeModels() {
-    const { Employee, Order } = await modelsConnector();
-    this.Employee = Employee;
-    this.Order = Order;
   }
 
   public getEmployee = async (id: string) => {
@@ -48,7 +34,7 @@ export default class ReportController {
         path: "orderItems.product",
         populate: {
           path: "images",
-          model: "product_images",
+          model: "images",
         },
       })
       .populate({

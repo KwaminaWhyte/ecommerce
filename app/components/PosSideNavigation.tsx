@@ -3,6 +3,7 @@ import { Form, NavLink } from "@remix-run/react";
 import { Transition } from "@headlessui/react";
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/base";
 import posNavLinks from "./inc/pos_nav_links";
+import { Button } from "./ui/button";
 
 export default function PosSideNavigation({ user }: { user: any }) {
   const [collapseNav, setCollapseNav] = useState(false);
@@ -147,22 +148,24 @@ export default function PosSideNavigation({ user }: { user: any }) {
             </Transition>
           </MenuButton>
           <Menu className="z-50 p-2 bg-white rounded-lg shadow-lg my-5 mx-3 border border-slate-300 w-52">
-            <MenuItem className="p-2 list-none cursor-default hover:bg-slate-200 rounded-lg">
-              {/* <User className="mr-2 h-4 w-4" />   */}
-              Profile
-            </MenuItem>
+            {/* <MenuItem className="p-2 list-none cursor-default hover:bg-slate-200 rounded-lg"> */}
+            {/* <User className="mr-2 h-4 w-4" />   */}
+            {/* Profile */}
+            {/* </MenuItem> */}
             {/* <MenuItem className=""> */}
             <Form
-              action="/console/logout"
+              action="/pos/logout"
               method="POST"
               className="flex items-center p-2 list-none cursor-default hover:bg-slate-200 rounded-lg "
             >
-              <button
+              <Button
                 type="submit"
+                className="w-full"
+                variant={"destructive"}
                 // className="group flex w-full items-center rounded-md px-2 py-2  text-slate-900 hover:bg-red-500 hover:text-white dark:text-white hover:dark:text-white"
               >
                 Log out
-              </button>
+              </Button>
             </Form>
             {/* </MenuItem> */}
           </Menu>

@@ -145,14 +145,14 @@ export default function Employees() {
                 <td className="px-3 py-3">
                   <p
                     className={` w-fit  rounded-xl px-2 py-1 capitalize ${
-                      employee.availability == "unavailable"
+                      employee.status == "inactive"
                         ? "bg-red-500/40 text-red-800 dark:bg-red-400 dark:text-white"
-                        : employee.availability == "available"
+                        : employee.status == "active"
                         ? "bg-green-500/40 text-green-800 dark:bg-green-600 dark:text-white"
-                        : employee.availability == "To Ship"
+                        : employee.status == "To Ship"
                     }`}
                   >
-                    {employee?.availability}
+                    {employee?.status}
                   </p>
                 </td>
 
@@ -355,6 +355,7 @@ export default function Employees() {
                       <option value="">Select Role</option>
                       <option value="cashier">Cashier</option>
                       <option value="attendant">Attendant</option>
+                      <option value="sales_person">Sales Person</option>
                     </SimpleSelect>
 
                     <Spacer />

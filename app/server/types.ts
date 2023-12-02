@@ -17,14 +17,14 @@ export interface ProductInterface extends Document {
   quantity: number;
   quantitySold: number;
   price: number;
-  images: ProductImageInterface[];
+  images: ImageInterface[];
   availability: string;
   createdAt: Date;
   updatedAt: Date;
   stockHistory: StockHistoryInterface[];
 }
 
-export interface ProductImageInterface extends Document {
+export interface ImageInterface extends Document {
   _id: string;
   name: string;
   url: string;

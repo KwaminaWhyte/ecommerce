@@ -1,5 +1,4 @@
-import { mongoose } from "../mongoose.server";
-
+import mongoose from "../mongoose.server";
 const SMSSchema = new mongoose.Schema(
   {
     api_key: {

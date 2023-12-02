@@ -1,4 +1,4 @@
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
 
 const GeneralSettingsSchema = new mongoose.Schema(
   {
@@ -22,6 +22,10 @@ const GeneralSettingsSchema = new mongoose.Schema(
     instagram: String,
     orderIdPrefix: String,
     allowInscription: {
+      type: Boolean,
+      default: false,
+    },
+    separateStocks: {
       type: Boolean,
       default: false,
     },
@@ -65,37 +69,47 @@ const GeneralSettingsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export { GeneralSettingsSchema };
+let GeneralSettings: mongoose.Model<any>;
+try {
+  GeneralSettings = mongoose.model<any>("settings_genaral");
+} catch (error) {
+  GeneralSettings = mongoose.model<any>(
+    "settings_genaral",
+    GeneralSettingsSchema
+  );
+}
+
+export { GeneralSettings };
 
 // Seed the admin settings document
-const seedAdminSettings = async () => {
-  try {
-    const update = {
-      language: "en",
-      notifications: true,
-      businessName: "My Business Name",
-      siteLogo: "https://via.placeholder.com/150",
-    };
+// const seedAdminSettings = async () => {
+//   try {
+//     const update = {
+//       language: "en",
+//       notifications: true,
+//       businessName: "My Business Name",
+//       siteLogo: "https://via.placeholder.com/150",
+//     };
 
-    const options = {
-      upsert: true, // Create if the document doesn't exist
-      new: true, // Return the updated document
-    };
+//     const options = {
+//       upsert: true, // Create if the document doesn't exist
+//       new: true, // Return the updated document
+//     };
 
-    const adminSettings = await AdminSettings.findOneAndUpdate(
-      {},
-      update,
-      options
-    ).exec();
-    return adminSettings;
-  } catch (error) {
-    // Handle error
-    console.error("Error seeding admin settings:", error);
-    throw error;
-  }
-};
+//     const adminSettings = await AdminSettings.findOneAndUpdate(
+//       {},
+//       update,
+//       options
+//     ).exec();
+//     return adminSettings;
+//   } catch (error) {
+//     // Handle error
+//     console.error("Error seeding admin settings:", error);
+//     throw error;
+//   }
+// };
 
-export { AdminSettings, seedAdminSettings };
+// export { AdminSettings  };
 
 // payment api setting
 // notification

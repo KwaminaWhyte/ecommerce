@@ -1,59 +1,23 @@
-import {
-  json,
-  createCookieSessionStorage,
-  redirect,
-  type SessionStorage,
-} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { modelsConnector } from "../mongoose.server";
-// import type { EmployeeInterface } from "./types";
+import { Employee } from "./Employee";
 
 export default class EmployeeController {
   private request: Request;
-  private domain: string;
-  private session: any;
-  private storage: SessionStorage;
-  private Employee: any;
 
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
-
-    const secret = process.env.SESSION_SECRET;
-    if (!secret) {
-      throw new Error("No session secret provided");
-    }
-    this.storage = createCookieSessionStorage({
-      cookie: {
-        name: "__session",
-        secrets: [secret],
-        sameSite: "lax",
-        httpOnly: true,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-      },
-    });
-
-    return (async (): Promise<EmployeeController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as EmployeeController;
-  }
-
-  private async initializeModels() {
-    const { Employee } = await modelsConnector();
-    this.Employee = Employee;
   }
 
   public getEmployees = async ({ page }: { page: number }) => {
     const limit = 10; // Number of orders per page
     const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
 
-    const totalEmployeeCount = await this.Employee.countDocuments({}).exec();
+    const totalEmployeeCount = await Employee.countDocuments({}).exec();
     const totalPages = Math.ceil(totalEmployeeCount / limit);
 
     try {
-      const employees = await this.Employee.find({})
+      const employees = await Employee.find({})
         .skip(skipCount)
         .limit(limit)
         .exec();
@@ -89,7 +53,7 @@ export default class EmployeeController {
     role: string;
     gender: string;
   }) => {
-    const existingEmployee = await this.Employee.findOne({ username });
+    const existingEmployee = await Employee.findOne({ username });
 
     if (existingEmployee) {
       return json(
@@ -111,7 +75,7 @@ export default class EmployeeController {
     // create new admin
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const employee = await this.Employee.create({
+    const employee = await Employee.create({
       firstName,
       middleName,
       lastName,
@@ -141,7 +105,7 @@ export default class EmployeeController {
    */
   public getEmployee = async (id: string) => {
     try {
-      const employee = await this.Employee.findById(id);
+      const employee = await Employee.findById(id);
       return employee;
     } catch (err) {
       throw err;
@@ -172,7 +136,7 @@ export default class EmployeeController {
     _id: string;
   }) => {
     // try {
-    await this.Employee.findOneAndUpdate(
+    await Employee.findOneAndUpdate(
       { _id },
       {
         firstName,
@@ -209,13 +173,25 @@ export default class EmployeeController {
 
   public deleteEmployee = async (id: string) => {
     try {
-      await this.Employee.findByIdAndDelete(id);
+      await Employee.findByIdAndDelete(id);
       return json(
         { message: "Employee deleted successfully" },
         { status: 200 }
       );
     } catch (err) {
       throw err;
+    }
+  };
+
+  public getSalesPerson = async () => {
+    try {
+      const employees = await Employee.find({
+        role: "sales_person",
+      }).exec();
+
+      return employees;
+    } catch (error) {
+      console.error("Error retrieving employees:", error);
     }
   };
 }

@@ -4,7 +4,6 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
 import nodemailer from "nodemailer";
 
 export default class SenderController {
@@ -45,18 +44,6 @@ export default class SenderController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<SenderController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as SenderController;
-  }
-
-  private async initializeModels() {
-    const { SMSHistory, EmailHistory } = await modelsConnector();
-
-    this.SMSHistory = SMSHistory;
-    this.EmailHistory = EmailHistory;
   }
 
   /**

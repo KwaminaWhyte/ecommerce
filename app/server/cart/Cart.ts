@@ -1,4 +1,5 @@
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
+import type { CartInterface } from "../types";
 
 const CartSchema = new mongoose.Schema(
   {
@@ -26,32 +27,32 @@ const CartSchema = new mongoose.Schema(
   }
 );
 
-const GuestCartsSchema = new mongoose.Schema(
-  {
-    guestId: {
-      type: String,
-      required: true,
-    },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "products",
-    },
-    quantity: {
-      type: Number,
-      required: true,
-    },
-    color: String,
-    inscription: String,
-  },
-  {
-    timestamps: true,
-  }
-);
+let Cart: mongoose.Model<CartInterface>;
+try {
+  Cart = mongoose.model<CartInterface>("carts");
+} catch (error) {
+  Cart = mongoose.model<CartInterface>("carts", CartSchema);
+}
+export { Cart };
 
-// let Carts: mongoose.Model<CartInterface>;
-// try {
-//   Carts = mongoose.model<CartInterface>("carts");
-// } catch (error) {
-//   Carts = mongoose.model<CartInterface>("carts", CartSchema);
-// }
-export { CartSchema, GuestCartsSchema };
+// const GuestCartsSchema = new mongoose.Schema(
+//   {
+//     guestId: {
+//       type: String,
+//       required: true,
+//     },
+//     product: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "products",
+//     },
+//     quantity: {
+//       type: Number,
+//       required: true,
+//     },
+//     color: String,
+//     inscription: String,
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );

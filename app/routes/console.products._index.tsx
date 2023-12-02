@@ -185,29 +185,32 @@ export default function Products() {
 
                 <td className="px-3 py-3">{product?.category?.name}</td>
                 <td className="px-3 py-3 ">{product?.quantity}</td>
-                {/* <td className="px-3 py-3 ">{product?.price}</td> */}
-                <td className="px-3 py-3 ">
-                  <Popover className="relative">
-                    <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
-                      {product.stockHistory.length > 0 &&
-                        product.stockHistory.length}{" "}
-                      Stocks
-                    </Popover.Button>
+                {product?.price ? (
+                  <td className="px-3 py-3 ">{product?.price}</td>
+                ) : (
+                  <td className="px-3 py-3 ">
+                    <Popover className="relative">
+                      <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
+                        {product.stockHistory.length > 0 &&
+                          product.stockHistory.length}{" "}
+                        Stocks
+                      </Popover.Button>
 
-                    <Popover.Panel className="absolute right-6 z-10 ">
-                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
-                        {product.stockHistory.map((stock) => (
-                          <p
-                            key={stock?._id}
-                            className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
-                          >
-                            {stock.quantity} items @ GH₵ {stock.price} each
-                          </p>
-                        ))}
-                      </div>
-                    </Popover.Panel>
-                  </Popover>
-                </td>
+                      <Popover.Panel className="absolute right-6 z-10 ">
+                        <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
+                          {product.stockHistory.map((stock) => (
+                            <p
+                              key={stock?._id}
+                              className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
+                            >
+                              {stock.quantity} items @ GH₵ {stock.price} each
+                            </p>
+                          ))}
+                        </div>
+                      </Popover.Panel>
+                    </Popover>
+                  </td>
+                )}
                 <td className="px-3 py-3">
                   <p
                     className={` w-fit  rounded-xl px-2 py-1 capitalize ${

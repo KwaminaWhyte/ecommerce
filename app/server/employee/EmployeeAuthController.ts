@@ -5,19 +5,16 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
-import { modelsConnector } from "../mongoose.server";
 import LogController from "../logs/LogController.server";
 
 export default class EmployeeAuthController {
   private request: Request;
-  private domain: string;
   private session: any;
   private Employee: any;
   private storage: SessionStorage;
 
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
 
     const secret = process.env.SESSION_SECRET;
     if (!secret) {
@@ -33,16 +30,6 @@ export default class EmployeeAuthController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<EmployeeAuthController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as EmployeeAuthController;
-  }
-
-  private async initializeModels() {
-    const { Employee } = await modelsConnector();
-    this.Employee = Employee;
   }
 
   private async createEmployeeSession(employeeId: string, redirectTo: string) {
@@ -98,16 +85,6 @@ export default class EmployeeAuthController {
     return this.createEmployeeSession(employee._id, "/pos");
   }
 
-  public async logout() {
-    const session = await this.getEmployeeSession();
-
-    return redirect("/pos/login", {
-      headers: {
-        "Set-Cookie": await this.storage.destroySession(session),
-      },
-    });
-  }
-
   public async requireEmployeeId(
     redirectTo: string = new URL(this.request.url).pathname
   ) {
@@ -147,35 +124,24 @@ export default class EmployeeAuthController {
       throw this.logout();
     }
   }
+
+  public async logout() {
+    const id = await this.getEmployeeId();
+    const logController = await new LogController();
+    await logController.create({
+      user: id as string,
+      action: "Logout",
+    });
+
+    const session = await this.getEmployeeSession();
+
+    return redirect("/pos/login", {
+      headers: {
+        "Set-Cookie": await this.storage.destroySession(session),
+      },
+    });
+  }
 }
-
-// export const signup = async (
-//   username: string,
-//   email: string,
-//   password: string,
-//   request: Request
-// ) => {
-//   let domain = (request.headers.get("host") as string).split(":")[0];
-
-//   const clientDb = await modelsConnector(domain);
-//   const Employee = clientDb.model("employees", EmployeeSchema);
-
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//   const employee = await Employee.create({
-//     username,
-//     email,
-//     password: hashedPassword,
-//   });
-
-//   if (!employee) {
-//     return json(
-//       { error: "Error creating employee", fields: { username, email } },
-//       { status: 400 }
-//     );
-//   }
-
-//   return createEmployeeSession(employee.id, "/pos");
-// };
 
 // export const changePassword = async (
 //   employeeId: string,
@@ -184,7 +150,6 @@ export default class EmployeeAuthController {
 // ) => {
 //   let domain = (request.headers.get("host") as string).split(":")[0];
 
-//   const clientDb = await modelsConnector(domain);
 //   const Employee = clientDb.model("employees", EmployeeSchema);
 
 //   const hashedPassword = await bcrypt.hash(password, 10);
@@ -206,7 +171,6 @@ export default class EmployeeAuthController {
 //   action: string;
 // }) => {
 //   let domain = (request.headers.get("host") as string).split(":")[0];
-//   const clientDb = await modelsConnector(domain);
 //   const Employee = clientDb.model("employees", EmployeeSchema);
 
 //   const employeeId = await requireEmployeeId(request);

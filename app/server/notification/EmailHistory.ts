@@ -1,5 +1,4 @@
-import { mongoose } from "../mongoose.server";
-
+import mongoose from "../mongoose.server";
 const EmailHistorySchema = new mongoose.Schema(
   {
     from: {

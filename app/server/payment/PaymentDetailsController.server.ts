@@ -4,13 +4,9 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
-import { UserSchema } from "../user/User";
-import { PaymentDetailSchema } from "./PaymentDetails";
 
 export default class PaymentDetailsController {
   private request: Request;
-  private domain: string;
   private session: any;
   private storage: SessionStorage;
   private PaymentDetails: any;
@@ -23,7 +19,6 @@ export default class PaymentDetailsController {
    */
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
 
     const secret = process.env.SESSION_SECRET;
     if (!secret) {
@@ -39,25 +34,6 @@ export default class PaymentDetailsController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<PaymentDetailsController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as PaymentDetailsController;
-  }
-
-  private async initializeModels() {
-    const clientDb = await modelsConnector();
-    try {
-      this.PaymentDetails = clientDb.model("payment_details");
-      this.User = clientDb.model("users");
-    } catch (error) {
-      this.PaymentDetails = clientDb.model(
-        "payment_details",
-        PaymentDetailSchema
-      );
-      this.User = clientDb.model("users", UserSchema);
-    }
   }
 
   public addPaymentDetails = async ({

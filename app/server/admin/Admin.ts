@@ -1,4 +1,5 @@
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
+import type { AdminInterface } from "../types";
 
 const PermissionSchema = new mongoose.Schema({
   name: String,
@@ -20,22 +21,18 @@ const AdminSchema = new mongoose.Schema(
         ref: "permissions",
       },
     ],
-    clientConnection: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "clientConnections",
-    },
   },
   { timestamps: true }
 );
 
-// let Admins: mongoose.Model<any>;
-// let Permissions: mongoose.Model<any>;
-// try {
-//   Admins = mongoose.model("admins");
-//   Permissions = mongoose.model("permissions");
-// } catch (error) {
-//   Admins = mongoose.model("admins", AdminsSchema);
-//   Permissions = mongoose.model("permissions", PermissionsSchema);
-// }
+let Admin: mongoose.Model<AdminInterface>;
+let Permissions: mongoose.Model<AdminInterface>;
+try {
+  Admin = mongoose.model<AdminInterface>("admins");
+  Permissions = mongoose.model<any>("permissions");
+} catch (error) {
+  Admin = mongoose.model<AdminInterface>("admins", AdminSchema);
+  Permissions = mongoose.model<any>("permissions", PermissionSchema);
+}
 
-export { PermissionSchema, AdminSchema };
+export { PermissionSchema, AdminSchema, Permissions, Admin };

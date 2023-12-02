@@ -17,18 +17,29 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Form, useSubmit } from "@remix-run/react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Label } from "../ui/label";
 
 export default function PosLayout({
   children,
   user,
   cart_items = [],
   settings,
+  sales_persons,
 }: {
   children: React.ReactNode;
   user?: EmployeeInterface;
   title?: string;
   settings?: any;
   cart_items?: CartInterface[];
+  sales_persons?: any;
 }) {
   const submit = useSubmit();
   const [totalPrice, setTotalPrice] = useState(0);
@@ -71,7 +82,7 @@ export default function PosLayout({
               Cart
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-[800px] ">
+          <SheetContent className="w-[900px] ">
             <SheetHeader>
               <SheetTitle>Cart</SheetTitle>
               <SheetDescription>
@@ -119,10 +130,7 @@ export default function PosLayout({
                       </div>
 
                       <div className="flex justify-between">
-                        <p className="font-medium">
-                          {" "}
-                          GH₵ {item?.stock?.price}{" "}
-                        </p>
+                        <p className="font-medium">GH₵ {item?.stock?.price} </p>
 
                         <div className="flex">
                           {item.quantity <= 1 ? null : (
@@ -209,11 +217,35 @@ export default function PosLayout({
               <section className="border-t border-slate-700 py-2">
                 <Form method="POST" className="gap-2 flex flex-col">
                   <input type="hidden" name="type" value="complete" />
-                  <Input name="customer_name" placeholder="Customer Name" />
-                  <Input
-                    name="customer_phone"
-                    placeholder="Customer Phone Number"
-                  />
+
+                  <div className="mt-2 ">
+                    <Label>Customer Name</Label>
+                    <Input name="customer_name" placeholder="Customer Name" />
+                  </div>
+
+                  <div className="mt-2 ">
+                    <Label>Customer Phone</Label>
+                    <Input
+                      name="customer_phone"
+                      placeholder="Customer Phone Number"
+                    />
+                  </div>
+
+                  <div className="mt-2 ">
+                    <Label>Sales Person</Label>
+                    <Select name="sales_person">
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a sales person" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sales_persons?.map((person, index) => (
+                          <SelectItem key={index} value={person?._id}>
+                            {person?.firstName} {person?.lastName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   <Button className="w-full mt-auto" type="submit">
                     Continue to Payment

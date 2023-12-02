@@ -26,7 +26,7 @@ export default function GeneralSettings() {
   return (
     <Container
       heading="General Settings"
-      subHeading="(work in progress)"
+      // subHeading="(work in progress)"
       contentClassName=""
     >
       <Form
@@ -85,7 +85,18 @@ export default function GeneralSettings() {
           variant="ghost"
           label="Allow Inscription on Item (will be moved to order settings)"
         >
-          <option value="">Select Status</option>
+          <option value="">Select</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </SimpleSelect>
+
+        <SimpleSelect
+          defaultValue={generalSettings?.separateStocks}
+          name="separate_stocks"
+          variant="ghost"
+          label="Allow seperate stocks record"
+        >
+          <option value="">Select </option>
           <option value="true">Yes</option>
           <option value="false">No</option>
         </SimpleSelect>
@@ -93,6 +104,38 @@ export default function GeneralSettings() {
     </Container>
   );
 }
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+
+  let businessName = formData.get("businessName") as string;
+  let slogan = formData.get("slogan") as string;
+  let email = formData.get("email") as string;
+  let phone = formData.get("phone") as string;
+  let orderIdPrefix = formData.get("orderIdPrefix") as string;
+  let allow_inscription = formData.get("allow_inscription") as string;
+  let separate_stocks = formData.get("separate_stocks") as string;
+
+  const settingsController = await new SettingsController(request);
+  await settingsController.updateGeneralSettings({
+    businessName,
+    slogan,
+    email,
+    phone,
+    orderIdPrefix,
+    allow_inscription,
+    separate_stocks,
+  });
+
+  return redirect(`/console/settings`);
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const settingsController = await new SettingsController(request);
+  const generalSettings = await settingsController.getGeneralSettings();
+
+  return { generalSettings };
+};
 
 export const meta: MetaFunction = () => {
   return [
@@ -116,44 +159,15 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-
-  let businessName = formData.get("businessName") as string;
-  let slogan = formData.get("slogan") as string;
-  let email = formData.get("email") as string;
-  let phone = formData.get("phone") as string;
-  let orderIdPrefix = formData.get("orderIdPrefix") as string;
-  let allow_inscription = formData.get("allow_inscription") as string;
-
-  const settingsController = await new SettingsController(request);
-  await settingsController.updateGeneralSettings({
-    businessName,
-    slogan,
-    email,
-    phone,
-    orderIdPrefix,
-    allow_inscription,
-  });
-
-  return redirect(`/console/settings`);
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const settingsController = await new SettingsController(request);
-  const generalSettings = await settingsController.getGeneralSettings();
-
-  return { generalSettings };
-};
-
 export function ErrorBoundary({ error }) {
   console.error(error);
   return (
     <Container
       heading="Error"
-      contentClassName="flex-col grid grid-cols-2 gap-3"
+      contentClassName="flex flex-col grid grid-cols-2 gap-3"
     >
       <p>Something went wrong!</p>
+      <p>Contact Developer </p>
     </Container>
   );
 }

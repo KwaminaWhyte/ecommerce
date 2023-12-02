@@ -3,6 +3,8 @@ import { Form, Link, NavLink } from "@remix-run/react";
 import { Transition } from "@headlessui/react";
 import sideNavLinks from "./inc/side_nav_links";
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/base";
+import { Button } from "./ui/button";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function SideNavigation({ user }: { user: any }) {
   const [collapseNav, setCollapseNav] = useState(false);
@@ -71,7 +73,7 @@ export default function SideNavigation({ user }: { user: any }) {
           <>
             {link?.children?.length < 1 ? (
               <NavLink
-                key={link.id}
+                key={IdGenerator(8)}
                 to={link.path}
                 onClick={() => localStorage.setItem("activeMenu", link.name)}
                 className={({ isActive, isPending }) =>
@@ -111,7 +113,7 @@ export default function SideNavigation({ user }: { user: any }) {
             >
               {link?.children?.map((child) => (
                 <NavLink
-                  key={child.path}
+                  key={IdGenerator(8)}
                   to={child.path}
                   className={({ isActive }) =>
                     isActive
@@ -158,13 +160,13 @@ export default function SideNavigation({ user }: { user: any }) {
               method="POST"
               className="flex w-full p-2 list-none cursor-default hover:bg-slate-200 rounded-lg "
             >
-              <button
+              <Button
                 type="submit"
                 className="w-full text-left"
-                // className="group flex w-full items-center rounded-md px-2 py-2  text-slate-900 hover:bg-red-500 hover:text-white dark:text-white hover:dark:text-white"
+                variant="destructive"
               >
                 Log out
-              </button>
+              </Button>
             </Form>
             {/* </MenuItem> */}
           </Menu>

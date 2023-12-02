@@ -1,43 +1,23 @@
 import { json, redirect } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
 import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
 import type { ProductInterface } from "../types";
 import { commitSession, getSession } from "~/session";
+import { Category, Product, StockHistory } from "./Product";
+import SettingsController from "../settings/SettingsController.server";
 
 export default class ProductController {
   private request: Request;
-  private domain: string;
-  private Product: any;
-  private ProductImages: any;
-  private ProductCategory: any;
-  private StockHistory: any;
-  private Reviews: any;
 
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
-
-    return (async (): Promise<ProductController> => {
-      // Call async functions here
-      // await sleep(500);
-      await this.initializeModels();
-      // Constructors return `this` implicitly, but this is an IIFE, so
-      // return `this` explicitly (else we'd return an empty object).
-      return this;
-    })() as unknown as ProductController;
   }
 
-  private async initializeModels() {
-    const { Product, ProductImages, ProductCategory, StockHistory } =
-      await modelsConnector();
-
-    this.Product = Product;
-    this.ProductImages = ProductImages;
-    this.ProductCategory = ProductCategory;
-    this.StockHistory = StockHistory;
-  }
-
+  /**
+   * Retrieve all Product
+   * @param param0 pag
+   * @returns {products: ProductInterface, page: number}
+   */
   public async getProducts({
     page,
     search_term,
@@ -58,7 +38,7 @@ export default class ProductController {
       : {};
 
     try {
-      const products = await this.Product.find(searchFilter)
+      const products = await Product.find(searchFilter)
         .skip(skipCount)
         .limit(limit)
         .populate("images")
@@ -66,7 +46,7 @@ export default class ProductController {
         .populate("stockHistory")
         .exec();
 
-      const totalProductsCount = await this.Product.countDocuments(
+      const totalProductsCount = await Product.countDocuments(
         searchFilter
       ).exec();
       const totalPages = Math.ceil(totalProductsCount / limit);
@@ -79,7 +59,7 @@ export default class ProductController {
 
   public async getProduct({ id }: { id: string }) {
     try {
-      const product = await this.Product.findById(id).populate("images");
+      const product = await Product.findById(id).populate("images");
       // const reviews = await this.Reviews.find({ product: id }).populate("user");
 
       // product.reviews = reviews;
@@ -108,7 +88,11 @@ export default class ProductController {
     cost_price: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
-    const existingProduct = await this.Product.findOne({ name });
+    const adminController = await new AdminController(this.request);
+    const adminId = await adminController.getAdminId();
+    const existingProduct = await Product.findOne({ name });
+    const settingsController = await new SettingsController(this.request);
+    const generalSettings = await settingsController.getGeneralSettings();
 
     if (existingProduct) {
       return json(
@@ -127,41 +111,43 @@ export default class ProductController {
     //   imageId: myArray[1],
     // });
 
-    // create new admin
-    const product = await this.Product.create({
+    let productData = {
       name,
-      // price: parseFloat(price),
       description,
-      category: category ? category : null,
+      category,
       availability: "available",
-      // images: [image._id],
       quantity: parseInt(quantity),
-    });
+    };
 
-    const adminController = await new AdminController(this.request);
-    const adminId = await adminController.getAdminId();
-
-    const productt = await this.Product.findById(product?._id);
-
-    let stockk = await this.StockHistory.create({
-      user: adminId,
-      product: productt?._id,
-      quantity,
-      price: parseFloat(price),
-      costPrice: parseFloat(cost_price),
-    });
-
-    productt.stockHistory.push(stockk);
-    await productt.save();
+    if (!generalSettings.separateStocks) {
+      productData["price"] = parseFloat(price);
+    }
+    const product = await Product.create(productData);
 
     if (!product) {
-      return json(
-        {
-          error: "Error creating product",
-          fields: { name, price, description, category },
+      session.flash("message", {
+        title: "Error Adding Product",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
+    }
+
+    if (generalSettings.separateStocks) {
+      const productt = await Product.findById(product?._id);
+      let stockk = await StockHistory.create({
+        user: adminId,
+        product: productt?._id,
+        quantity,
+        price: parseFloat(price),
+        costPrice: parseFloat(cost_price),
+      });
+
+      productt.stockHistory.push(stockk);
+      await productt.save();
     }
 
     session.flash("message", {
@@ -193,7 +179,7 @@ export default class ProductController {
     const session = await getSession(this.request.headers.get("Cookie"));
 
     try {
-      await this.Product.findOneAndUpdate(
+      await Product.findOneAndUpdate(
         { _id },
         {
           name,
@@ -241,7 +227,7 @@ export default class ProductController {
     cost_price: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
-    const product = await this.Product.findById(_id);
+    const product = await Product.findById(_id);
 
     const adminController = await new AdminController(this.request);
     const adminId = await adminController.getAdminId();
@@ -303,7 +289,7 @@ export default class ProductController {
 
   public deleteProduct = async (id: string) => {
     try {
-      await this.Product.findByIdAndDelete(id);
+      await Product.findByIdAndDelete(id);
       return json({ message: "Product deleted successfully" }, { status: 200 });
     } catch (err) {
       throw err;
@@ -330,12 +316,12 @@ export default class ProductController {
       : {};
 
     try {
-      const categories = await this.ProductCategory.find(searchFilter)
+      const categories = await Category.find(searchFilter)
         .skip(skipCount)
         .limit(limit)
         .exec();
 
-      const totalProductsCount = await this.ProductCategory.countDocuments(
+      const totalProductsCount = await Category.countDocuments(
         searchFilter
       ).exec();
       const totalPages = Math.ceil(totalProductsCount / limit);
@@ -348,7 +334,7 @@ export default class ProductController {
 
   public async getFeaturedCategories() {
     try {
-      const categories = await this.ProductCategory.find({
+      const categories = await Category.find({
         featured: true,
       }).exec();
 
@@ -360,7 +346,7 @@ export default class ProductController {
 
   public async getActiveCategories() {
     try {
-      const categories = await this.ProductCategory.find({
+      const categories = await ProductCategory.find({
         status: "active",
       }).exec();
 
@@ -381,7 +367,7 @@ export default class ProductController {
     status: string;
     featured: string;
   }) {
-    const existingCategory = await this.ProductCategory.findOne({ name });
+    const existingCategory = await Category.findOne({ name });
 
     if (existingCategory) {
       return json(
@@ -394,7 +380,7 @@ export default class ProductController {
     }
 
     // create new admin
-    const category = await this.ProductCategory.create({
+    const category = await Category.create({
       name,
       status,
       description,
@@ -427,7 +413,7 @@ export default class ProductController {
     featured: string;
   }) {
     try {
-      await this.ProductCategory.findOneAndUpdate(
+      await Category.findOneAndUpdate(
         { _id },
         {
           name,
@@ -453,7 +439,7 @@ export default class ProductController {
 
   public deleteCategory = async (id: string) => {
     try {
-      await this.ProductCategory.findByIdAndDelete(id);
+      await Category.findByIdAndDelete(id);
       return json(
         { message: "Product Category deleted successfully" },
         { status: 200 }
@@ -471,7 +457,7 @@ export default class ProductController {
     image: string;
   }) => {
     try {
-      const product = await this.Product.findById(productId);
+      const product = await Product.findById(productId);
 
       let imageRes = await this.ProductImages.create({
         url: image.url,

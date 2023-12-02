@@ -1,4 +1,5 @@
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
+import { EmployeeInterface } from "../types";
 
 const EmployeePermissionsSchema = new mongoose.Schema({
   name: String,
@@ -8,7 +9,6 @@ const EmployeePermissionsSchema = new mongoose.Schema({
 const EmployeeSchema = new mongoose.Schema(
   {
     firstName: String,
-    middleName: String,
     lastName: String,
     email: {
       type: String,
@@ -16,7 +16,11 @@ const EmployeeSchema = new mongoose.Schema(
     },
     username: String,
     password: String,
-    role: String,
+    role: {
+      type: String,
+      enum: ["attendant", "sales_person", "cashier"],
+      default: "attendant",
+    },
     gender: String,
     permissions: [
       {
@@ -24,26 +28,26 @@ const EmployeeSchema = new mongoose.Schema(
         ref: "permissions",
       },
     ],
-    clientConnection: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "clientConnections",
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
-    status: String,
   },
   { timestamps: true }
 );
 
-// let Employees: mongoose.Model<any>;
-// let EmployeePermissions: mongoose.Model<any>;
-// try {
-//   Employees = mongoose.model("employees");
-//   EmployeePermissions = mongoose.model("employee_permissions");
-// } catch (error) {
-//   Employees = mongoose.model("employees", EmployeesSchema);
-//   EmployeePermissions = mongoose.model(
-//     "employee_permissions",
-//     EmployeePermissionsSchema
-//   );
-// }
+let Employee: mongoose.Model<EmployeeInterface>;
+let EmployeePermissions: mongoose.Model<any>;
+try {
+  Employee = mongoose.model<EmployeeInterface>("employees");
+  EmployeePermissions = mongoose.model("employee_permissions");
+} catch (error) {
+  Employee = mongoose.model<EmployeeInterface>("employees", EmployeeSchema);
+  EmployeePermissions = mongoose.model(
+    "employee_permissions",
+    EmployeePermissionsSchema
+  );
+}
 
-export { EmployeePermissionsSchema, EmployeeSchema };
+export { Employee, EmployeePermissions };

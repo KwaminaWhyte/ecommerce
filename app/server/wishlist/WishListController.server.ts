@@ -4,7 +4,6 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
 
 export default class WishlistController {
   private request: Request;
@@ -38,19 +37,6 @@ export default class WishlistController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<WishlistController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as WishlistController;
-  }
-
-  private async initializeModels() {
-    const { WishList, Product, ProductImages } = await modelsConnector();
-
-    this.WishList = WishList;
-    this.Product = Product;
-    this.ProductImages = ProductImages;
   }
 
   /**
@@ -103,7 +89,7 @@ export default class WishlistController {
         path: "product",
         populate: {
           path: "images",
-          model: "product_images",
+          model: "images",
         },
       });
 

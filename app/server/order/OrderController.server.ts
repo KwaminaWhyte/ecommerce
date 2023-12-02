@@ -1,22 +1,17 @@
 import { redirect, json } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
 import SettingsController from "../settings/SettingsController.server";
 import moment from "moment";
 import PaymentController from "../payment/PaymentController";
 import SenderController from "../notification/SenderController";
 import { commitSession, getSession } from "~/session";
 import LogController from "../logs/LogController.server";
+import EmployeeAuthController from "../employee/EmployeeAuthController";
+import { Order } from "./Order";
+import { Product, StockHistory } from "../product/Product";
+import { Cart } from "../cart/Cart";
 
 export default class OrderController {
   private request: Request;
-  private domain: string;
-  private Order: any;
-  private Product: any;
-  private Cart: any;
-  private User: any;
-  private StockHistory: any;
-  private ShippingTimeline: any;
-  private ProductImages: any;
 
   /**
    * Initialize a OrderController instance
@@ -25,32 +20,6 @@ export default class OrderController {
    */
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
-
-    return (async (): Promise<OrderController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as OrderController;
-  }
-
-  private async initializeModels() {
-    const {
-      User,
-      Product,
-      Order,
-      Cart,
-      ProductImages,
-      ShippingTimeline,
-      StockHistory,
-    } = await modelsConnector();
-
-    this.StockHistory = StockHistory;
-    this.User = User;
-    this.Product = Product;
-    this.Order = Order;
-    this.Cart = Cart;
-    this.ProductImages = ProductImages;
-    this.ShippingTimeline = ShippingTimeline;
   }
 
   private generateOrderId(prefix: string) {
@@ -82,7 +51,7 @@ export default class OrderController {
         }
       : {};
 
-    const orders = await this.Order.find(searchFilter)
+    const orders = await Order.find(searchFilter)
       .skip(skipCount)
       .limit(limit)
       .populate({
@@ -93,16 +62,14 @@ export default class OrderController {
         path: "orderItems.product",
         populate: {
           path: "images",
-          model: "product_images",
+          model: "images",
         },
       })
       .populate("user")
       .sort({ createdAt: "desc" })
       .exec();
 
-    const totalOrdersCount = await this.Order.countDocuments(
-      searchFilter
-    ).exec();
+    const totalOrdersCount = await Order.countDocuments(searchFilter).exec();
     const totalPages = Math.ceil(totalOrdersCount / limit);
 
     return { orders, totalPages };
@@ -115,12 +82,12 @@ export default class OrderController {
    */
   public async getOrder({ orderId }: { orderId: string }) {
     try {
-      const order = await this.Order.findById(orderId)
+      const order = await Order.findById(orderId)
         .populate({
           path: "orderItems.product",
           populate: {
             path: "images",
-            model: "product_images",
+            model: "images",
           },
         })
         .populate({
@@ -150,14 +117,14 @@ export default class OrderController {
     // const totalPages = Math.ceil(totalOrdersCount / limit);
 
     try {
-      const orders = await this.Order.find({ user })
+      const orders = await Order.find({ user })
         // .skip(skipCount)
         // .limit(limit)
         .populate({
           path: "orderItems.product",
           populate: {
             path: "images",
-            model: "product_images",
+            model: "images",
           },
         })
         .populate("user")
@@ -178,15 +145,19 @@ export default class OrderController {
     user,
     customerName,
     customerPhone,
+    sales_person,
   }: {
     user: string;
     customerName: string;
     customerPhone: string;
+    sales_person: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
+    const employeeAuth = await new EmployeeAuthController(this.request);
+    const attendant = await employeeAuth.getEmployeeId();
 
     try {
-      const cartItems = await this.Cart.find({ user })
+      const cartItems = await Cart.find({ user })
         .populate("product")
         .populate({
           path: "stock",
@@ -215,20 +186,22 @@ export default class OrderController {
       const settings = await generalSettings.getGeneralSettings();
 
       const orderId = this.generateOrderId(settings?.orderIdPrefix);
-      const order = await this.Order.create({
+      const order = await Order.create({
         orderId,
         user,
         totalPrice,
         orderItems: cartItems,
         deliveryStatus: "delivered",
         status: "paid",
+        sales_person,
+        attendant,
       });
 
-      await this.Cart.deleteMany({ user }).exec();
+      await Cart.deleteMany({ user }).exec();
 
       for (const item of cartItems) {
-        const product = await this.Product.findById(item.product?._id);
-        const stock = await this.StockHistory.findById(item.stock?._id);
+        const product = aw.findById(item.product?._id);
+        const stock = await StockHistory.findById(item.stock?._id);
 
         if (product) {
           product.quantitySold += item.quantity;
@@ -249,12 +222,12 @@ export default class OrderController {
         order: order?._id,
       });
 
-      return await this.Order.findById(order?._id)
+      return await Order.findById(order?._id)
         .populate({
           path: "orderItems.product",
           populate: {
             path: "images",
-            model: "product_images",
+            model: "images",
           },
         })
         .populate({
@@ -289,9 +262,7 @@ export default class OrderController {
   }) => {
     const paymentController = await new PaymentController(this.request);
     const senderController = await new SenderController(this.request);
-    let order = await this.Order.findOne({ _id: orderId })
-      .populate("user")
-      .exec();
+    let order = await Order.findOne({ _id: orderId }).populate("user").exec();
 
     if (!order) {
       return json(
@@ -309,7 +280,7 @@ export default class OrderController {
     });
 
     if (hubtelResponse?.status == "Success") {
-      await this.Order.findOneAndUpdate(
+      await Order.findOneAndUpdate(
         { _id: orderId },
         {
           shippingAddress,
@@ -334,7 +305,7 @@ export default class OrderController {
     _id: string;
   }) => {
     try {
-      await this.Order.findOneAndUpdate(
+      await Order.findOneAndUpdate(
         { _id },
         {
           deliveryStatus: status,
@@ -364,7 +335,7 @@ export default class OrderController {
     paymentReff: string;
   }) => {
     try {
-      await this.Order.findOneAndUpdate(
+      await Order.findOneAndUpdate(
         { orderId },
         {
           status,
@@ -395,7 +366,7 @@ export default class OrderController {
     let orderStats;
 
     // Create an aggregation pipeline to calculate revenue and expenses
-    const result = await this.Order.aggregate([
+    const result = await Order.aggregate([
       {
         $match: {
           deliveryDate: { $gte: startOfLast7Months },
@@ -452,7 +423,7 @@ export default class OrderController {
 
   public getTotals = async () => {
     // Calculate Total Revenue
-    const revenueResult = await this.Order.aggregate([
+    const revenueResult = await Order.aggregate([
       {
         $match: { status: "paid" },
       },
@@ -468,15 +439,15 @@ export default class OrderController {
       revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
 
     // Calculate Orders Completed
-    const completedCount = await this.Order.countDocuments({
+    const completedCount = await Order.countDocuments({
       deliveryStatus: { $in: ["shipped", "delivered"] },
     });
 
     // Calculate Pending Orders
-    const pendingCount = await this.Order.countDocuments({
+    const pendingCount = await Order.countDocuments({
       status: { $in: ["unpaid", "paid"] },
     });
-    const bestsellingProducts = await this.Product.find()
+    const bestsellingProducts = await Product.find()
       .populate("images")
       .sort({ quantitySold: -1 })
       .limit(5)
@@ -522,10 +493,8 @@ export default class OrderController {
     ];
 
     // Execute both pipelines and combine results
-    const ordersCountResult = await this.Order.aggregate(ordersCountPipeline);
-    const ordersRevenueResult = await this.Order.aggregate(
-      ordersRevenuePipeline
-    );
+    const ordersCountResult = await Order.aggregate(ordersCountPipeline);
+    const ordersRevenueResult = await Order.aggregate(ordersRevenuePipeline);
 
     // const combinedResult = {
     //   totalOrdersToday: ordersCountResult[0].totalOrdersToday,

@@ -1,11 +1,3 @@
-import { redirect, json } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
-import SettingsController from "../settings/SettingsController.server";
-import moment from "moment";
-import PaymentController from "../payment/PaymentController";
-import SenderController from "../notification/SenderController";
-import { commitSession, getSession } from "~/session";
-
 export default class LogController {
   private Order: any;
   private Product: any;
@@ -18,37 +10,31 @@ export default class LogController {
    * @returns this
    */
   constructor() {
-    return (async (): Promise<LogController> => {
-      const { User, Product, Order, Log } = await modelsConnector();
-
-      this.User = User;
-      this.Product = Product;
-      this.Order = Order;
-      this.Log = Log;
-
-      return this;
-    })() as unknown as LogController;
+    console.log("Log Class");
   }
 
   public async create({
     user,
     action,
     order,
+    product,
   }: {
     user: string;
     action: string;
     order?: string;
+    product?: string;
   }) {
     await this.Log.create({
       user,
       action,
-      order: order ? order : "",
+      order,
+      product,
     });
 
     return true;
   }
 
-  public async getOrders({
+  public async getLogs({
     page,
     search_term,
     status = "pending",
@@ -69,33 +55,20 @@ export default class LogController {
         }
       : {};
 
-    const orders = await this.Order.find(searchFilter)
+    const logs = await this.Log.find(searchFilter)
       .skip(skipCount)
       .limit(limit)
-      .populate({
-        path: "orderItems.stock",
-        // model: "stock_histories",
-      })
-      .populate({
-        path: "orderItems.product",
-        populate: {
-          path: "images",
-          model: "product_images",
-        },
-      })
-      .populate("user")
+      .populate("employee")
       .sort({ createdAt: "desc" })
       .exec();
 
-    const totalOrdersCount = await this.Order.countDocuments(
-      searchFilter
-    ).exec();
-    const totalPages = Math.ceil(totalOrdersCount / limit);
+    const totalLogsCount = await this.Log.countDocuments(searchFilter).exec();
+    const totalPages = Math.ceil(totalLogsCount / limit);
 
-    return { orders, totalPages };
+    return { logs, totalPages };
   }
 
-  allUserOrders = async ({ user }: { user: string }) => {
+  allEmployeeLogs = async ({ user }: { user: string }) => {
     // const limit = 10; // Number of orders per page
     // const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
     //
@@ -110,7 +83,7 @@ export default class LogController {
           path: "orderItems.product",
           populate: {
             path: "images",
-            model: "product_images",
+            model: "images",
           },
         })
         .populate("user")

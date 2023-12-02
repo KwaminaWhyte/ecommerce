@@ -1,10 +1,9 @@
 import axios from "axios";
-import { modelsConnector } from "../mongoose.server";
 import { json } from "@remix-run/node";
+import { GeneralSettings } from "./GeneralSettings";
 
 export default class SettingsController {
   private request: Request;
-  private domain: string;
   private Notification: any;
   private SMSSettings: any;
   private GeneralSettings: any;
@@ -12,29 +11,10 @@ export default class SettingsController {
 
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
-
-    return (async (): Promise<SettingsController> => {
-      // Call async functions here
-      // await sleep(500);
-      await this.initializeModels();
-      // Constructors return `this` implicitly, but this is an IIFE, so
-      // return `this` explicitly (else we'd return an empty object).
-      return this;
-    })() as unknown as SettingsController;
-  }
-
-  private async initializeModels() {
-    const { NotificationSettings, SMSSettings, GeneralSettings, PaymentApi } =
-      await modelsConnector();
-    this.PaymentApi = PaymentApi;
-    this.Notification = NotificationSettings;
-    this.SMSSettings = SMSSettings;
-    this.GeneralSettings = GeneralSettings;
   }
 
   public getGeneralSettings = async () => {
-    const settings = await this.GeneralSettings.findOne();
+    const settings = await GeneralSettings.findOne();
     return settings;
   };
 
@@ -45,6 +25,7 @@ export default class SettingsController {
     phone,
     orderIdPrefix,
     allow_inscription,
+    separate_stocks,
   }: {
     businessName: string;
     slogan: string;
@@ -52,10 +33,11 @@ export default class SettingsController {
     phone: string;
     orderIdPrefix: string;
     allow_inscription: string;
+    separate_stocks: string;
   }) => {
     try {
       // Check if the settings record already exists in the database
-      const existingSettings = await this.GeneralSettings.findOne();
+      const existingSettings = await GeneralSettings.findOne();
 
       // If the settings record exists, update it
       if (existingSettings) {
@@ -65,17 +47,19 @@ export default class SettingsController {
         existingSettings.phone = phone;
         existingSettings.orderIdPrefix = orderIdPrefix;
         existingSettings.allowInscription = allow_inscription == "true" ? 1 : 0;
+        existingSettings.separateStocks = separate_stocks == "true" ? 1 : 0;
 
         await existingSettings.save();
       } else {
         // If the settings record doesn't exist, create a new one
-        const newSettings = new this.GeneralSettings({
+        const newSettings = new GeneralSettings({
           businessName,
           slogan,
           email,
           phone,
           orderIdPrefix,
           allowInscription: allow_inscription == "true" ? 1 : 0,
+          separateStocks: separate_stocks == "true" ? 1 : 0,
         });
 
         await newSettings.save();

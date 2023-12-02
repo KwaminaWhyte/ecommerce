@@ -104,6 +104,7 @@ export const action: ActionFunction = async ({ request }) => {
     return json({ errors, fields: { email, password } }, { status: 400 });
   }
   const authController = await new EmployeeAuthController(request);
+
   return await authController.loginEmployee({ email, password });
 };
 

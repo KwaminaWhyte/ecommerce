@@ -4,7 +4,6 @@ import {
   redirect,
   type SessionStorage,
 } from "@remix-run/node";
-import { modelsConnector } from "../mongoose.server";
 import axios from "axios";
 import OrderController from "../order/OrderController.server";
 
@@ -40,19 +39,6 @@ export default class PaymentController {
         maxAge: 60 * 60 * 24 * 30, // 30 days
       },
     });
-
-    return (async (): Promise<PaymentController> => {
-      await this.initializeModels();
-      return this;
-    })() as unknown as PaymentController;
-  }
-
-  private async initializeModels() {
-    const { Cart, Product, ProductImages } = await modelsConnector();
-
-    this.Cart = Cart;
-    this.Product = Product;
-    this.ProductImages = ProductImages;
   }
 
   public addPaymentDetails = async ({

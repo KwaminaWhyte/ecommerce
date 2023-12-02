@@ -1,4 +1,5 @@
-import { mongoose } from "../mongoose.server";
+import mongoose from "../mongoose.server";
+import type { OredrInterface } from "../types";
 
 const OrderSchema = new mongoose.Schema(
   {
@@ -72,33 +73,15 @@ const OrderSchema = new mongoose.Schema(
       default: "pending",
     },
     paymentReff: String,
-  },
-  {
-    timestamps: true,
-  }
-);
-
-const ShippingTimelineSchema = new mongoose.Schema(
-  {
-    order: {
+    sales_person: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "orders",
+      ref: "employees",
+      required: true,
     },
-    location: String,
-    message: String,
-    status: {
-      type: String,
-      enum: [
-        "pending",
-        "paid",
-        "shipped",
-        "delivered",
-        "cancelled",
-        "refunded",
-        "failed",
-        "disputed",
-      ],
-      default: "pending",
+    attendant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employees",
+      required: true,
     },
   },
   {
@@ -106,4 +89,39 @@ const ShippingTimelineSchema = new mongoose.Schema(
   }
 );
 
-export { OrderSchema, ShippingTimelineSchema };
+let Order: mongoose.Model<OredrInterface>;
+try {
+  Order = mongoose.model<OredrInterface>("orders");
+} catch (error) {
+  Order = mongoose.model<OredrInterface>("orders", OrderSchema);
+}
+
+export { Order };
+
+// const ShippingTimelineSchema = new mongoose.Schema(
+//   {
+//     order: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "orders",
+//     },
+//     location: String,
+//     message: String,
+//     status: {
+//       type: String,
+//       enum: [
+//         "pending",
+//         "paid",
+//         "shipped",
+//         "delivered",
+//         "cancelled",
+//         "refunded",
+//         "failed",
+//         "disputed",
+//       ],
+//       default: "pending",
+//     },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
