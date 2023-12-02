@@ -129,12 +129,12 @@ export default function Shop() {
               {/* <p className="">Qty: {product?.quantity}</p> */}
 
               <div className="flex justify-between items-center mt-3">
-                <Link to={`/pos/products/${product?._id}`}>View</Link>
+                {/* <Link to={`/pos/products/${product?._id}`}>View</Link> */}
 
                 <Form method="POST">
                   <input type="hidden" name="product_id" value={product?._id} />
                   <input type="hidden" name="user_id" value={user?._id} />
-                  <Button type="submit">Cart</Button>
+                  <Button type="submit">Add to Cart</Button>
                 </Form>
               </div>
             </section>

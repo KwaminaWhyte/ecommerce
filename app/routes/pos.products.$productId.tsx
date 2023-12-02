@@ -57,13 +57,9 @@ export default function AdminProductDetails() {
         <h1 className="text-3xl font-bold">Product Details </h1>
 
         <section className="ml-auto flex">
-          {/* <Button variant="outline">Export</Button> */}
-          <Spacer />
-          {/* <Button variant="outline">Print</Button> */}
-          <Spacer />
-          {product.images.length < 5 ? (
+          {/* {product.images.length < 5 ? (
             <Button onClick={() => openModal()}> + Add Image</Button>
-          ) : null}
+          ) : null} */}
         </section>
       </div>
 
@@ -100,17 +96,17 @@ export default function AdminProductDetails() {
         </section>
       </div>
 
-      <Container heading="Reviews">
+      {/* <Container heading="Reviews">
         <p>Reviews</p>
-      </Container>
+      </Container> */}
 
       <Container heading="Stocking History">
         <p>Inventory</p>
       </Container>
 
-      <Container heading="Statistics">
+      {/* <Container heading="Statistics">
         <p>product specific stats</p>
-      </Container>
+      </Container> */}
 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50 " onClose={closeModal}>
