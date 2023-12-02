@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import { modelsConnector } from "../mongoose.server";
+import LogController from "../logs/LogController.server";
 
 export default class EmployeeAuthController {
   private request: Request;
@@ -87,6 +88,12 @@ export default class EmployeeAuthController {
         { status: 400 }
       );
     }
+
+    const logController = await new LogController();
+    await logController.create({
+      user: employee?._id,
+      action: "Login",
+    });
 
     return this.createEmployeeSession(employee._id, "/pos");
   }

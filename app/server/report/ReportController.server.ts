@@ -91,4 +91,74 @@ export default class ReportController {
 
     return groupedItems;
   };
+
+  public salesReport = async ({ from, to }: { from?: string; to?: string }) => {
+    const fromDate = from ? new Date(from) : new Date();
+    fromDate.setHours(0, 0, 0, 0);
+    const toDate = to ? new Date(to) : new Date();
+    toDate.setHours(23, 59, 59, 999);
+
+    const result = await this.Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: fromDate, $lte: toDate },
+          // status: "paid",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m", date: "$deliveryDate" },
+          },
+          revenue: { $sum: "$totalPrice" },
+          expenses: { $sum: 0 },
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date in ascending order
+      },
+      {
+        $project: {
+          _id: 0, // Exclude _id field from the result
+          month: "$_id", // Rename _id to 'month'
+          revenue: 1,
+        },
+      },
+    ]);
+    const labels = result.map((entry: any) => entry.month);
+    const revenueData = result.map((entry: any) => entry.revenue);
+    let salesData = {
+      labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          borderColor: "rgb(53, 162, 235)",
+          backgroundColor: "rgba(53, 162, 235, 0.5)",
+          tension: 0.2,
+        },
+      ],
+    };
+
+    return salesData;
+  };
 }
+
+// const totalPrice = await this.Order.aggregate([
+//   {
+//     $match: {
+//       createdAt: {
+//         $gte: fromDate,
+//         $lte: toDate,
+//       },
+//     },
+//   },
+//   {
+//     $group: {
+//       _id: null,
+//       total: {
+//         $sum: "$totalPrice",
+//       },
+//     },
+//   },
+// ]);

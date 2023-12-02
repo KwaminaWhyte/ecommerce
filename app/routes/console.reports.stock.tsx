@@ -1,27 +1,32 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
-import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
+import AdminController from "~/server/admin/AdminController.server";
 
-export default function AdminSettings() {
-  const submit = useSubmit();
-
+export default function InventoryReport() {
   return (
-    <Container heading="Integrations Settings" contentClassName="flex-col">
-      <p>Integrations Settings (Coming Soon)</p>
-      <p>Integrate your shop with other tools</p>
+    <div>
+      <h1 className="text-3xl font-bold">Stock Reports </h1>
+      <Container
+        heading="Sales by Channel"
+        subHeading="Multiple sales channels (e.g., online store, physical store), break down sales by channel."
+      >
+        <p>asfasf</p>
+      </Container>
 
-      <Form
-        method="POST"
-        className="flex-col grid grid-cols-2 gap-3 w-full"
-        onChange={(event) => submit(event.currentTarget, { replace: true })}
-      ></Form>
-    </Container>
+      <Container
+        heading="Sales Trends: "
+        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
+      >
+        <p>asfasf</p>
+      </Container>
+    </div>
   );
 }
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "ComClo - Settings | Integrations" },
+    { title: "ComClo - Stock Report" },
     {
       name: "description",
       content: "The best e-Commerce platform for your business.",
@@ -42,6 +47,9 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const adminController = await new AdminController(request);
+  await adminController.requireAdminId();
+
   return {};
 };
 

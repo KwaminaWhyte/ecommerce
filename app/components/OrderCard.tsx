@@ -42,13 +42,13 @@ const OrderCard = ({
                     >
                       <img
                         className="h-16 w-16 flex-none rounded-lg bg-slate-100 object-cover"
-                        src={item?.product.images[0].url}
+                        src={item?.product?.images[0]?.url}
                         alt=""
                       />
                       <div className="flex-auto">
                         <div className="flex flex-wrap">
                           <h3 className="flex-auto text-lg font-medium dark:text-white">
-                            {item?.product.name}
+                            {item?.product?.name}
                           </h3>
                           <p className="text-sm text-slate-500 dark:text-slate-400">
                             {item?.quantity} x GH₵ {item?.stock?.price}
@@ -76,16 +76,16 @@ const OrderCard = ({
         {order?.user?.firstName} {order?.user?.lastName}
       </td> */}
 
-      <td className="px-3 py-3 capitalize">
+      {/* <td className="px-3 py-3 capitalize">
         <ItemStatus status={order?.status} />
-      </td>
-      <td className="px-3 py-3 capitalize">
+      </td> */}
+      {/* <td className="px-3 py-3 capitalize">
         <Popover className="relative">
           <Popover.Button className="focus:outline-none">
             <ItemStatus status={order?.deliveryStatus} />
           </Popover.Button>
 
-          {/* <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
+          <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
             <div className="flex w-52 flex-col rounded-md bg-white p-3 shadow-sm dark:bg-slate-900 dark:text-white">
               {[
                 { id: 1, label: "Pending" },
@@ -112,15 +112,15 @@ const OrderCard = ({
                 </p>
               ))}
             </div>
-          </Popover.Panel> */}
+          </Popover.Panel> 
         </Popover>
-      </td>
+      </td> */}
       <td className="px-3 py-3">
         {moment(order?.createdAt).format("MMM Do YYYY, h:mm a")}
       </td>
-      <td className="px-3 py-3 ">
+      {/* <td className="px-3 py-3 ">
         {moment(order?.deliveryDate).format("MMM Do YYYY, h:mm a")}
-      </td>
+      </td> */}
       <td className="px-3 py-3 font-medium text-slate-900 dark:text-white">
         $ {order?.totalPrice}
       </td>

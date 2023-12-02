@@ -246,11 +246,21 @@ const sideNavLinks = [
         name: "General",
         path: "/console/reports",
       },
-      // {
-      //   id: 1,
-      //   name: "Sales",
-      //   path: "/console/reports/sales",
-      // },
+      {
+        id: 1,
+        name: "Sales",
+        path: "/console/reports/sales",
+      },
+      {
+        id: 12,
+        name: "Inventory",
+        path: "/console/reports/inventory",
+      },
+      {
+        id: 52,
+        name: "Transactions",
+        path: "/console/reports/financial",
+      },
       // {
       //   id: 2,
       //   name: "Orders",
@@ -261,11 +271,11 @@ const sideNavLinks = [
       //   name: "Customers",
       //   path: "/console/reports/customers",
       // },
-      // {
-      //   id: 4,
-      //   name: "Stock",
-      //   path: "/console/reports/stock",
-      // },
+      {
+        id: 40,
+        name: "Stock",
+        path: "/console/reports/stock",
+      },
     ],
   },
   {

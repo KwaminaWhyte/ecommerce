@@ -65,23 +65,23 @@ export default function PosOrders() {
               <th scope="col" className="px-3 py-3">
                 Product
               </th>
-              <th scope="col" className="px-3 py-3">
+              {/* <th scope="col" className="px-3 py-3">
                 Customer
-              </th>
-              <th scope="col" className="px-3 py-3">
+              </th> */}
+              {/* <th scope="col" className="px-3 py-3">
                 Status
-              </th>
-              <th scope="col" className="px-3 py-3">
+              </th> */}
+              {/* <th scope="col" className="px-3 py-3">
                 Delivery Status
-              </th>
+              </th> */}
               <th scope="col" className="px-3 py-3">
                 Order Date
               </th>
-              <th scope="col" className="px-3 py-3">
+              {/* <th scope="col" className="px-3 py-3">
                 Delivery Date
-              </th>
+              </th> */}
               <th scope="col" className="px-3 py-3">
-                Price
+                Total Price
               </th>
               <th scope="col" className="px-3 py-3">
                 <span className="sr-only">Action</span>
@@ -183,7 +183,6 @@ export function ErrorBoundary({ error }) {
   return (
     <Container
       heading="Error"
-      className="bg-red-300 dark:bg-red-500"
       contentClassName="flex-col grid grid-cols-2 gap-3"
     >
       <p>Something went wrong!</p>

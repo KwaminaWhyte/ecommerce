@@ -117,14 +117,14 @@ export default function Shop() {
                 </Popover>
 
                 {/* <p className="font-bold">GH₵ {product?.price}</p> */}
-                <Button
+                {/* <Button
                   onClick={() => {
                     setIsStockOpen(true);
                     setActiveProduct(product);
                   }}
                 >
                   Restock
-                </Button>
+                </Button> */}
               </div>
               {/* <p className="">Qty: {product?.quantity}</p> */}
 

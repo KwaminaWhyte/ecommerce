@@ -20,6 +20,7 @@ import { VisitSchema } from "./user/Visit";
 import { SMSHistorySchema } from "./notification/SMSHistory";
 import { EmailHistorySchema } from "./notification/EmailHistory";
 import { PaymentApiSchema } from "./settings/PaymentApi";
+import { LogSchema } from "./logs/Log";
 
 // Establish the default connection to the central database
 mongoose.connect(process.env.DATABASE_URL as string);
@@ -57,6 +58,7 @@ const modelsConnector = async () => {
     UserVisit,
     StockHistory,
     GuestCart,
+    Log,
     ClientDetail;
 
   try {
@@ -80,6 +82,7 @@ const modelsConnector = async () => {
     UserVisit = centralDb.model("user_visits");
     PaymentApi = centralDb.model("payment_apis");
     StockHistory = centralDb.model("stock_histories");
+    Log = centralDb.model("logs");
   } catch (error) {
     Admin = centralDb.model("admins", AdminSchema);
     Employee = centralDb.model("employees", EmployeeSchema);
@@ -110,6 +113,7 @@ const modelsConnector = async () => {
     UserVisit = centralDb.model("user_visits", VisitSchema);
     PaymentApi = centralDb.model("payment_apis", PaymentApiSchema);
     StockHistory = centralDb.model("stock_histories", StockHistorySchema);
+    Log = centralDb.model("logs", LogSchema);
   }
 
   return {
@@ -133,6 +137,7 @@ const modelsConnector = async () => {
     UserVisit,
     PaymentApi,
     StockHistory,
+    Log,
   };
 };
 

@@ -5,6 +5,7 @@ import moment from "moment";
 import PaymentController from "../payment/PaymentController";
 import SenderController from "../notification/SenderController";
 import { commitSession, getSession } from "~/session";
+import LogController from "../logs/LogController.server";
 
 export default class OrderController {
   private request: Request;
@@ -241,6 +242,13 @@ export default class OrderController {
         }
       }
 
+      const logController = await new LogController();
+      await logController.create({
+        user,
+        action: "Place and order",
+        order: order?._id,
+      });
+
       return await this.Order.findById(order?._id)
         .populate({
           path: "orderItems.product",
@@ -421,8 +429,7 @@ export default class OrderController {
     const revenueData = result.map((entry: any) => entry.revenue);
     const expensesData = result.map((entry: any) => entry.expenses);
 
-    // Create your chart data object
-    orderStats = {
+    return {
       labels,
       datasets: [
         {
@@ -441,9 +448,6 @@ export default class OrderController {
         },
       ],
     };
-
-    // 'orderStats' now contains your chart data for the latest 5 months
-    return orderStats;
   };
 
   public getTotals = async () => {
