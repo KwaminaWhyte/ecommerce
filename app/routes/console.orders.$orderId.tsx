@@ -4,7 +4,7 @@ import {
   type LoaderFunction,
   type MetaFunction,
 } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { useRef } from "react";
 import moment from "moment";
 import pkg from "react-to-print";
@@ -139,25 +139,28 @@ export default function AdminOrderDetails() {
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>Make Payment</DialogTitle>
-                    <DialogDescription>
-                      {/* Make changes to your profile here. Click save when you're done. */}
-                    </DialogDescription>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
+                  <Form method="POST" className="grid gap-4 py-4">
+                    <input
+                      type="hidden"
+                      name="actionType"
+                      value="make_payment"
+                    />
+                    <input type="hidden" name="_id" value={order?._id} />
+                    <div className="flex flex-col gap-3">
+                      <Label htmlFor="amount" className="">
                         Amount
                       </Label>
                       <Input
-                        id="name"
-                        value="Pedro Duarte"
+                        id="amount"
+                        name="amount"
+                        type="number"
+                        step={0.01}
                         className="col-span-3"
                       />
                     </div>
-                  </div>
-                  <DialogFooter>
                     <Button type="submit">Proceed</Button>
-                  </DialogFooter>
+                  </Form>
                 </DialogContent>
               </Dialog>
             )}
@@ -301,8 +304,12 @@ export default function AdminOrderDetails() {
                 key={IdGenerator()}
                 className="flex w-full flex-col bg-gray-100 rounded-xl p-3 shadow-sm"
               >
-                <p>Monday, 03 June, 2023 - 5:23 PM</p>
-                <p className="font-medium"> GH₵ 200</p>
+                <p>
+                  {moment(payment?.createdAt).format(
+                    "dddd, DD MMMM YYYY - hh:mm A"
+                  )}
+                </p>
+                <p className="font-medium"> GH₵ {payment?.amount}</p>
               </div>
             ))}
           </Container>
@@ -323,10 +330,20 @@ export const action: ActionFunction = async ({ request }) => {
 
   const status = formData.get("status") as string;
   const _id = formData.get("_id") as string;
+  const actionType = formData.get("actionType") as string;
 
-  const orderController = await new OrderController(request);
-  await orderController.orderStatus({ status, _id });
-  return true;
+  if (actionType === "make_payment") {
+    const amount = formData.get("amount") as string;
+    const paymentController = await new PaymentController(request);
+    return await paymentController.makePayment({
+      orderId: _id,
+      amount,
+    });
+  } else {
+    const orderController = await new OrderController(request);
+    await orderController.orderStatus({ status, _id });
+    return true;
+  }
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {

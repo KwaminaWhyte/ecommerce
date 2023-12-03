@@ -77,9 +77,9 @@ const OrderCard = ({
         {order?.user?.firstName} {order?.user?.lastName}
       </td> */}
 
-      {/* <td className="px-3 py-3 capitalize">
-        <ItemStatus status={order?.status} />
-      </td> */}
+      <td className="px-3 py-3 capitalize">
+        <ItemStatus status={order?.paymentStatus} />
+      </td>
       {/* <td className="px-3 py-3 capitalize">
         <Popover className="relative">
           <Popover.Button className="focus:outline-none">
@@ -116,14 +116,13 @@ const OrderCard = ({
           </Popover.Panel> 
         </Popover>
       </td> */}
+
+      <td className="px-3 py-3 ">GH₵ {order?.amountPaid}</td>
+      <td className="px-3 py-3 font-medium text-slate-900 dark:text-white">
+        GH₵ {order?.totalPrice}
+      </td>
       <td className="px-3 py-3">
         {moment(order?.createdAt).format("MMM Do YYYY, h:mm a")}
-      </td>
-      {/* <td className="px-3 py-3 ">
-        {moment(order?.deliveryDate).format("MMM Do YYYY, h:mm a")}
-      </td> */}
-      <td className="px-3 py-3 font-medium text-slate-900 dark:text-white">
-        $ {order?.totalPrice}
       </td>
       <td className="px-3 py-3 text-right">
         <Link

@@ -7,6 +7,9 @@ import {
 import axios from "axios";
 import OrderController from "../order/OrderController.server";
 import { Payment } from "./PaymentDetails";
+import { Order } from "../order/Order";
+import AdminController from "../admin/AdminController.server";
+import EmployeeAuthController from "../employee/EmployeeAuthController";
 
 export default class PaymentController {
   private request: Request;
@@ -183,17 +186,47 @@ export default class PaymentController {
     orderId,
     paymentMethod,
     mobileNumber,
+    amount,
   }: {
     orderId: string;
-    paymentMethod: string;
-    mobileNumber: string;
+    paymentMethod?: string;
+    mobileNumber?: string;
+    amount: string;
   }) => {
-    const payment = await Payment.create({});
+    const employeeController = await new EmployeeAuthController(this.request);
+    const adminController = await new AdminController(this.request);
+
+    const cashier = await employeeController.getEmployeeId();
+    const adminId = await adminController.getAdminId();
+
+    const payment = await Payment.create({
+      amount,
+      order: orderId,
+      cashier: adminId ? adminId : cashier,
+    });
 
     if (!payment) {
       console.log("somemthing went wrong...");
     }
 
-    return payment;
+    await Order.findOneAndUpdate(
+      { _id: orderId },
+      {
+        $inc: { amountPaid: parseFloat(amount) },
+      }
+    ).exec();
+
+    const order = await Order.findOne({ _id: orderId }).exec();
+
+    if (order?.amountPaid >= order?.totalPrice) {
+      await Order.findOneAndUpdate(
+        { _id: orderId },
+        {
+          $set: { paymentStatus: "paid" },
+        }
+      ).exec();
+    }
+
+    return true;
   };
 }
