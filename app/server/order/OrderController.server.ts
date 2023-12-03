@@ -51,7 +51,52 @@ export default class OrderController {
         }
       : {};
 
-    const orders = await Order.find(searchFilter)
+    const orders = await Order.find({ onCredit: false, ...searchFilter })
+      .skip(skipCount)
+      .limit(limit)
+      .populate({
+        path: "orderItems.stock",
+        // model: "stock_histories",
+      })
+      .populate({
+        path: "orderItems.product",
+        populate: {
+          path: "images",
+          model: "images",
+        },
+      })
+      .populate("user")
+      .sort({ createdAt: "desc" })
+      .exec();
+
+    const totalOrdersCount = await Order.countDocuments(searchFilter).exec();
+    const totalPages = Math.ceil(totalOrdersCount / limit);
+
+    return { orders, totalPages };
+  }
+
+  public async getOrdersOnCredit({
+    page,
+    search_term,
+    status = "pending",
+  }: {
+    page: number;
+    search_term?: string;
+    status?: string;
+  }) {
+    const limit = 10; // Number of orders per page
+    const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
+
+    const searchFilter = search_term
+      ? {
+          $or: [
+            { orderId: { $regex: search_term, $options: "i" } },
+            { deliveryStatus: { $regex: status, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const orders = await Order.find({ onCredit: true, ...searchFilter })
       .skip(skipCount)
       .limit(limit)
       .populate({
@@ -146,15 +191,14 @@ export default class OrderController {
     customerName,
     customerPhone,
     sales_person,
-    paymentStatus = "paid",
-    onCredit = false,
+
+    onCredit = "false",
   }: {
     user: string;
     customerName: string;
     customerPhone: string;
     sales_person: string;
-    paymentStatus: string;
-    onCredit: boolean;
+    onCredit: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const employeeAuth = await new EmployeeAuthController(this.request);
@@ -190,14 +234,12 @@ export default class OrderController {
           const productPrice = cartItem?.stock?.price;
           const quantity = cartItem.quantity;
           totalPrice += productPrice * quantity;
-          console.log(cartItem, "cart item, stock");
         });
       } else {
         cartItems?.forEach((cartItem) => {
           const productPrice = cartItem?.product?.price;
           const quantity = cartItem.quantity;
           totalPrice += productPrice * quantity;
-          console.log(cartItem, "cart item, not stock");
         });
       }
 
@@ -224,10 +266,10 @@ export default class OrderController {
         totalPrice,
         orderItems: newCartItems,
         deliveryStatus: "delivered",
-        paymentStatus,
+        paymentStatus: onCredit == "true" ? "pending" : "paid",
         sales_person,
         attendant,
-        onCredit,
+        onCredit: onCredit == "true" ? true : false,
         status: "completed",
       });
 

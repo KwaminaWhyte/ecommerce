@@ -41,7 +41,6 @@ export default function PosLayout({
   const submit = useSubmit();
   const [totalPrice, setTotalPrice] = useState(0);
   const [onCredit, setOnCredit] = useState(false);
-  console.log({ onCredit });
 
   const handleItemInscription = ({
     e,

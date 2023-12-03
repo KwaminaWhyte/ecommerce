@@ -158,7 +158,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await adminController.getAdmin();
 
   const orderController = await new OrderController(request);
-  const { orders, totalPages } = await orderController.getOrders({
+  const { orders, totalPages } = await orderController.getOrdersOnCredit({
     page,
     status,
     search_term,

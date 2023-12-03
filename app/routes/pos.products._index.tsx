@@ -269,7 +269,7 @@ export const action: ActionFunction = async ({ request }) => {
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
       sales_person: formData.get("sales_person") as string,
-      onCredit: formData.get("on_credit"),
+      onCredit: formData.get("on_credit") as string,
     });
 
     return ress;
