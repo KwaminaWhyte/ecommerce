@@ -1,3 +1,6 @@
+import { Employee } from "../employee/Employee";
+import { Order } from "../order/Order";
+
 export default class ReportController {
   private request: Request;
   private Employee: any;
@@ -9,7 +12,7 @@ export default class ReportController {
 
   public getEmployee = async (id: string) => {
     try {
-      const employee = await this.Employee.findById(id);
+      const employee = await Employee.findById(id);
       return employee;
     } catch (err) {
       throw err;
@@ -24,7 +27,7 @@ export default class ReportController {
 
     const todayProducts = [];
 
-    const orders = await this.Order.find({
+    const orders = await Order.find({
       createdAt: {
         $gte: fromDate,
         $lte: toDate,
@@ -84,7 +87,7 @@ export default class ReportController {
     const toDate = to ? new Date(to) : new Date();
     toDate.setHours(23, 59, 59, 999);
 
-    const result = await this.Order.aggregate([
+    const result = await Order.aggregate([
       {
         $match: {
           createdAt: { $gte: fromDate, $lte: toDate },
@@ -130,7 +133,7 @@ export default class ReportController {
   };
 }
 
-// const totalPrice = await this.Order.aggregate([
+// const totalPrice = await Order.aggregate([
 //   {
 //     $match: {
 //       createdAt: {

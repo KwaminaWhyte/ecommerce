@@ -92,8 +92,13 @@ const sideNavLinks = [
     children: [
       {
         id: 1,
-        name: "New Order",
+        name: "New Orders",
         path: "/console/orders",
+      },
+      {
+        id: 3,
+        name: "Orders on Credit",
+        path: "/console/orders/credit",
       },
       // {
       //   id: 2,
@@ -275,6 +280,11 @@ const sideNavLinks = [
         id: 40,
         name: "Stock",
         path: "/console/reports/stock",
+      },
+      {
+        id: 40,
+        name: "System Logs",
+        path: "/console/reports/logs",
       },
     ],
   },

@@ -82,84 +82,64 @@ export default function ProductDetails() {
       </div>
 
       <Container heading="Profile">
-        <Form method="POST" encType="multipart/form-data" className="w-full">
-          <div className="flex w-full">
-            <Input
-              name="firstName"
-              placeholder="First Name"
-              label="First Name"
-              type="text"
-              value={employee?.firstName}
-              defaultValue={actionData?.fields?.firstName}
-              error={actionData?.errors?.firstName}
-            />
-            <Spacer />
-            <Input
-              name="middleName"
-              placeholder="Middle Name"
-              label="Middle Name"
-              type="text"
-              value={employee?.middleName}
-              defaultValue={actionData?.fields?.middleName}
-              error={actionData?.errors?.middleName}
-            />
-          </div>
-          <Spacer />
+        <Form
+          method="POST"
+          encType="multipart/form-data"
+          className="w-full grid grid-cols-2 gap-3"
+        >
+          <Input
+            name="firstName"
+            placeholder="First Name"
+            label="First Name"
+            type="text"
+            value={employee?.firstName}
+            defaultValue={actionData?.fields?.firstName}
+            error={actionData?.errors?.firstName}
+          />
 
-          <div className="flex w-full">
-            <Input
-              name="lastName"
-              placeholder="Last Name"
-              label="Last Name"
-              type="text"
-              value={employee?.lastName}
-              defaultValue={actionData?.fields?.lastName}
-              error={actionData?.errors?.lastName}
-            />
-            <Spacer />
-            <Input
-              name="username"
-              placeholder="Username "
-              label="Username"
-              type="text"
-              value={employee?.username}
-              defaultValue={actionData?.fields?.username}
-              error={actionData?.errors?.username}
-            />
-          </div>
-          <Spacer />
+          <Input
+            name="lastName"
+            placeholder="Last Name"
+            label="Last Name"
+            type="text"
+            value={employee?.lastName}
+            defaultValue={actionData?.fields?.lastName}
+            error={actionData?.errors?.lastName}
+          />
 
-          <div className="flex w-full">
-            <Input
-              name="email"
-              placeholder="Email"
-              label="Email"
-              type="text"
-              value={employee?.email}
-              defaultValue={actionData?.fields?.email}
-              error={actionData?.errors?.email}
-            />
-            <Spacer />
-            <Input
-              name="role"
-              placeholder="Role"
-              label="Role"
-              type="text"
-              defaultValue={actionData?.fields?.role}
-              error={actionData?.errors?.role}
-            />
-          </div>
-          <Spacer />
+          <Input
+            name="username"
+            placeholder="Username "
+            label="Username"
+            type="text"
+            value={employee?.username}
+            defaultValue={actionData?.fields?.username}
+            error={actionData?.errors?.username}
+          />
 
-          <div className="flex w-full">
-            <Spacer />
-            <SimpleSelect label="Gender" variant="ghost">
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </SimpleSelect>
-          </div>
-          <Spacer />
+          <Input
+            name="email"
+            placeholder="Email"
+            label="Email"
+            type="text"
+            value={employee?.email}
+            defaultValue={actionData?.fields?.email}
+            error={actionData?.errors?.email}
+          />
+          <Input
+            name="role"
+            placeholder="Role"
+            label="Role"
+            type="text"
+            defaultValue={actionData?.fields?.role}
+            error={actionData?.errors?.role}
+          />
+
+          <SimpleSelect label="Gender" variant="ghost">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </SimpleSelect>
 
           <div className="flex items-center ">
             <Button

@@ -106,6 +106,7 @@ export interface OredrInterface extends Document {
   deliveryStatus: string;
   status: string;
   user: UserInterface;
+  onCredit: boolean;
   shippingAddress: AddressInterface;
   paymentInfo: PaymentInterface;
   deliveryDate: Date;
@@ -145,4 +146,12 @@ export interface EmailHistoryInterface extends Document {
   subject: string;
   body: string;
   storeName: string;
+}
+
+export interface LogInterface extends Document {
+  _id: string;
+  user: UserInterface;
+  product?: ProductInterface;
+  order?: OredrInterface;
+  action: string;
 }

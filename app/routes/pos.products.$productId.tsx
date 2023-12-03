@@ -29,6 +29,7 @@ import CartController from "~/server/cart/CartController.server";
 import type { ProductImageInterface } from "~/server/types";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import { Button } from "~/components/ui/button";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function AdminProductDetails() {
   let { user, product, cart_items } = useLoaderData();
@@ -75,7 +76,7 @@ export default function AdminProductDetails() {
           <div className="mt-3 flex flex-wrap gap-3 p-1">
             {product.images.map((image: ProductImageInterface) => (
               <img
-                key={image._id}
+                key={IdGenerator(10)}
                 onClick={() => setActiveImage(image)}
                 src={image.url}
                 className={`h-20 w-20 rounded-md object-cover ${

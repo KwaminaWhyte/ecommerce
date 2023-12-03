@@ -5,13 +5,12 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
+import { User } from "./User";
 
 export default class UserController {
   private request: Request;
-  private domain: string;
   private storage: SessionStorage;
   private session: any;
-  private User: any;
   private Address: any;
 
   /**
@@ -21,7 +20,6 @@ export default class UserController {
    */
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
 
     const secret = process.env.SESSION_SECRET;
     if (!secret) {
@@ -126,7 +124,7 @@ export default class UserController {
     email: string;
     password: string;
   }) => {
-    const user = await this.User.findOne({
+    const user = await User.findOne({
       email,
     });
 
@@ -165,7 +163,7 @@ export default class UserController {
     email: string;
     password: string;
   }) => {
-    const existingUser = await this.User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return json(
@@ -178,7 +176,7 @@ export default class UserController {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.User.create({
+    const user = await User.create({
       username,
       email,
       password: hashedPassword,
@@ -202,7 +200,7 @@ export default class UserController {
     const userId = await this.getUserId();
 
     try {
-      const user = await this.User.findById(userId, {
+      const user = await User.findById(userId, {
         email: true,
         username: true,
         lastName: true,
@@ -231,7 +229,7 @@ export default class UserController {
     const userId = await this.getUserId();
 
     try {
-      await this.User.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { _id: userId },
         {
           firstName,
@@ -261,7 +259,7 @@ export default class UserController {
     password: string;
   }) => {
     const userId = await this.getUserId();
-    const user = await this.User.findById(userId);
+    const user = await User.findById(userId);
 
     if (user) {
       const valid = await bcrypt.compare(current_password, user.password);
@@ -277,7 +275,7 @@ export default class UserController {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      await this.User.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { _id: user._id },
         {
           password: hashedPassword,
@@ -302,7 +300,7 @@ export default class UserController {
    */
   public getCustomers = async () => {
     try {
-      const customers = await this.User.find({});
+      const customers = await User.find({});
 
       return customers;
     } catch (error) {

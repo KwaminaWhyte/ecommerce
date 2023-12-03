@@ -4,6 +4,7 @@ import { Transition } from "@headlessui/react";
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/base";
 import posNavLinks from "./inc/pos_nav_links";
 import { Button } from "./ui/button";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function PosSideNavigation({ user }: { user: any }) {
   const [collapseNav, setCollapseNav] = useState(false);
@@ -72,7 +73,7 @@ export default function PosSideNavigation({ user }: { user: any }) {
           <>
             {link?.children?.length < 1 ? (
               <NavLink
-                key={link.id}
+                key={IdGenerator(6)}
                 to={link.path}
                 onClick={() => localStorage.setItem("activeMenu", link.name)}
                 className={({ isActive, isPending }) =>
@@ -112,7 +113,7 @@ export default function PosSideNavigation({ user }: { user: any }) {
             >
               {link?.children?.map((child) => (
                 <NavLink
-                  key={child.path}
+                  key={IdGenerator(16)}
                   to={child.path}
                   className={({ isActive }) =>
                     isActive

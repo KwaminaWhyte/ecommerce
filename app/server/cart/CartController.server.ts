@@ -5,15 +5,10 @@ import {
   type SessionStorage,
 } from "@remix-run/node";
 import { commitSession, getSession } from "~/session";
+import { Cart } from "./Cart";
 
 export default class CartController {
   private request: Request;
-  private domain: string;
-  private session: any;
-  private storage: SessionStorage;
-  private Cart: any;
-  private Product: any;
-  private ProductImages: any;
 
   /**
    * Initialize a CartController instance
@@ -22,30 +17,6 @@ export default class CartController {
    */
   constructor(request: Request) {
     this.request = request;
-    this.domain = (this.request.headers.get("host") as string).split(":")[0];
-
-    const secret = process.env.SESSION_SECRET;
-    if (!secret) {
-      throw new Error("No session secret provided");
-    }
-    this.storage = createCookieSessionStorage({
-      cookie: {
-        name: "__session",
-        secrets: [secret],
-        sameSite: "lax",
-        httpOnly: true,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-      },
-    });
-  }
-
-  private async generateOrderId(prefix: string) {
-    const length = 10 - prefix.length;
-    const randomString = Math.random()
-      .toString(36)
-      .substring(2, 2 + length);
-    return `${prefix}-${randomString}`;
   }
 
   public addToCart = async ({
@@ -57,20 +28,20 @@ export default class CartController {
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
 
-    const existingCart = await this.Cart.findOne({
+    const existingCart = await Cart.findOne({
       user,
       product,
     });
 
     if (existingCart) {
-      this.Cart.findOneAndUpdate(
+      Cart.findOneAndUpdate(
         { _id: existingCart._id },
         {
           $inc: { quantity: 1 },
         }
       ).exec();
     } else {
-      const cart = await this.Cart.create({
+      const cart = await Cart.create({
         user,
         product,
         quantity: 1,
@@ -104,7 +75,7 @@ export default class CartController {
 
   public getUserCart = async ({ user }: { user: string }) => {
     try {
-      const carts = await this.Cart.find({ user })
+      const carts = await Cart.find({ user })
         .populate({
           path: "product",
           populate: [
@@ -133,7 +104,7 @@ export default class CartController {
     user: string;
   }) => {
     try {
-      await this.Cart.findOneAndUpdate(
+      await Cart.findOneAndUpdate(
         { product, user },
         {
           $inc: { quantity: 1 }, // Increase the quantity by 1
@@ -164,7 +135,7 @@ export default class CartController {
     stockId: string;
   }) => {
     try {
-      await this.Cart.findOneAndUpdate(
+      await Cart.findOneAndUpdate(
         { product, user },
         {
           stock: stockId,
@@ -197,7 +168,7 @@ export default class CartController {
     user: string;
   }) => {
     try {
-      await this.Cart.findOneAndUpdate(
+      await Cart.findOneAndUpdate(
         { product, user },
         {
           $inc: { quantity: -1 }, // Decrease the quantity by 1
@@ -219,7 +190,7 @@ export default class CartController {
   public deleteItem = async ({ id }: { id: string }) => {
     // delete entry
     try {
-      await this.Cart.findByIdAndDelete(id);
+      await Cart.findByIdAndDelete(id);
       return json({ message: "Product deleted successfully" }, { status: 200 });
     } catch (err) {
       throw err;
@@ -234,7 +205,7 @@ export default class CartController {
     id: string;
   }) => {
     try {
-      await this.Cart.findOneAndUpdate(
+      await Cart.findOneAndUpdate(
         { _id: id },
         {
           inscription,

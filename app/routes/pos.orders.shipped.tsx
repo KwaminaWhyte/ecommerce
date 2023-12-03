@@ -13,6 +13,7 @@ import CartController from "~/server/cart/CartController.server";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function PosOrdersShipped() {
   const submit = useSubmit();
@@ -91,7 +92,7 @@ export default function PosOrdersShipped() {
           <tbody>
             {orders.map((order) => (
               <OrderCard
-                key={order._id}
+                key={IdGenerator(10)}
                 order={order}
                 root_path="pos"
                 submit={submit}

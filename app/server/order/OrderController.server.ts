@@ -146,15 +146,22 @@ export default class OrderController {
     customerName,
     customerPhone,
     sales_person,
+    paymentStatus = "paid",
+    onCredit = false,
   }: {
     user: string;
     customerName: string;
     customerPhone: string;
     sales_person: string;
+    paymentStatus: string;
+    onCredit: boolean;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const employeeAuth = await new EmployeeAuthController(this.request);
     const attendant = await employeeAuth.getEmployeeId();
+
+    const settingsController = await new SettingsController(this.request);
+    const settings = await settingsController.getGeneralSettings();
 
     try {
       const cartItems = await Cart.find({ user })
@@ -166,41 +173,68 @@ export default class OrderController {
         .exec();
 
       if (cartItems.length === 0) {
-        return json(
-          {
-            error: "Cart is empty.",
-            fields: {},
+        session.flash("message", {
+          title: "Cart is empty",
+          status: "error",
+        });
+        return redirect(`/pos/products`, {
+          headers: {
+            "Set-Cookie": await commitSession(session),
           },
-          { status: 400 }
-        );
+        });
       }
 
       let totalPrice = 0;
-      cartItems.forEach((cartItem: any) => {
-        const productPrice = cartItem.stock.price;
-        const quantity = cartItem.quantity;
-        totalPrice += productPrice * quantity;
-      });
+      if (settings?.separateStocks) {
+        cartItems?.forEach((cartItem) => {
+          const productPrice = cartItem?.stock?.price;
+          const quantity = cartItem.quantity;
+          totalPrice += productPrice * quantity;
+          console.log(cartItem, "cart item, stock");
+        });
+      } else {
+        cartItems?.forEach((cartItem) => {
+          const productPrice = cartItem?.product?.price;
+          const quantity = cartItem.quantity;
+          totalPrice += productPrice * quantity;
+          console.log(cartItem, "cart item, not stock");
+        });
+      }
 
-      const generalSettings = await new SettingsController(this.request);
-      const settings = await generalSettings.getGeneralSettings();
+      let newCartItems: any = [];
+      cartItems?.forEach((cartItem) => {
+        const quantity = cartItem.quantity;
+        const costPrice = cartItem?.product?.price;
+        const sellingPrice = cartItem?.product?.price;
+        const product = cartItem?.product?._id;
+        const stock = cartItem?.stock?._id;
+        newCartItems.push({
+          product,
+          costPrice,
+          sellingPrice,
+          stock,
+          quantity,
+        });
+      });
 
       const orderId = this.generateOrderId(settings?.orderIdPrefix);
       const order = await Order.create({
         orderId,
         user,
         totalPrice,
-        orderItems: cartItems,
+        orderItems: newCartItems,
         deliveryStatus: "delivered",
-        status: "paid",
+        paymentStatus,
         sales_person,
         attendant,
+        onCredit,
+        status: "completed",
       });
 
       await Cart.deleteMany({ user }).exec();
 
       for (const item of cartItems) {
-        const product = aw.findById(item.product?._id);
+        const product = await Product.findById(item.product?._id);
         const stock = await StockHistory.findById(item.stock?._id);
 
         if (product) {
@@ -234,9 +268,9 @@ export default class OrderController {
           path: "user",
           select: "_id firstName lastName email phone address",
         })
-        .populate({
-          path: "shippingAddress",
-        })
+        // .populate({
+        //   path: "shippingAddress",
+        // })
         .exec();
     } catch (error) {
       console.log(error);
@@ -338,7 +372,7 @@ export default class OrderController {
       await Order.findOneAndUpdate(
         { orderId },
         {
-          status,
+          paymentStatus: status,
           paymentReff,
         }
       ).exec();
@@ -370,7 +404,7 @@ export default class OrderController {
       {
         $match: {
           deliveryDate: { $gte: startOfLast7Months },
-          status: "paid",
+          paymentStatus: "paid",
         },
       },
       {
@@ -425,7 +459,7 @@ export default class OrderController {
     // Calculate Total Revenue
     const revenueResult = await Order.aggregate([
       {
-        $match: { status: "paid" },
+        $match: { paymentStatus: "paid" },
       },
       {
         $group: {
@@ -445,7 +479,7 @@ export default class OrderController {
 
     // Calculate Pending Orders
     const pendingCount = await Order.countDocuments({
-      status: { $in: ["unpaid", "paid"] },
+      paymentStatus: { $in: ["pending", "paid"] },
     });
     const bestsellingProducts = await Product.find()
       .populate("images")
@@ -461,7 +495,7 @@ export default class OrderController {
     const ordersCountPipeline = [
       {
         $match: {
-          status: "paid",
+          paymentStatus: "paid",
           createdAt: {
             $gte: today,
             $lt: tomorrow,
@@ -477,7 +511,7 @@ export default class OrderController {
     const ordersRevenuePipeline = [
       {
         $match: {
-          status: "paid",
+          paymentStatus: "paid",
           createdAt: {
             $gte: today,
             $lt: tomorrow,

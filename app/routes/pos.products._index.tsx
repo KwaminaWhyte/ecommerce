@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   ActionFunction,
   LoaderFunction,
@@ -23,15 +23,13 @@ import type {
   ProductInterface,
   CartInterface,
 } from "~/server/types";
-import Input from "~/components/Input";
-import Spacer from "~/components/Spacer";
-import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
 import OrderController from "~/server/order/OrderController.server";
 import pkg from "react-to-print";
 import { OrderReceipt } from "~/components/printables/OrderReceipt";
 import EmployeeController from "~/server/employee/EmployeeController.server";
+import IdGenerator from "~/lib/IdGenerator";
 
 const { useReactToPrint } = pkg;
 
@@ -49,15 +47,9 @@ export default function Shop() {
     products: ProductInterface[];
     generalSettings: any;
     cart_items: CartInterface[];
+    sales_persons: EmployeeInterface[];
   }>();
-  const navigation = useNavigation();
   const actionData = useActionData();
-  const [isStockOpen, setIsStockOpen] = useState(false);
-  const [activeProduct, setActiveProduct] = useState({});
-
-  useEffect(() => {
-    setIsStockOpen(false);
-  }, [products]);
 
   useEffect(() => {
     if (actionData) {
@@ -81,7 +73,7 @@ export default function Shop() {
         {featured_categories?.map((category) => (
           <Link
             to={`/pos/category/${category?._id}`}
-            key={category?._id}
+            key={IdGenerator(10)}
             className="flex flex-col items-center border border-slate-400 rounded-lg bg-white/95 dark:bg-black/95"
           >
             <div className="  px-3 py-1">
@@ -94,7 +86,7 @@ export default function Shop() {
       <section className="grid grid-cols-4 gap-3">
         {products?.map((product) => (
           <div
-            key={product?._id}
+            key={IdGenerator(10)}
             className="w-full border border-slate-400 bg-white/95 dark:bg-black/95 dark:text-white p-1 rounded-lg"
           >
             <img
@@ -107,38 +99,33 @@ export default function Shop() {
               <p className="line-clamp-3 mb-2">{product?.description}</p>
 
               <div className="flex justify-between items-center mt-auto">
-                <Popover className="relative ">
-                  <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
-                    {product.stockHistory.length > 0 &&
-                      product.stockHistory.length}{" "}
-                    Stocks
-                  </Popover.Button>
+                <p className="">Qty: {product?.quantity} Left</p>
 
-                  <Popover.Panel className="absolute z-10 ">
-                    <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
-                      {product.stockHistory.map((stock) => (
-                        <p
-                          key={stock?._id}
-                          className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
-                        >
-                          {stock.quantity} items @ GH₵ {stock.price} each
-                        </p>
-                      ))}
-                    </div>
-                  </Popover.Panel>
-                </Popover>
+                {product?.price ? (
+                  <p className="font-bold">GH₵ {product?.price}</p>
+                ) : (
+                  <Popover className="relative ">
+                    <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
+                      {product.stockHistory.length > 0 &&
+                        product.stockHistory.length}{" "}
+                      Stocks
+                    </Popover.Button>
 
-                {/* <p className="font-bold">GH₵ {product?.price}</p> */}
-                {/* <Button
-                  onClick={() => {
-                    setIsStockOpen(true);
-                    setActiveProduct(product);
-                  }}
-                >
-                  Restock
-                </Button> */}
+                    <Popover.Panel className="absolute z-10 ">
+                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
+                        {product.stockHistory.map((stock) => (
+                          <p
+                            key={IdGenerator(10)}
+                            className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
+                          >
+                            {stock.quantity} items @ GH₵ {stock.price} each
+                          </p>
+                        ))}
+                      </div>
+                    </Popover.Panel>
+                  </Popover>
+                )}
               </div>
-              {/* <p className="">Qty: {product?.quantity}</p> */}
 
               <div className="flex justify-between items-center mt-3">
                 {/* <Link to={`/pos/products/${product?._id}`}>View</Link> */}
@@ -271,18 +258,10 @@ export const action: ActionFunction = async ({ request }) => {
   const product = formData.get("product_id") as string;
   // const user = formData.get("user_id") as string;
 
+  console.log(formData.get("on_credit"), "on credit ...");
+
   const cartController = await new CartController(request);
   const orderController = await new OrderController(request);
-
-  // if (formData.get("stockId") != null) {
-  //   await productController.stockProduct({
-  //     _id: formData.get("stockId") as string,
-  //     quantity: formData.get("quantity") as string,
-  //     operation: formData.get("operation") as string,
-  //     price: formData.get("price") as string,
-  //   });
-  //   return true;
-  // }
 
   if ((formData.get("type") as string) == "complete") {
     const ress = await orderController.checkout({
@@ -290,15 +269,10 @@ export const action: ActionFunction = async ({ request }) => {
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
       sales_person: formData.get("sales_person") as string,
+      onCredit: formData.get("on_credit"),
     });
 
     return ress;
-  } else if ((formData.get("type") as string) == "set_stock") {
-    return await cartController.setStock({
-      product,
-      user,
-      stockId: formData.get("stock_id") as string,
-    });
   } else if ((formData.get("type") as string) == "increase") {
     return await cartController.increaseItem({ product, user });
   } else if ((formData.get("type") as string) == "decrease") {
@@ -334,7 +308,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const cartController = await new CartController(request);
   const cart_items = await cartController.getUserCart({
-    user: user._id as string,
+    user: user?._id as string,
   });
 
   return {

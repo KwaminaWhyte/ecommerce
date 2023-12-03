@@ -6,6 +6,8 @@ import {
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import LogController from "../logs/LogController.server";
+import { Employee } from "./Employee";
+import { commitSession, getSession } from "~/session";
 
 export default class EmployeeAuthController {
   private request: Request;
@@ -54,26 +56,33 @@ export default class EmployeeAuthController {
     email: string;
     password: string;
   }) {
-    const employee = await this.Employee.findOne({ email });
+    const session = await getSession(this.request.headers.get("Cookie"));
+    const employee = await Employee.findOne({ email });
 
     if (!employee) {
-      return json(
-        { message: "No account associated with this Email", type: "error" },
-        { status: 400 }
-      );
+      session.flash("message", {
+        title: "No Employee Found",
+        status: "error",
+      });
+      return redirect(`/pos/login`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
 
     const valid = await bcrypt.compare(password, employee.password);
 
     if (!valid) {
-      return json(
-        {
-          message: "Invalid Credentials",
-          type: "error",
-          fields: { email, password },
+      session.flash("message", {
+        title: "Invalid Password",
+        status: "error",
+      });
+      return redirect(`/pos/login`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
 
     const logController = await new LogController();
@@ -116,9 +125,7 @@ export default class EmployeeAuthController {
     }
 
     try {
-      const employee = await this.Employee.findById(employeeId).select(
-        "-password"
-      );
+      const employee = await Employee.findById(employeeId).select("-password");
       return employee;
     } catch {
       throw this.logout();

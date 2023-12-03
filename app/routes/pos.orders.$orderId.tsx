@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import Container from "~/components/Container";
 import ItemStatus from "~/components/ItemStatus";
 import PosLayout from "~/components/layouts/PosLayout";
+import IdGenerator from "~/lib/IdGenerator";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import OrderController from "~/server/order/OrderController.server";
 import type { OredrInterface, UserInterface } from "~/server/types";
@@ -153,7 +154,7 @@ export default function AdminOrderDetails() {
               <tbody>
                 {order?.orderItems.map((item) => (
                   <tr
-                    key={item?._id}
+                    key={IdGenerator(10)}
                     className="cursor-pointer rounded-xl hover:rounded-xl hover:bg-white hover:shadow-sm dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
                   >
                     <td className="px-3 py-3">
@@ -238,7 +239,7 @@ export default function AdminOrderDetails() {
             contentClassName="flex-col gap-4"
           >
             {[0, 1, 2, 3].map((line) => (
-              <div key={line} className="mt-4 flex w-full">
+              <div key={IdGenerator(10)} className="mt-4 flex w-full">
                 <p className="mr-2 h-8 w-8 rounded-full bg-blue-600"></p>
                 <div>
                   <p className="font-medium">5:23 PM, Monday, 03 June, 2023</p>

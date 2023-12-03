@@ -4,6 +4,7 @@ import Container from "~/components/Container";
 import { DatePickerWithRange } from "~/components/date-range";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import IdGenerator from "~/lib/IdGenerator";
 import AdminController from "~/server/admin/AdminController.server";
 import ReportController from "~/server/report/ReportController.server";
 import type { UserInterface } from "~/server/types";
@@ -56,7 +57,7 @@ export default function AdminProfile() {
             <tbody>
               {reports.map((report) => (
                 <tr
-                  key={report.stock}
+                  key={IdGenerator(10)}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
                   <th

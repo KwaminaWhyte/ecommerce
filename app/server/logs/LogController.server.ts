@@ -1,9 +1,7 @@
+import { Log } from "./Log";
+
 export default class LogController {
   private Order: any;
-  private Product: any;
-  private Cart: any;
-  private User: any;
-  private Log: any;
 
   /**
    * Initialize a LogController instance
@@ -24,7 +22,7 @@ export default class LogController {
     order?: string;
     product?: string;
   }) {
-    await this.Log.create({
+    await Log.create({
       user,
       action,
       order,
@@ -55,14 +53,14 @@ export default class LogController {
         }
       : {};
 
-    const logs = await this.Log.find(searchFilter)
+    const logs = await Log.find(searchFilter)
       .skip(skipCount)
       .limit(limit)
       .populate("employee")
       .sort({ createdAt: "desc" })
       .exec();
 
-    const totalLogsCount = await this.Log.countDocuments(searchFilter).exec();
+    const totalLogsCount = await Log.countDocuments(searchFilter).exec();
     const totalPages = Math.ceil(totalLogsCount / limit);
 
     return { logs, totalPages };

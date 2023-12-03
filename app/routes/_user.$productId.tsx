@@ -45,7 +45,7 @@ export default function ProductDetails() {
     >
       <section className="md:w-1/2">
         <img
-          src={activeImage.url}
+          src={activeImage?.url}
           className="h-80 w-full rounded-lg object-cover  md:h-[35vw]"
           alt=""
         />
@@ -53,11 +53,11 @@ export default function ProductDetails() {
         <div className="mt-3 flex flex-wrap justify-between p-1">
           {product?.images.map((image) => (
             <img
-              key={image._id}
+              key={image?._id}
               onClick={() => setActiveImage(image)}
-              src={image.url}
+              src={image?.url}
               className={`h-16 w-16 rounded-md object-cover md:h-20 md:w-20 ${
-                image._id == activeImage?._id
+                image?._id == activeImage?._id
                   ? "ring-1 ring-blue-500 ring-offset-2"
                   : ""
               } `}

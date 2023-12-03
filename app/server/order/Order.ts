@@ -23,10 +23,17 @@ const OrderSchema = new mongoose.Schema(
           ref: "products",
           required: true,
         },
+        costPrice: {
+          type: Number,
+          required: true,
+        },
+        sellingPrice: {
+          type: Number,
+          required: true,
+        },
         stock: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "stock_histories",
-          required: true,
         },
         quantity: {
           type: Number,
@@ -47,19 +54,15 @@ const OrderSchema = new mongoose.Schema(
       paymentMethod: String,
       cardNumber: String,
     },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
     status: {
       type: String,
-      enum: [
-        "unpaid",
-        "paid",
-        "shipped",
-        "delivered",
-        "cancelled",
-        "refunded",
-        "failed",
-        "disputed",
-      ],
-      default: "unpaid",
+      enum: ["cancelled", "pending", "completed"],
+      default: "pending",
     },
     shipping_timelines: [
       {
@@ -82,6 +85,10 @@ const OrderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "employees",
       required: true,
+    },
+    onCredit: {
+      type: Boolean,
+      default: false,
     },
   },
   {

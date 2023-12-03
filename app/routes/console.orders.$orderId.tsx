@@ -180,7 +180,7 @@ export default function AdminOrderDetails() {
                   >
                     <td className="px-3 py-3">
                       <img
-                        src={item.product.images[0].url}
+                        src={item?.product?.images[0]?.url}
                         className="h-20 w-20 rounded-md object-cover"
                         alt=""
                       />
@@ -189,9 +189,9 @@ export default function AdminOrderDetails() {
                       scope="row"
                       className="px-3 py-3 font-medium text-slate-900 dark:text-white"
                     >
-                      {item.product?.name}
+                      {item?.product?.name}
                     </td>
-                    <td className="px-3 py-3">{item.quantity}</td>
+                    <td className="px-3 py-3">{item?.quantity}</td>
                   </tr>
                 ))}
               </tbody>
@@ -254,6 +254,23 @@ export default function AdminOrderDetails() {
                 {order?.paymentInfo?.status}
               </p>
             </div> */}
+          </Container>
+
+          <Container
+            heading="Payment History"
+            contentClassName="flex-col gap-2"
+          >
+            {[0, 1, 2, 3].map((line) => (
+              <div
+                key={line}
+                className="flex w-full flex-col bg-gray-100 rounded-xl p-3 shadow-sm"
+              >
+                <p>Monday, 03 June, 2023 - 5:23 PM</p>
+                <p className="font-medium"> GH₵ 200</p>
+              </div>
+            ))}
+
+            {/* <Link to="/">Show more</Link> */}
           </Container>
 
           {/* <Container

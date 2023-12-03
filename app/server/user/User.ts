@@ -18,4 +18,11 @@ const UserSchema: mongoose.Schema<UserInterface> =
     { timestamps: true }
   );
 
-export { UserSchema };
+let User: mongoose.Model<UserInterface>;
+try {
+  User = mongoose.model<UserInterface>("users");
+} catch (error) {
+  User = mongoose.model<UserInterface>("users", UserSchema);
+}
+
+export { User };

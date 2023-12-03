@@ -1,14 +1,11 @@
 import type { CartInterface, EmployeeInterface } from "~/server/types";
 import PosSideNavigation from "../PosSideNavigation";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { Popover } from "@headlessui/react";
 import { Toaster } from "../ui/toaster";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -20,12 +17,12 @@ import { Form, useSubmit } from "@remix-run/react";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
 import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
 
 export default function PosLayout({
   children,
@@ -43,6 +40,8 @@ export default function PosLayout({
 }) {
   const submit = useSubmit();
   const [totalPrice, setTotalPrice] = useState(0);
+  const [onCredit, setOnCredit] = useState(false);
+  console.log({ onCredit });
 
   const handleItemInscription = ({
     e,
@@ -59,13 +58,26 @@ export default function PosLayout({
 
   useEffect(() => {
     let totalPricez = 0;
-    cart_items?.forEach((cartItem) => {
-      const productPrice = cartItem?.stock?.price;
-      const quantity = cartItem.quantity;
-      totalPricez += productPrice * quantity;
-    });
 
-    setTotalPrice(totalPricez);
+    if (settings?.separateStocks) {
+      cart_items?.forEach((cartItem) => {
+        const productPrice = cartItem?.stock?.price;
+        const quantity = cartItem.quantity;
+        totalPricez += productPrice * quantity;
+      });
+
+      setTotalPrice(totalPricez);
+    } else {
+      cart_items?.forEach((cartItem) => {
+        console.log(cartItem);
+
+        const productPrice = cartItem?.product?.price;
+        const quantity = cartItem.quantity;
+        totalPricez += productPrice * quantity;
+      });
+
+      setTotalPrice(totalPricez);
+    }
   }, [cart_items]);
 
   return (
@@ -130,7 +142,15 @@ export default function PosLayout({
                       </div>
 
                       <div className="flex justify-between">
-                        <p className="font-medium">GH₵ {item?.stock?.price} </p>
+                        {item?.product?.price ? (
+                          <p className="font-medium">
+                            GH₵ {item?.product?.price}
+                          </p>
+                        ) : (
+                          <p className="font-medium">
+                            GH₵ {item?.stock?.price}
+                          </p>
+                        )}
 
                         <div className="flex">
                           {item.quantity <= 1 ? null : (
@@ -217,6 +237,18 @@ export default function PosLayout({
               <section className="border-t border-slate-700 py-2">
                 <Form method="POST" className="gap-2 flex flex-col">
                   <input type="hidden" name="type" value="complete" />
+                  <input
+                    type="hidden"
+                    name="on_credit"
+                    value={onCredit.toString()}
+                  />
+                  <div className="flex items-center mt-2 space-x-2">
+                    <Switch
+                      id="on_credit"
+                      onCheckedChange={(value) => setOnCredit(value)}
+                    />
+                    <Label htmlFor="on_credit">On Credit</Label>
+                  </div>
 
                   <div className="mt-2 ">
                     <Label>Customer Name</Label>

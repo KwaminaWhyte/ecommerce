@@ -3,6 +3,7 @@ import { Link, type SubmitFunction } from "@remix-run/react";
 import moment from "moment";
 import type { OredrInterface } from "~/server/types";
 import ItemStatus from "./ItemStatus";
+import IdGenerator from "~/lib/IdGenerator";
 
 const OrderCard = ({
   order,
@@ -37,7 +38,7 @@ const OrderCard = ({
                 <div className="relative grid gap-3 bg-white px-3 py-4 dark:bg-slate-800 sm:gap-8 sm:p-8">
                   {order.orderItems?.map((item) => (
                     <div
-                      key={item?._id}
+                      key={IdGenerator(8)}
                       className="flex items-center space-x-4"
                     >
                       <img

@@ -1,4 +1,6 @@
 import mongoose from "../mongoose.server";
+import type { LogInterface } from "../types";
+
 const LogSchema = new mongoose.Schema(
   {
     user: {
@@ -24,4 +26,11 @@ const LogSchema = new mongoose.Schema(
   }
 );
 
-export { LogSchema };
+let Log: mongoose.Model<LogInterface>;
+try {
+  Log = mongoose.model<LogInterface>("logs");
+} catch (error) {
+  Log = mongoose.model<LogInterface>("logs", LogSchema);
+}
+
+export { Log };

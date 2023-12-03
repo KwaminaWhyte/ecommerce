@@ -1,6 +1,7 @@
 import { type MetaFunction } from "@remix-run/node";
 import React, { useState } from "react";
 import PublicLayout from "~/components/layouts/PublicLayout";
+import IdGenerator from "~/lib/IdGenerator";
 
 let features = [
   {
@@ -460,7 +461,7 @@ export default function Pricing() {
           <tbody className="">
             {features.map((feature) => (
               <tr
-                key={feature?._id}
+                key={IdGenerator(9)}
                 className="cursor-pointer mt-3 flex mb-1 rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
               >
                 <th

@@ -82,20 +82,20 @@ export default function Orders() {
               {/* <th scope="col" className="px-3 py-3">
                 Customer
               </th> */}
-              <th scope="col" className="px-3 py-3">
+              {/* <th scope="col" className="px-3 py-3">
                 Status
               </th>
               <th scope="col" className="px-3 py-3">
                 Delivery Status
-              </th>
+              </th> */}
               <th scope="col" className="px-3 py-3">
                 Order Date
               </th>
-              <th scope="col" className="px-3 py-3">
+              {/* <th scope="col" className="px-3 py-3">
                 Delivery Date
-              </th>
+              </th> */}
               <th scope="col" className="px-3 py-3">
-                Price
+                Total Price
               </th>
               <th scope="col" className="px-3 py-3">
                 <span className="sr-only">Action</span>

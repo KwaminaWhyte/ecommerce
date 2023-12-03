@@ -1,6 +1,7 @@
 import { type LoaderFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import AdminLayout from "~/components/layouts/AdminLayout";
+import IdGenerator from "~/lib/IdGenerator";
 import AdminController from "~/server/admin/AdminController.server";
 
 const settingLinks = [
@@ -56,7 +57,7 @@ export default function AdminSettings() {
       <div className="mt-3 flex justify-between gap-2 rounded-lg border border-slate-400 bg-white px-3 py-2 shadow-sm dark:bg-black/95">
         {settingLinks.map((link) => (
           <NavLink
-            key={link.id}
+            key={IdGenerator(10)}
             className={({ isActive, isPending }) =>
               isPending
                 ? "rounded-lg px-2 py-1 text-blue-600 "
