@@ -3,54 +3,82 @@ import {
   type ActionFunction,
   json,
   type LoaderFunction,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-  type UploadHandler,
   type MetaFunction,
 } from "@remix-run/node";
 
-import {
-  Link,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { Link, useLoaderData, useNavigate } from "@remix-run/react";
+import { useRef } from "react";
 import Container from "~/components/Container";
 import ItemStatus from "~/components/ItemStatus";
 import PosLayout from "~/components/layouts/PosLayout";
+import { Button } from "~/components/ui/button";
 import IdGenerator from "~/lib/IdGenerator";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import OrderController from "~/server/order/OrderController.server";
-import type { OredrInterface, UserInterface } from "~/server/types";
+import type {
+  OrderInterface,
+  PaymentInterface,
+  UserInterface,
+} from "~/server/types";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+
+import pkg from "react-to-print";
+import { OrderReceipt } from "~/components/printables/OrderReceipt";
+import SettingsController from "~/server/settings/SettingsController.server";
+import PaymentController from "~/server/payment/PaymentController";
+
+const { useReactToPrint } = pkg;
 
 export default function AdminOrderDetails() {
-  let { user, order } = useLoaderData<{
-    order: OredrInterface;
+  let { user, order, generalSettings, payments } = useLoaderData<{
+    order: OrderInterface;
     user: UserInterface;
+    generalSettings: any;
+    payments: PaymentInterface[];
   }>();
-  const [activeImage, setActiveImage] = useState({});
-  let actionData = useActionData();
-  let navigation = useNavigation();
+  const navigate = useNavigate();
 
-  let [isOpen, setIsOpen] = useState(false);
-  function openModal() {
-    setIsOpen(true);
-  }
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  useEffect(() => {
-    // setActiveImage(product?.images[0]);
-  }, []);
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   return (
     <PosLayout user={user}>
-      <div className="mb-3 flex">
+      <section className="mb-3 flex items-center">
+        <div
+          onClick={() => navigate(-1)}
+          className="mr-4 flex border border-gray-400 rounded-md"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-6 w-6 m-1.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+            />
+          </svg>
+        </div>
+
         <h1 className="text-3xl font-bold">Order Details </h1>
-      </div>
+      </section>
 
       <div className="flex gap-3">
         <Container
@@ -61,49 +89,80 @@ export default function AdminOrderDetails() {
           <div className="flex items-center border-b border-slate-400 py-5">
             <p className="mr-5 text-base font-semibold">{order.orderId}</p>
 
-            <p
-              className={`w-fit rounded-xl px-2 py-1 capitalize ${
-                order.status == "rejected"
-                  ? "bg-red-500/40 text-red-800 dark:text-white"
-                  : order.status == "completed"
-                  ? "bg-green-500/40 text-green-800 dark:text-white"
-                  : order.status == "to ship"
-                  ? "bg-blue-500/40 text-blue-800 dark:text-white"
-                  : order.status == "shipping"
-                  ? "bg-pink-500/40 text-pink-800 dark:text-white"
-                  : order.status == "pending"
-                  ? "bg-yellow-500/40 text-yellow-800 dark:text-white"
-                  : "bg-slate-500/40 text-slate-800 dark:text-white"
-              }`}
-            >
-              {order?.status}
-            </p>
+            <ItemStatus status={order?.paymentStatus} />
 
             <Popover className="relative ml-4">
               <Popover.Button className="focus:outline-none">
                 <ItemStatus status={order?.deliveryStatus} />
               </Popover.Button>
+              {/* <Popover.Panel className="absolute z-10 border border-slate-300 shadow-lg rounded-lg">
+                <div className="flex w-52 flex-col rounded-md bg-white p-3 shadow-sm dark:bg-slate-900 dark:text-white">
+                  {[
+                    { id: 1, label: "Pending" },
+                    { id: 3, label: "Shipped" },
+                    { id: 5, label: "Delivered" },
+                  ].map((status) => (
+                    <p
+                      key={status.id}
+                      onClick={() => {
+                        submit(
+                          {
+                            _id: order?._id,
+                            status: status.label.toLowerCase(),
+                          },
+                          {
+                            method: "post",
+                            encType: "application/x-www-form-urlencoded",
+                          }
+                        );
 
-              <Popover.Panel className="absolute z-10 ">
-                <div className="flex w-28 flex-col gap-3 rounded-md bg-white p-3 shadow-sm dark:bg-slate-900 dark:text-white">
-                  <Link className="px-2" to="/engagement">
-                    Pending
-                  </Link>
-                  <Link className="px-2" to="/analytics">
-                    Completed
-                  </Link>
-                  <Link className="px-2" to="/security">
-                    Shipping
-                  </Link>
-                  <Link className="px-2" to="/security">
-                    To Ship
-                  </Link>
-                  <Link className="px-2" to="/security">
-                    Rejected
-                  </Link>
+                        // setDeliveryStatus(status.label.toLowerCase());
+                      }}
+                      className="p-2 hover:bg-slate-200 dark:hover:bg-black rounded-lg cursor-pointer"
+                    >
+                      {status.label}
+                    </p>
+                  ))}
                 </div>
-              </Popover.Panel>
+              </Popover.Panel> */}
             </Popover>
+
+            <Button className="ml-auto" type="button" onClick={handlePrint}>
+              Print Receipt
+            </Button>
+
+            {order.paymentStatus === "pending" && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="ml-5">
+                    Make Payment
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Make Payment</DialogTitle>
+                    <DialogDescription>
+                      {/* Make changes to your profile here. Click save when you're done. */}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Amount
+                      </Label>
+                      <Input
+                        id="name"
+                        value="Pedro Duarte"
+                        className="col-span-3"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Proceed</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
 
           <div className="mt-5 grid grid-cols-2">
@@ -159,7 +218,7 @@ export default function AdminOrderDetails() {
                   >
                     <td className="px-3 py-3">
                       <img
-                        src={item.product.images[0].url}
+                        src={item?.product?.images[0]?.url}
                         className="h-20 w-20 rounded-md object-cover"
                         alt=""
                       />
@@ -168,9 +227,9 @@ export default function AdminOrderDetails() {
                       scope="row"
                       className="px-3 py-3 font-medium text-slate-900 dark:text-white"
                     >
-                      {item.product?.name}
+                      {item?.product?.name}
                     </td>
-                    <td className="px-3 py-3">{item.quantity}</td>
+                    <td className="px-3 py-3">{item?.quantity}</td>
                   </tr>
                 ))}
               </tbody>
@@ -235,56 +294,27 @@ export default function AdminOrderDetails() {
           </Container>
 
           <Container
-            heading="Shipment Timeline"
-            contentClassName="flex-col gap-4"
+            heading="Payment History"
+            contentClassName="flex-col gap-2"
           >
-            {[0, 1, 2, 3].map((line) => (
-              <div key={IdGenerator(10)} className="mt-4 flex w-full">
-                <p className="mr-2 h-8 w-8 rounded-full bg-blue-600"></p>
-                <div>
-                  <p className="font-medium">5:23 PM, Monday, 03 June, 2023</p>
-                  <p>Delivered Devilered to receipient at FedEx Facility</p>
-                  <p className="text-slate-700 dark:text-slate-200">Accra</p>
-                </div>
+            {payments.map((payment) => (
+              <div
+                key={IdGenerator()}
+                className="flex w-full flex-col bg-gray-100 rounded-xl p-3 shadow-sm"
+              >
+                <p>Monday, 03 June, 2023 - 5:23 PM</p>
+                <p className="font-medium"> GH₵ 200</p>
               </div>
             ))}
-            <Link to="/">Show more</Link>
           </Container>
         </section>
       </div>
 
-      {/* <div className="flex gap-4 overflow-x-auto shadow-sm">
-        <section className="w-1/2">
-          <img
-            style={{ height: "35vw" }}
-            src={activeImage.url}
-            className="w-full rounded-lg object-cover"
-            alt=""
-          />
-
-          <div className="mt-3 flex flex-wrap justify-between p-1">
-            {product.images.map((image: ProductImageInterface) => (
-              <img
-                key={image._id}
-                onClick={() => setActiveImage(image)}
-                src={image.url}
-                className={`h-20 w-20 rounded-md object-cover ${
-                  image._id == activeImage?._id
-                    ? "ring-1 ring-blue-500 ring-offset-2"
-                    : ""
-                } `}
-                alt=""
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className="w-1/2">
-          <h2 className="text-xl font-bold">{product.name}</h2>
-          <p>{product.description}</p>
-          <p>quantity</p>
-        </section>
-      </div> */}
+      <OrderReceipt
+        order={order}
+        generalSettings={generalSettings}
+        ref={componentRef}
+      />
     </PosLayout>
   );
 }
@@ -315,19 +345,6 @@ export const meta: MetaFunction = ({ data }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-
-  // if (formData.get("deleteId") != null) {
-  //   deleteProduct(formData.get("deleteId") as string);
-  //   return true;
-  // } else {
-
-  if (Object.values(errors).some(Boolean)) {
-    return json({ errors, fields: { imgSrc } }, { status: 400 });
-  }
-
-  // return { name, price, description, imgSrc };
-  return await addProductImage(productId, imgSrc);
-  // }
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -337,9 +354,18 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   await authControlle.requireEmployeeId();
   const user = await authControlle.getEmployee();
 
+  const settingsController = await new SettingsController(request);
+  const generalSettings = await settingsController.getGeneralSettings();
+
   const orderController = await new OrderController(request);
   const order = await orderController.getOrder({ orderId: orderId as string });
-  return { user, order };
+
+  const paymentController = await new PaymentController(request);
+  const payments = await paymentController.getOrderPayments({
+    orderId: orderId as string,
+  });
+
+  return { user, order, generalSettings, payments };
 };
 
 export function ErrorBoundary({ error }) {

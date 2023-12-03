@@ -1,5 +1,5 @@
 import mongoose from "../mongoose.server";
-import type { OredrInterface } from "../types";
+import type { OrderInterface } from "../types";
 
 const OrderSchema = new mongoose.Schema(
   {
@@ -90,17 +90,21 @@ const OrderSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    amountPaid: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-let Order: mongoose.Model<OredrInterface>;
+let Order: mongoose.Model<OrderInterface>;
 try {
-  Order = mongoose.model<OredrInterface>("orders");
+  Order = mongoose.model<OrderInterface>("orders");
 } catch (error) {
-  Order = mongoose.model<OredrInterface>("orders", OrderSchema);
+  Order = mongoose.model<OrderInterface>("orders", OrderSchema);
 }
 
 export { Order };

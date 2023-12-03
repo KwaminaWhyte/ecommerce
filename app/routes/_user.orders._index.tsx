@@ -4,12 +4,12 @@ import moment from "moment";
 import Container from "~/components/Container";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
 import OrderController from "~/server/order/OrderController.server";
-import type { OredrInterface } from "~/server/types";
+import type { OrderInterface } from "~/server/types";
 import UserController from "~/server/user/UserController.server";
 
 export default function UserOrders() {
   let { orders } = useLoaderData<{
-    orders: OredrInterface[];
+    orders: OrderInterface[];
   }>();
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Form, NavLink } from "@remix-run/react";
 import { Transition } from "@headlessui/react";
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/base";
@@ -70,10 +70,10 @@ export default function PosSideNavigation({ user }: { user: any }) {
 
       <section className="mx-4 flex flex-col">
         {posNavLinks.map((link) => (
-          <>
+          <Fragment key={IdGenerator(10)}>
             {link?.children?.length < 1 ? (
               <NavLink
-                key={IdGenerator(6)}
+                key={IdGenerator(10)}
                 to={link.path}
                 onClick={() => localStorage.setItem("activeMenu", link.name)}
                 className={({ isActive, isPending }) =>
@@ -92,7 +92,8 @@ export default function PosSideNavigation({ user }: { user: any }) {
                 </Transition>
               </NavLink>
             ) : (
-              <p
+              <div
+                key={IdGenerator(10)}
                 className="mb-1 flex items-center px-3 py-2 dark:text-slate-300 cursor-pointer hover:bg-slate-200 rounded-xl"
                 onClick={() => {
                   localStorage.setItem("activeMenu", link.name);
@@ -104,12 +105,13 @@ export default function PosSideNavigation({ user }: { user: any }) {
                 <Transition show={!collapseNav}>
                   <span className="ml-1">{link.name}</span>
                 </Transition>
-              </p>
+              </div>
             )}
 
             <Transition
               show={activeMenu === link.name}
               className="ml-6 border-l border-slate-400"
+              key={IdGenerator(10)}
             >
               {link?.children?.map((child) => (
                 <NavLink
@@ -128,7 +130,7 @@ export default function PosSideNavigation({ user }: { user: any }) {
                 </NavLink>
               ))}
             </Transition>
-          </>
+          </Fragment>
         ))}
       </section>
 

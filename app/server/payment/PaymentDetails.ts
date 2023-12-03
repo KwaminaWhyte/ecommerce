@@ -1,4 +1,6 @@
 import mongoose from "../mongoose.server";
+import type { PaymentInterface } from "../types";
+
 const PaymentDetailSchema = new mongoose.Schema(
   {
     user: {
@@ -39,10 +41,39 @@ const GuestPaymentDetailsSchema = new mongoose.Schema(
   }
 );
 
-// let PaymentDetails: mongoose.Model<PaymentDetailInterface>;
-// try {
-//   PaymentDetails = mongoose.model<PaymentDetailInterface>("carts");
-// } catch (error) {
-//   PaymentDetails = mongoose.model<PaymentDetailInterface>("carts", PaymentDetailSchema);
-// }
-export { PaymentDetailSchema, GuestPaymentDetailsSchema };
+const PaymentSchema = new mongoose.Schema(
+  {
+    cashier: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employees",
+    },
+    order: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "orders",
+    },
+    method: {
+      type: String,
+      enum: ["momo", "cash"],
+      default: "cash",
+    },
+    mobileNumber: {
+      type: String,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+let Payment: mongoose.Model<PaymentInterface>;
+try {
+  Payment = mongoose.model<PaymentInterface>("payments");
+} catch (error) {
+  Payment = mongoose.model<PaymentInterface>("payments", PaymentSchema);
+}
+
+export { Payment };

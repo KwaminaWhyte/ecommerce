@@ -1,25 +1,13 @@
-import { Dialog, Popover, Transition } from "@headlessui/react";
+import { Popover } from "@headlessui/react";
 import {
   type ActionFunction,
-  json,
   type LoaderFunction,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-  type UploadHandler,
   type MetaFunction,
 } from "@remix-run/node";
-
-import {
-  Form,
-  Link,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-  useSubmit,
-} from "@remix-run/react";
-import { useEffect, useRef, useState } from "react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useRef } from "react";
+import moment from "moment";
+import pkg from "react-to-print";
 
 import Container from "~/components/Container";
 import ItemStatus from "~/components/ItemStatus";
@@ -27,20 +15,35 @@ import AdminLayout from "~/components/layouts/AdminLayout";
 import { OrderReceipt } from "~/components/printables/OrderReceipt";
 import AdminController from "~/server/admin/AdminController.server";
 import OrderController from "~/server/order/OrderController.server";
-import type { OredrInterface, UserInterface } from "~/server/types";
-
-import pkg from "react-to-print";
+import type {
+  OrderInterface,
+  PaymentInterface,
+  UserInterface,
+} from "~/server/types";
 import SettingsController from "~/server/settings/SettingsController.server";
 import { Button } from "~/components/ui/button";
-import moment from "moment";
+import PaymentController from "~/server/payment/PaymentController";
+import IdGenerator from "~/lib/IdGenerator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+
 const { useReactToPrint } = pkg;
 
 export default function AdminOrderDetails() {
-  const submit = useSubmit();
   const navigate = useNavigate();
-  let { user, order, generalSettings } = useLoaderData<{
-    order: OredrInterface;
+  let { user, order, generalSettings, payments } = useLoaderData<{
+    order: OrderInterface;
     user: UserInterface;
+    payments: PaymentInterface[];
     generalSettings: any;
   }>();
 
@@ -81,10 +84,10 @@ export default function AdminOrderDetails() {
           contentClassName="flex-col"
           className="w-[60%]"
         >
-          <div className="flex items-center border-b border-slate-400 py-5">
+          <div className="flex items-center border-b border-slate-400 py-5 flex-wrap">
             <p className="mr-5 text-base font-semibold">{order.orderId}</p>
 
-            <ItemStatus status={order?.status} />
+            <ItemStatus status={order?.paymentStatus} />
 
             <Popover className="relative ml-4">
               <Popover.Button className="focus:outline-none">
@@ -125,6 +128,39 @@ export default function AdminOrderDetails() {
             <Button className="ml-auto" type="button" onClick={handlePrint}>
               Print Receipt
             </Button>
+
+            {order.paymentStatus === "pending" && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="ml-5">
+                    Make Payment
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Make Payment</DialogTitle>
+                    <DialogDescription>
+                      {/* Make changes to your profile here. Click save when you're done. */}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Amount
+                      </Label>
+                      <Input
+                        id="name"
+                        value="Pedro Duarte"
+                        className="col-span-3"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Proceed</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
 
           <div className="mt-5 grid grid-cols-2">
@@ -260,70 +296,18 @@ export default function AdminOrderDetails() {
             heading="Payment History"
             contentClassName="flex-col gap-2"
           >
-            {[0, 1, 2, 3].map((line) => (
+            {payments.map((payment) => (
               <div
-                key={line}
+                key={IdGenerator()}
                 className="flex w-full flex-col bg-gray-100 rounded-xl p-3 shadow-sm"
               >
                 <p>Monday, 03 June, 2023 - 5:23 PM</p>
                 <p className="font-medium"> GH₵ 200</p>
               </div>
             ))}
-
-            {/* <Link to="/">Show more</Link> */}
           </Container>
-
-          {/* <Container
-            heading="Shipment Timeline"
-            contentClassName="flex-col gap-4"
-          >
-            {[0, 1, 2, 3].map((line) => (
-              <div key={line} className="mt-4 flex w-full">
-                <p className="mr-2 h-8 w-8 rounded-full bg-blue-600"></p>
-                <div>
-                  <p className="font-medium">5:23 PM, Monday, 03 June, 2023</p>
-                  <p>Delivered Devilered to receipient at FedEx Facility</p>
-                  <p className="text-slate-700 dark:text-slate-200">Accra</p>
-                </div>
-              </div>
-            ))}
-            <Link to="/">Show more</Link>
-          </Container> */}
         </section>
       </section>
-
-      {/* <div className="flex gap-4 overflow-x-auto shadow-sm">
-        <section className="w-1/2">
-          <img
-            style={{ height: "35vw" }}
-            src={activeImage.url}
-            className="w-full rounded-lg object-cover"
-            alt=""
-          />
-
-          <div className="mt-3 flex flex-wrap justify-between p-1">
-            {product.images.map((image: ProductImageInterface) => (
-              <img
-                key={image._id}
-                onClick={() => setActiveImage(image)}
-                src={image.url}
-                className={`h-20 w-20 rounded-md object-cover ${
-                  image._id == activeImage?._id
-                    ? "ring-1 ring-blue-500 ring-offset-2"
-                    : ""
-                } `}
-                alt=""
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className="w-1/2">
-          <h2 className="text-xl font-bold">{product.name}</h2>
-          <p>{product.description}</p>
-          <p>quantity</p>
-        </section>
-      </div> */}
 
       <OrderReceipt
         order={order}
@@ -333,30 +317,6 @@ export default function AdminOrderDetails() {
     </AdminLayout>
   );
 }
-
-export const meta: MetaFunction = ({ data }) => {
-  let { order } = data;
-
-  return [
-    { title: `ComClo - Order Details | ${order?.orderId} ` },
-    {
-      name: "description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    { name: "og:title", content: "ComClo" },
-    { property: "og:type", content: "websites" },
-    {
-      name: "og:description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    {
-      name: "og:image",
-      content:
-        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
-    },
-    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
-  ];
-};
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -381,7 +341,37 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const orderController = await new OrderController(request);
   const order = await orderController.getOrder({ orderId: orderId as string });
-  return { user, order, generalSettings };
+
+  const paymentController = await new PaymentController(request);
+  const payments = await paymentController.getOrderPayments({
+    orderId: orderId as string,
+  });
+
+  return { user, order, generalSettings, payments };
+};
+
+export const meta: MetaFunction = ({ data }) => {
+  let { order } = data;
+
+  return [
+    { title: `ComClo - Order Details | ${order?.orderId} ` },
+    {
+      name: "description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    { name: "og:title", content: "ComClo" },
+    { property: "og:type", content: "websites" },
+    {
+      name: "og:description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    {
+      name: "og:image",
+      content:
+        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
+    },
+    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
+  ];
 };
 
 export function ErrorBoundary({ error }) {

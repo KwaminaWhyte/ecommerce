@@ -83,11 +83,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const reportController = await new ReportController(request);
   const sales = await reportController.salesReport({ from, to });
-  console.log({ sales });
 
   const orderController = await new OrderController(request);
   const salesData = await orderController.getOrderStats();
-  // console.log({ salesUpdate });
 
   return { user, salesData };
 };

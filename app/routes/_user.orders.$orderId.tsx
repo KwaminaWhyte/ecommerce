@@ -5,12 +5,12 @@ import Container from "~/components/Container";
 import LinkButton from "~/components/LinkButton";
 import UserDetailLayout from "~/components/layouts/UserDetailLayout";
 import OrderController from "~/server/order/OrderController.server";
-import type { OredrInterface } from "~/server/types";
+import type { OrderInterface } from "~/server/types";
 import UserController from "~/server/user/UserController.server";
 
 export default function UserProfile() {
   let { order } = useLoaderData<{
-    order: OredrInterface;
+    order: OrderInterface;
   }>();
 
   return (

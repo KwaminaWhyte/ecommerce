@@ -5,6 +5,7 @@ import Container from "~/components/Container";
 import Toggle from "~/components/Toggle";
 import SettingsController from "~/server/settings/SettingsController.server";
 import logo from "~/components/inc/logo.png";
+import IdGenerator from "~/lib/IdGenerator";
 export default function AdminSettings() {
   const { payment_apis } = useLoaderData();
   const submit = useSubmit();
@@ -31,7 +32,7 @@ export default function AdminSettings() {
 
       <section className="gap-2 flex flex-col">
         {payment_apis.map((api) => (
-          <div key={api?._id} className="flex items-center">
+          <div key={IdGenerator()} className="flex items-center">
             <img src={logo} alt="" className="h-16 w-16 rounded-full" />
             <div className="ml-3">
               <p className="font-bold">{api?.provider}</p>

@@ -18,6 +18,7 @@ import ProductController from "~/server/product/ProductController.server";
 import type { AdminInterface, ProductInterface } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function AdminProductDetails() {
   const submit = useSubmit();
@@ -138,7 +139,7 @@ export default function AdminProductDetails() {
           <div className="mt-3 flex flex-wrap gap-3 p-1">
             {product?.images.map((image) => (
               <img
-                key={image?._id}
+                key={IdGenerator()}
                 onClick={() => setActiveImage(image)}
                 src={image?.url}
                 className={`h-20 w-20 rounded-md object-cover ${

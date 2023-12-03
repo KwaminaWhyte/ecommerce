@@ -12,6 +12,7 @@ import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 import LogController from "~/server/logs/LogController.server";
 import { DatePickerWithRange } from "~/components/date-range";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function SystemLogs() {
   const { user, logs, page, totalPages } = useLoaderData<{
@@ -83,7 +84,7 @@ export default function SystemLogs() {
           <tbody>
             {logs.map((log) => (
               <tr
-                key={log?._id}
+                key={IdGenerator()}
                 className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
               >
                 <th
@@ -151,8 +152,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     page,
     search_term,
   });
-
-  console.log(logs);
 
   return { user, logs, totalPages, page };
 };

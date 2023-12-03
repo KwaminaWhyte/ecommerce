@@ -8,7 +8,7 @@ import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import PosLayout from "~/components/layouts/PosLayout";
-import type { EmployeeInterface, OredrInterface } from "~/server/types";
+import type { EmployeeInterface, OrderInterface } from "~/server/types";
 import CartController from "~/server/cart/CartController.server";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
@@ -19,7 +19,7 @@ export default function PosOrdersShipped() {
   const submit = useSubmit();
   const { user, orders, page, totalPages, cart_items, generalSettings } =
     useLoaderData<{
-      orders: OredrInterface[];
+      orders: OrderInterface[];
       user: EmployeeInterface;
       totalPages: number;
       page: number;

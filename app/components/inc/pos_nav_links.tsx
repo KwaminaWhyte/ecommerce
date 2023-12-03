@@ -76,7 +76,7 @@ const posNavLinks = [
       {
         id: 3,
         name: "Orders on Credit",
-        path: "/pos/orders-credit",
+        path: "/pos/orders/credit",
       },
       // {
       //   id: 2,

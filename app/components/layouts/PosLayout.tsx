@@ -23,6 +23,7 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function PosLayout({
   children,
@@ -104,7 +105,7 @@ export default function PosLayout({
             <div className="w-full flex flex-col">
               <section className="flex flex-col overflow-y-scroll gap-2 mt-4 h-[60%] pb-4 pt-2">
                 {cart_items?.map((item) => (
-                  <div key={item?._id} className="flex justify-center">
+                  <div key={IdGenerator()} className="flex justify-center">
                     <img
                       className="w-28 h-28 rounded-md object-cover"
                       src={item?.product?.images[0]?.url}
@@ -129,7 +130,7 @@ export default function PosLayout({
                                 }
                               );
                             }}
-                            key={stock?._id}
+                            key={IdGenerator()}
                             className={`bg-gray-200 px-2 text-xs cursor-pointer py-1 rounded-sm font-semibold ${
                               item?.stock?._id === stock?._id &&
                               "bg-slate-700 text-white"
@@ -263,14 +264,22 @@ export default function PosLayout({
                   </div>
 
                   <div className="mt-2 ">
+                    <Label>Amount Paid</Label>
+                    <Input
+                      name="amount_paid"
+                      placeholder="Amount customern paid"
+                    />
+                  </div>
+
+                  <div className="mt-2 ">
                     <Label>Sales Person</Label>
                     <Select name="sales_person">
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a sales person" />
                       </SelectTrigger>
                       <SelectContent>
-                        {sales_persons?.map((person, index) => (
-                          <SelectItem key={index} value={person?._id}>
+                        {sales_persons?.map((person) => (
+                          <SelectItem key={IdGenerator()} value={person?._id}>
                             {person?.firstName} {person?.lastName}
                           </SelectItem>
                         ))}

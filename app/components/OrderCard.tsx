@@ -1,7 +1,7 @@
 import { Popover } from "@headlessui/react";
 import { Link, type SubmitFunction } from "@remix-run/react";
 import moment from "moment";
-import type { OredrInterface } from "~/server/types";
+import type { OrderInterface } from "~/server/types";
 import ItemStatus from "./ItemStatus";
 import IdGenerator from "~/lib/IdGenerator";
 
@@ -10,7 +10,7 @@ const OrderCard = ({
   root_path,
   submit,
 }: {
-  order: OredrInterface;
+  order: OrderInterface;
   root_path: string;
   submit: SubmitFunction;
 }) => {

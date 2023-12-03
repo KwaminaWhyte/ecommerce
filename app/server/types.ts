@@ -61,18 +61,6 @@ export interface UserInterface extends Document {
   updatedAt: Date;
 }
 
-export interface CustomerInterface extends Document {
-  _id: string;
-  username: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface EmployeeInterface extends Document {
   _id: string;
   firstName: string;
@@ -98,7 +86,7 @@ export interface CartInterface extends Document {
   updatedAt: Date;
 }
 
-export interface OredrInterface extends Document {
+export interface OrderInterface extends Document {
   _id: string;
   orderId: string;
   orderItems: CartInterface[];
@@ -109,7 +97,9 @@ export interface OredrInterface extends Document {
   onCredit: boolean;
   shippingAddress: AddressInterface;
   paymentInfo: PaymentInterface;
+  paymentStatus: "pending" | "paid" | "failed";
   deliveryDate: Date;
+  amountPaid: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -128,17 +118,6 @@ export interface AddressInterface extends Document {
   updatedAt: Date;
 }
 
-export interface PaymentInterface extends Document {
-  _id: string;
-  orderId: string;
-  paymentMethod: string;
-  phoneNumber: string;
-  cardNumber: string;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface EmailHistoryInterface extends Document {
   _id: string;
   from: string;
@@ -152,6 +131,26 @@ export interface LogInterface extends Document {
   _id: string;
   user: UserInterface;
   product?: ProductInterface;
-  order?: OredrInterface;
+  order?: OrderInterface;
   action: string;
 }
+
+export interface PaymentInterface extends Document {
+  _id: string;
+  cashier: EmployeeInterface;
+  order: OrderInterface;
+  method: "momo" | "cash";
+  mobileNumber: string;
+  amount: number;
+}
+
+// export interface PaymentInterface extends Document {
+//   _id: string;
+//   orderId: string;
+//   paymentMethod: string;
+//   phoneNumber: string;
+//   cardNumber: string;
+//   status: string;
+//   createdAt: Date;
+//   updatedAt: Date;
+// }

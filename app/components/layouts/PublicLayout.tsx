@@ -2,6 +2,7 @@ import { Link, NavLink } from "@remix-run/react";
 import React from "react";
 import logo from "../inc/logo.png";
 import { Toaster } from "../ui/toaster";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function PublicLayout({
   children,
@@ -30,7 +31,7 @@ export default function PublicLayout({
               { id: 4, label: "Pricing", path: "/pricing" },
             ].map((item) => (
               <NavLink
-                key={item.id}
+                key={IdGenerator()}
                 to={item.path}
                 className={({ isActive }) =>
                   isActive

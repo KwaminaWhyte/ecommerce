@@ -191,7 +191,7 @@ export default class OrderController {
     customerName,
     customerPhone,
     sales_person,
-
+    amountPaid,
     onCredit = "false",
   }: {
     user: string;
@@ -199,6 +199,7 @@ export default class OrderController {
     customerPhone: string;
     sales_person: string;
     onCredit: string;
+    amountPaid: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const employeeAuth = await new EmployeeAuthController(this.request);
@@ -271,6 +272,7 @@ export default class OrderController {
         attendant,
         onCredit: onCredit == "true" ? true : false,
         status: "completed",
+        amountPaid: amountPaid ? parseInt(amountPaid) : 0,
       });
 
       await Cart.deleteMany({ user }).exec();

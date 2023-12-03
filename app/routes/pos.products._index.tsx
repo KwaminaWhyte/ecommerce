@@ -250,15 +250,11 @@ export default function Shop() {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  // const productController = await new ProductController(request);
 
   const authControlle = await new EmployeeAuthController(request);
   const user = await authControlle.requireEmployeeId();
 
   const product = formData.get("product_id") as string;
-  // const user = formData.get("user_id") as string;
-
-  console.log(formData.get("on_credit"), "on credit ...");
 
   const cartController = await new CartController(request);
   const orderController = await new OrderController(request);
@@ -270,6 +266,7 @@ export const action: ActionFunction = async ({ request }) => {
       customerPhone: formData.get("customer_phone") as string,
       sales_person: formData.get("sales_person") as string,
       onCredit: formData.get("on_credit") as string,
+      amountPaid: formData.get("amount_paid") as string,
     });
 
     return ress;

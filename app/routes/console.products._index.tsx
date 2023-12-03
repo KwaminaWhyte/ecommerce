@@ -32,6 +32,7 @@ import { validateName, validatePrice } from "~/server/validators.server";
 import Container from "~/components/Container";
 import FancySelect from "~/components/FancySelect";
 import { Button } from "~/components/ui/button";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function Products() {
   const { user, products, categories, page, totalPages } = useLoaderData<{
@@ -167,7 +168,7 @@ export default function Products() {
           <tbody>
             {products?.map((product) => (
               <tr
-                key={product?._id}
+                key={IdGenerator()}
                 className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
               >
                 <th
@@ -200,7 +201,7 @@ export default function Products() {
                         <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
                           {product.stockHistory.map((stock) => (
                             <p
-                              key={stock?._id}
+                              key={IdGenerator()}
                               className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
                             >
                               {stock.quantity} items @ GH₵ {stock.price} each
@@ -405,7 +406,7 @@ export default function Products() {
                     >
                       <option value="">Select category</option>
                       {categories.map((category: CategoryInterface) => (
-                        <option key={category._id} value={category._id}>
+                        <option key={IdGenerator()} value={category._id}>
                           {category.name}
                         </option>
                       ))}

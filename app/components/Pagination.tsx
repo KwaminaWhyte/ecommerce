@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import IdGenerator from "~/lib/IdGenerator";
 
 // Define the type for the pagination item
 interface PaginationItem {
@@ -113,8 +114,8 @@ const Pagination: React.FC<PaginationProps> = ({
         </Comp>
 
         {/* Pagination Items */}
-        {items.map((item, index) => (
-          <li key={index}>{renderEllipsisOrPage(item)}</li>
+        {items.map((item) => (
+          <li key={IdGenerator()}>{renderEllipsisOrPage(item)}</li>
         ))}
 
         {/* Next Button */}

@@ -1,4 +1,4 @@
-function IdGenerator(length) {
+function IdGenerator(length: number = 10) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomId = "";
@@ -12,6 +12,3 @@ function IdGenerator(length) {
 }
 
 export default IdGenerator;
-// Example: Generate a random ID of length 8
-//   const randomId = IdGenerator(8);
-//   console.log(randomId);

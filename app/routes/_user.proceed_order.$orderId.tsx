@@ -14,7 +14,7 @@ import UserController from "~/server/user/UserController.server";
 import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 
-import type { AddressInterface, OredrInterface } from "~/server/types";
+import type { AddressInterface, OrderInterface } from "~/server/types";
 import SimpleSelect from "~/components/SimpleSelect";
 import { Button } from "~/components/ui/button";
 
@@ -22,7 +22,7 @@ export default function UserCart() {
   const navigation = useNavigation();
   const actionData = useActionData();
   let { order, addresses } = useLoaderData<{
-    order: OredrInterface;
+    order: OrderInterface;
     addresses: AddressInterface[];
   }>();
 

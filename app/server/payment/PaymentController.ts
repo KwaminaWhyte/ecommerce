@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import axios from "axios";
 import OrderController from "../order/OrderController.server";
+import { Payment } from "./PaymentDetails";
 
 export default class PaymentController {
   private request: Request;
@@ -171,5 +172,28 @@ export default class PaymentController {
       paymentReff,
     });
     return json({ message: "Success" }, 200);
+  };
+
+  public getOrderPayments = async ({ orderId }: { orderId: string }) => {
+    const payments = await Payment.find({ order: orderId }).populate("cashier");
+    return payments;
+  };
+
+  public makePayment = async ({
+    orderId,
+    paymentMethod,
+    mobileNumber,
+  }: {
+    orderId: string;
+    paymentMethod: string;
+    mobileNumber: string;
+  }) => {
+    const payment = await Payment.create({});
+
+    if (!payment) {
+      console.log("somemthing went wrong...");
+    }
+
+    return payment;
   };
 }

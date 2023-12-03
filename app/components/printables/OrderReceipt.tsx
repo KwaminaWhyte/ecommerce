@@ -1,7 +1,8 @@
 import moment from "moment";
 import React from "react";
 import logo from "~/components/inc/logo.png";
-import { type OredrInterface } from "~/server/types";
+import IdGenerator from "~/lib/IdGenerator";
+import { type OrderInterface } from "~/server/types";
 
 export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
   const { order, generalSettings } = props;
@@ -41,7 +42,7 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
         <h3 className="text-md font-semibold">Items:</h3>
         <ul className="mt-2">
           {order?.orderItems?.map((item) => (
-            <li className="flex gap-5" key={item?._id}>
+            <li className="flex gap-5" key={IdGenerator()}>
               <span>{item?.product?.name}</span>
               <span>
                 Qty: {item?.quantity} * GH₵ {item?.stock?.price}

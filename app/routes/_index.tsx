@@ -8,6 +8,7 @@ import type {
   ProductInterface,
   UserInterface,
 } from "~/server/types";
+import IdGenerator from "~/lib/IdGenerator";
 
 export default function Index() {
   let { user, products, featured_categories } = useLoaderData<{
@@ -27,7 +28,7 @@ export default function Index() {
         {featured_categories?.map((category) => (
           <Link
             to={`/category/${category?._id}`}
-            key={category?._id}
+            key={IdGenerator()}
             className="flex flex-col items-center rounded-lg bg-white px-3 py-1"
           >
             {category?.name}
@@ -42,7 +43,7 @@ export default function Index() {
           {products?.map((product) => (
             <Link
               to={`/${product._id}`}
-              key={product._id}
+              key={IdGenerator()}
               className="my-2 gap-2 rounded-lg bg-white p-2 shadow-md dark:bg-slate-800 md:w-full"
             >
               <img
