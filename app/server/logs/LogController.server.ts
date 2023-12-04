@@ -1,3 +1,4 @@
+import { Employee } from "../employee/Employee";
 import { Log } from "./Log";
 
 export default class LogController {
@@ -31,32 +32,41 @@ export default class LogController {
 
     return true;
   }
-
   public async getLogs({
     page,
-    search_term,
-    status = "pending",
+    employee,
+    to,
+    from,
   }: {
     page: number;
-    search_term?: string;
-    status?: string;
+    employee?: string;
+    to: string;
+    from: string;
   }) {
-    const limit = 10; // Number of orders per page
+    const fromDate = from ? new Date(from) : new Date();
+    fromDate.setHours(0, 0, 0, 0);
+    const toDate = to ? new Date(to) : new Date();
+    toDate.setHours(23, 59, 59, 999);
+
+    const limit = 10; // Number of logs per page
     const skipCount = (page - 1) * limit; // Calculate the number of documents to skip
 
-    const searchFilter = search_term
+    const searchFilter: any = employee
       ? {
-          $or: [
-            { orderId: { $regex: search_term, $options: "i" } },
-            { deliveryStatus: { $regex: status, $options: "i" } },
-          ],
+          $or: [{ user: employee }],
         }
       : {};
+
+    // Add date range to the search filter
+    searchFilter.createdAt = {
+      $gte: fromDate,
+      $lte: toDate,
+    };
 
     const logs = await Log.find(searchFilter)
       .skip(skipCount)
       .limit(limit)
-      .populate("employee")
+      .populate("user")
       .sort({ createdAt: "desc" })
       .exec();
 

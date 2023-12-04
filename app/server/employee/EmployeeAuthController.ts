@@ -88,7 +88,7 @@ export default class EmployeeAuthController {
     const logController = await new LogController();
     await logController.create({
       user: employee?._id,
-      action: "Login",
+      action: "login",
     });
 
     return this.createEmployeeSession(employee._id, "/pos");
@@ -137,7 +137,7 @@ export default class EmployeeAuthController {
     const logController = await new LogController();
     await logController.create({
       user: id as string,
-      action: "Logout",
+      action: "logout",
     });
 
     const session = await this.getEmployeeSession();

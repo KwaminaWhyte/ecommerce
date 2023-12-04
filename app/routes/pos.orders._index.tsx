@@ -11,7 +11,6 @@ import PosLayout from "~/components/layouts/PosLayout";
 import type { EmployeeInterface, OrderInterface } from "~/server/types";
 import CartController from "~/server/cart/CartController.server";
 import { Pagination, PaginationItem } from "@mui/material";
-import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
 import IdGenerator from "~/lib/IdGenerator";
 
@@ -61,20 +60,21 @@ export default function PosOrders() {
               {/* <th scope="col" className="px-3 py-3">
                 Customer
               </th> */}
-              {/* <th scope="col" className="px-3 py-3">
-                Status
-              </th> */}
-              {/* <th scope="col" className="px-3 py-3">
-                Delivery Status
-              </th> */}
               <th scope="col" className="px-3 py-3">
-                Order Date
+                Payment Status
               </th>
+              <th scope="col" className="px-3 py-3">
+                Amount Paid
+              </th>
+
               {/* <th scope="col" className="px-3 py-3">
                 Delivery Date
               </th> */}
               <th scope="col" className="px-3 py-3">
                 Total Price
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Order Date
               </th>
               <th scope="col" className="px-3 py-3">
                 <span className="sr-only">Action</span>

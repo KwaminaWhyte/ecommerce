@@ -300,6 +300,14 @@ export default class OrderController {
         order: order?._id,
       });
 
+      const paymentController = await new PaymentController(this.request);
+      await paymentController.makePayment({
+        orderId: order?._id,
+        paymentMethod: "cash",
+        mobileNumber: customerPhone,
+        amount: amountPaid,
+      });
+
       return await Order.findById(order?._id)
         .populate({
           path: "orderItems.product",

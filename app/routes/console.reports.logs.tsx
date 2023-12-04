@@ -7,19 +7,36 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import Input from "~/components/Input";
 import AdminController from "~/server/admin/AdminController.server";
 import Container from "~/components/Container";
-import type { LogInterface, UserInterface } from "~/server/types";
+import type {
+  EmployeeInterface,
+  LogInterface,
+  UserInterface,
+} from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 import LogController from "~/server/logs/LogController.server";
 import { DatePickerWithRange } from "~/components/date-range";
 import IdGenerator from "~/lib/IdGenerator";
+import moment from "moment";
+import EmployeeController from "~/server/employee/EmployeeController.server";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 export default function SystemLogs() {
-  const { user, logs, page, totalPages } = useLoaderData<{
+  const { user, employees, logs, page, totalPages } = useLoaderData<{
     logs: LogInterface[];
     user: UserInterface;
     page: number;
     totalPages: number;
+    employees: EmployeeInterface[];
   }>();
 
   return (
@@ -30,13 +47,28 @@ export default function SystemLogs() {
           method="GET"
           className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
         >
-          {/* <Input placeholder="product name..." name="product_name" /> */}
+          <Select name="employee">
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select an Employee" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Employee</SelectLabel>
+                {employees.map((employee) => (
+                  <SelectItem key={IdGenerator(11)} value={employee?._id}>
+                    {employee?.firstName} {employee?.lastName}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
           <DatePickerWithRange />
           <Button>Filter</Button>
         </Form>
       </section>
 
-      <Form
+      {/* <Form
         method="GET"
         className="my-3 flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
       >
@@ -47,17 +79,7 @@ export default function SystemLogs() {
         />
 
         <Button type="submit">Search</Button>
-      </Form>
-
-      {/* <SimpleSelect name="status" variant="ghost">
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected</option>
-          <option value="shipping">Shipping</option>
-        </SimpleSelect> */}
-
-      <div>{/* <p>tabs</p> */}</div>
+      </Form> */}
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
@@ -72,13 +94,6 @@ export default function SystemLogs() {
               <th scope="col" className="px-3 py-3">
                 Timestamp
               </th>
-              {/* 
-              <th scope="col" className="px-3 py-3">
-                Status
-              </th> */}
-              <th scope="col" className="px-3 py-3">
-                <span className="sr-only">Action</span>
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -91,23 +106,26 @@ export default function SystemLogs() {
                   scope="row"
                   className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
                 >
-                  <p>{log?.name}</p>
+                  {log?.user?.firstName} {log?.user?.lastName}
                 </th>
-
-                <td className="px-3 py-3">{log?.action}</td>
-                <td className="px-3 py-3">{log?.createdAt}</td>
-                {/* <td className="px-3 py-3">
+                <td className="px-3 py-3">
                   <p
                     className={` w-fit  rounded-xl px-2 py-1 font-medium capitalize ${
-                      log?.status == "inactive"
-                        ? "bg-red-500/40 text-red-800 dark:bg-red-400/80 dark:text-white"
-                        : "bg-green-500/40 text-green-800 dark:bg-green-600/80 dark:text-white"
+                      log?.action == "login"
+                        ? "bg-yellow-500/40 text-black dark:bg-yellow-400/80 dark:text-black"
+                        : log?.action == "logout"
+                        ? "bg-red-500/40 text-red-800 dark:bg-red-600/80 dark:text-white"
+                        : "bg-blue-500/40 text-blue-800 dark:bg-blue-600/80 dark:text-white"
                     }`}
                   >
-                    {log?.status}
+                    {log?.action}
                   </p>
-                </td> */}
-                <td className="gap-1 px-3 py-3">View</td>
+                </td>
+                <td className="px-3 py-3">
+                  {moment(log?.createdAt).format(
+                    "dddd, DD MMMM YYYY - hh:mm A"
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -141,7 +159,9 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const page = parseInt(url.searchParams.get("page") as string) || 1;
-  const search_term = url.searchParams.get("search_term") as string;
+  const employee = url.searchParams.get("employee") as string;
+  const from = url.searchParams.get("from") as string;
+  const to = url.searchParams.get("to") as string;
 
   const adminController = await new AdminController(request);
   await adminController.requireAdminId();
@@ -150,10 +170,14 @@ export const loader: LoaderFunction = async ({ request }) => {
   const logController = await new LogController();
   const { logs, totalPages } = await logController.getLogs({
     page,
-    search_term,
+    employee,
+    to,
+    from,
   });
 
-  return { user, logs, totalPages, page };
+  const employeeController = await new EmployeeController(request);
+  const { employees } = await employeeController.getEmployees({ page: 1 });
+  return { user, logs, totalPages, page, employees };
 };
 
 export const meta: MetaFunction = () => {

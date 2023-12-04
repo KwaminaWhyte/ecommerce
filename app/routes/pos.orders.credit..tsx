@@ -64,17 +64,20 @@ export default function PosOrders() {
               {/* <th scope="col" className="px-3 py-3">
                 Status
               </th> */}
-              {/* <th scope="col" className="px-3 py-3">
-                Delivery Status
-              </th> */}
               <th scope="col" className="px-3 py-3">
-                Order Date
+                Payment Status
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Amount Paid
               </th>
               {/* <th scope="col" className="px-3 py-3">
                 Delivery Date
               </th> */}
               <th scope="col" className="px-3 py-3">
                 Total Price
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Order Date
               </th>
               <th scope="col" className="px-3 py-3">
                 <span className="sr-only">Action</span>

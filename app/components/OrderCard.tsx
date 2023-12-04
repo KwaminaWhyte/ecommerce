@@ -127,7 +127,7 @@ const OrderCard = ({
       <td className="px-3 py-3 text-right">
         <Link
           to={`/${root_path}/orders/${order?._id}`}
-          className="font-sm tansition-all rounded-lg bg-blue-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none"
+          className=" tansition-all rounded-md bg-blue-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none"
         >
           View
         </Link>
