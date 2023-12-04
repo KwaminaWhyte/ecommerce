@@ -17,7 +17,6 @@ import {
   Legend,
   BarElement,
 } from "chart.js/auto";
-import { ClientOnly } from "~/components/ClientOnly";
 import OrderController from "~/server/order/OrderController.server";
 
 export default function AdminProfile() {

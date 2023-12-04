@@ -1,5 +1,6 @@
 import { Employee } from "../employee/Employee";
 import { Order } from "../order/Order";
+import { Payment } from "../payment/PaymentDetails";
 
 export default class ReportController {
   private request: Request;
@@ -97,7 +98,7 @@ export default class ReportController {
       {
         $group: {
           _id: {
-            $dateToString: { format: "%Y-%m", date: "$deliveryDate" },
+            $dateToString: { format: "%Y-%m", date: "$createdAt" },
           },
           revenue: { $sum: "$totalPrice" },
           expenses: { $sum: 0 },
@@ -131,23 +132,122 @@ export default class ReportController {
 
     return salesData;
   };
-}
 
-// const totalPrice = await Order.aggregate([
-//   {
-//     $match: {
-//       createdAt: {
-//         $gte: fromDate,
-//         $lte: toDate,
-//       },
-//     },
-//   },
-//   {
-//     $group: {
-//       _id: null,
-//       total: {
-//         $sum: "$totalPrice",
-//       },
-//     },
-//   },
-// ]);
+  public getFinancialReport = async ({
+    from,
+    to,
+  }: {
+    from?: string;
+    to?: string;
+  }) => {
+    const fromDate = from ? new Date(from) : new Date();
+    fromDate.setHours(0, 0, 0, 0);
+    const toDate = to ? new Date(to) : new Date();
+    toDate.setHours(23, 59, 59, 999);
+
+    const result = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: fromDate, $lte: toDate },
+          paymentStatus: "paid",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m", date: "$createdAt" },
+          },
+          revenue: { $sum: "$totalPrice" },
+          expenses: { $sum: 0 },
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by date in ascending order
+      },
+      {
+        $project: {
+          _id: 0, // Exclude _id field from the result
+          month: "$_id", // Rename _id to 'month'
+          revenue: 1,
+        },
+      },
+    ]);
+
+    const labels = result.map((entry: any) => entry.month);
+    const revenueData = result.map((entry: any) => entry.revenue);
+    const expensesData = result.map((entry: any) => entry.expenses);
+
+    let financialData = {
+      labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: revenueData,
+          borderColor: "rgb(53, 162, 235)",
+          backgroundColor: "rgba(53, 162, 235, 0.5)",
+          tension: 0.2,
+        },
+        {
+          label: "Expenses",
+          data: expensesData,
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+          tension: 0.2,
+        },
+      ],
+    };
+
+    // transaction history here
+    const transactionHistory = await Payment.find({
+      createdAt: { $gte: fromDate, $lte: toDate },
+    })
+      .populate("order")
+      // .populate({
+      //   path: "order",
+      //   populate: {
+      //     path: "orderItems.product",
+      //     populate: {
+      //       path: "images",
+      //       model: "images",
+      //     },
+      //   },
+      // })
+      .exec();
+
+    // calculate total revenue
+    let totalRevenue = 0;
+    transactionHistory.forEach((transaction: any) => {
+      totalRevenue += transaction.amount;
+    });
+
+    // calculate total cost price
+    const orderss = await Order.find({
+      deliveryDate: {
+        $gte: fromDate,
+        $lte: toDate,
+      },
+    })
+      .populate("orderItems.product") // Assuming you want to populate the product details
+      .exec();
+    // Calculate total cost price, total selling price, and profit for all orders
+    let totalCostPrice = 0;
+    let totalSellingPrice = 0;
+    let totalProfit = 0;
+    orderss.forEach((orderItems) => {
+      orderItems.orderItems.forEach((item) => {
+        totalCostPrice += item.costPrice * item.quantity;
+        totalSellingPrice += item.sellingPrice * item.quantity;
+      });
+    });
+
+    return {
+      financialData,
+      transactionHistory,
+      soldData: {
+        totalCostPrice,
+        totalSellingPrice,
+        totalProfit: totalSellingPrice - totalCostPrice,
+      },
+    };
+  };
+}

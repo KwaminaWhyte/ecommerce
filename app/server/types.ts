@@ -100,6 +100,8 @@ export interface OrderInterface extends Document {
   paymentStatus: "pending" | "paid" | "failed";
   deliveryDate: Date;
   amountPaid: number;
+  customerPhone: string;
+  customerName: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -140,8 +142,18 @@ export interface PaymentInterface extends Document {
   cashier: EmployeeInterface;
   order: OrderInterface;
   method: "momo" | "cash";
-  mobileNumber: string;
+  customerName: string;
+  customerPhone: string;
   amount: number;
+}
+
+export interface ExpenseInterface extends Document {
+  _id: string;
+  admin: AdminInterface;
+  amount: number;
+  note: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // export interface PaymentInterface extends Document {

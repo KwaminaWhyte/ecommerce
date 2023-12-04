@@ -1,6 +1,5 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,14 +11,15 @@ import {
   Legend,
   BarElement,
 } from "chart.js/auto";
+import { Bar, Line } from "react-chartjs-2";
 import Container from "~/components/Container";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import OrderController from "~/server/order/OrderController.server";
 import type { AdminInterface, ProductInterface } from "~/server/types";
 // import SenderController from "~/server/notification/SenderController";
-import { ClientOnly } from "~/components/ClientOnly";
 import { useEffect, useState } from "react";
+import { ClientOnly } from "remix-utils/client-only";
 
 ChartJS.register(
   CategoryScale,

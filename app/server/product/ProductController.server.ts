@@ -77,7 +77,7 @@ export default class ProductController {
     imgSrc,
     category,
     quantity,
-    cost_price,
+    costPrice,
   }: {
     name: string;
     price: string;
@@ -85,7 +85,7 @@ export default class ProductController {
     imgSrc: string;
     category: string;
     quantity: string;
-    cost_price: string;
+    costPrice: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const adminController = await new AdminController(this.request);
@@ -117,6 +117,7 @@ export default class ProductController {
       category,
       availability: "available",
       quantity: parseInt(quantity),
+      costPrice: parseFloat(costPrice),
     };
 
     if (!generalSettings.separateStocks) {
@@ -218,13 +219,13 @@ export default class ProductController {
     quantity,
     operation,
     price,
-    cost_price,
+    costPrice,
   }: {
     _id: string;
     quantity: string;
     operation: string;
     price: string;
-    cost_price: string;
+    costPrice: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const product = await Product.findById(_id);
@@ -232,13 +233,13 @@ export default class ProductController {
     const adminController = await new AdminController(this.request);
     const adminId = await adminController.getAdminId();
     if (adminId) {
-      let stockk = await this.StockHistory.create({
+      let stockk = await StockHistory.create({
         user: adminId,
         product: _id,
         quantity,
         operation,
         price: parseFloat(price),
-        costPrice: parseFloat(cost_price),
+        costPrice: parseFloat(costPrice),
       });
 
       product.quantity += parseInt(quantity);
@@ -262,7 +263,7 @@ export default class ProductController {
     const userId = await employeeAuthController.getEmployeeId();
 
     if (userId) {
-      let stockk = await this.StockHistory.create({
+      let stockk = await StockHistory.create({
         user: userId,
         product: _id,
         quantity,

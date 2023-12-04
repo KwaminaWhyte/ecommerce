@@ -94,6 +94,8 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    customerName: String,
+    customerPhone: String,
   },
   {
     timestamps: true,

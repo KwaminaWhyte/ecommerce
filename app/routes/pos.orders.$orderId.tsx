@@ -37,6 +37,7 @@ import pkg from "react-to-print";
 import { OrderReceipt } from "~/components/printables/OrderReceipt";
 import SettingsController from "~/server/settings/SettingsController.server";
 import PaymentController from "~/server/payment/PaymentController";
+import moment from "moment";
 
 const { useReactToPrint } = pkg;
 
@@ -255,16 +256,16 @@ export default function AdminOrderDetails() {
             <div className="mb-2">
               <p className="font-medium">Date</p>
               <p className="text-slate-500 dark:text-slate-400">
-                {order?.paymentInfo?.createdAt}
+                {moment(order?.createdAt).format("DD MMMM YYYY")}
               </p>
             </div>
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <p className="font-medium">Tracking #</p>
               <p className="text-slate-500 dark:text-slate-400">
                 {order?.paymentInfo?.id}
               </p>
-            </div>
+            </div> */}
 
             <div className="mb-2">
               <p className="font-medium">Method</p>
@@ -278,19 +279,19 @@ export default function AdminOrderDetails() {
               </p>
             </div>
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <p className="font-medium">Shipping Charge</p>
               <p className="text-slate-500 dark:text-slate-400">
                 $ {order?.shippingPrice}
               </p>
-            </div>
+            </div> */}
 
-            <div className="mb-2">
+            {/* <div className="mb-2">
               <p className="font-medium">Status</p>
               <p className="text-slate-500 dark:text-slate-400">
                 {order?.paymentInfo?.status}
               </p>
-            </div>
+            </div> */}
           </Container>
 
           <Container
@@ -302,8 +303,12 @@ export default function AdminOrderDetails() {
                 key={IdGenerator()}
                 className="flex w-full flex-col bg-gray-100 rounded-xl p-3 shadow-sm"
               >
-                <p>Monday, 03 June, 2023 - 5:23 PM</p>
-                <p className="font-medium"> GH₵ 200</p>
+                <p>
+                  {moment(payment?.createdAt).format(
+                    "dddd, DD MMMM YYYY - hh:mm A"
+                  )}
+                </p>
+                <p className="font-medium"> GH₵ {payment?.amount}</p>
               </div>
             ))}
           </Container>

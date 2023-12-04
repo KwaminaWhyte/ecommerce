@@ -45,6 +45,7 @@
     "react-dom": "^18.2.0",
     "react-select": "^5.8.0",
     "react-to-print": "^2.14.15",
+    "remix-utils": "^7.3.0",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "tailwind-merge": "^2.0.0",

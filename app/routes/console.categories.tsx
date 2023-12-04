@@ -24,12 +24,17 @@ import ProductController from "~/server/product/ProductController.server";
 import { validateName } from "~/server/validators.server";
 import DeleteModal from "~/components/modals/DeleteModal";
 import Container from "~/components/Container";
-import type { CategoryInterface } from "~/server/types";
+import type { CategoryInterface, UserInterface } from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 
 export default function Products() {
-  const { user, categories, page, totalPages } = useLoaderData();
+  const { user, categories, page, totalPages } = useLoaderData<{
+    user: UserInterface;
+    categories: CategoryInterface[];
+    page: number;
+    totalPages: number;
+  }>();
   const actionData = useActionData();
   const navigation = useNavigation();
 

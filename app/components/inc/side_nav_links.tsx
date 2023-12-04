@@ -276,11 +276,11 @@ const sideNavLinks = [
       //   name: "Customers",
       //   path: "/console/reports/customers",
       // },
-      {
-        id: 40,
-        name: "Stock",
-        path: "/console/reports/stock",
-      },
+      // {
+      //   id: 40,
+      //   name: "Stock",
+      //   path: "/console/reports/stock",
+      // },
       {
         id: 40,
         name: "System Logs",

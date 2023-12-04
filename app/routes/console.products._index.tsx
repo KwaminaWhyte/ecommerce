@@ -646,7 +646,7 @@ export const action: ActionFunction = async ({ request }) => {
       _id: formData.get("stockId") as string,
       quantity,
       price,
-      cost_price,
+      costPrice: cost_price,
       // operation: formData.get("operation") as string,
       operation: "add",
     });
@@ -683,7 +683,7 @@ export const action: ActionFunction = async ({ request }) => {
       imgSrc,
       category,
       quantity,
-      cost_price,
+      costPrice: cost_price,
     });
   }
 };

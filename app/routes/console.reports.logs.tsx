@@ -31,7 +31,7 @@ import {
 } from "~/components/ui/select";
 
 export default function SystemLogs() {
-  const { user, employees, logs, page, totalPages } = useLoaderData<{
+  const { employees, logs, page, totalPages } = useLoaderData<{
     logs: LogInterface[];
     user: UserInterface;
     page: number;

@@ -247,7 +247,7 @@ export default class OrderController {
       let newCartItems: any = [];
       cartItems?.forEach((cartItem) => {
         const quantity = cartItem.quantity;
-        const costPrice = cartItem?.product?.price;
+        const costPrice = cartItem?.product?.costPrice;
         const sellingPrice = cartItem?.product?.price;
         const product = cartItem?.product?._id;
         const stock = cartItem?.stock?._id;
@@ -273,6 +273,8 @@ export default class OrderController {
         onCredit: onCredit == "true" ? true : false,
         status: "completed",
         amountPaid: amountPaid ? parseInt(amountPaid) : 0,
+        customerName,
+        customerPhone,
       });
 
       await Cart.deleteMany({ user }).exec();
@@ -320,9 +322,6 @@ export default class OrderController {
           path: "user",
           select: "_id firstName lastName email phone address",
         })
-        // .populate({
-        //   path: "shippingAddress",
-        // })
         .exec();
     } catch (error) {
       console.log(error);
@@ -455,14 +454,14 @@ export default class OrderController {
     const result = await Order.aggregate([
       {
         $match: {
-          deliveryDate: { $gte: startOfLast7Months },
+          createdAt: { $gte: startOfLast7Months },
           paymentStatus: "paid",
         },
       },
       {
         $group: {
           _id: {
-            $dateToString: { format: "%Y-%m", date: "$deliveryDate" },
+            $dateToString: { format: "%Y-%m", date: "$createdAt" },
           },
           revenue: { $sum: "$totalPrice" },
           expenses: { $sum: 0 },

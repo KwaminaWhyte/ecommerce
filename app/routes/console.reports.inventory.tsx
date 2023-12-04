@@ -7,15 +7,30 @@ export default function InventoryReport() {
   return (
     <div>
       <h1 className="text-3xl font-bold">Inventory Reports </h1>
+
       <Container
-        heading="Sales by Channel"
-        subHeading="Multiple sales channels (e.g., online store, physical store), break down sales by channel."
+        heading="Products Sold"
+        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
       >
         <p>asfasf</p>
       </Container>
 
       <Container
-        heading="Sales Trends: "
+        heading="Products Running Low"
+        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
+      >
+        <p>asfasf</p>
+      </Container>
+
+      <Container
+        heading="Products Not Selling"
+        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
+      >
+        <p>asfasf</p>
+      </Container>
+
+      <Container
+        heading="Top Products Selling"
         subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
       >
         <p>asfasf</p>
