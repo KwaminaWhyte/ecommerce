@@ -16,7 +16,7 @@ export default class ReportController {
       const employee = await Employee.findById(id);
       return employee;
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 

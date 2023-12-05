@@ -193,7 +193,7 @@ export default class CartController {
       await Cart.findByIdAndDelete(id);
       return json({ message: "Product deleted successfully" }, { status: 200 });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 

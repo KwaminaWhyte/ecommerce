@@ -105,7 +105,7 @@ export { GeneralSettings };
 //   } catch (error) {
 //     // Handle error
 //     console.error("Error seeding admin settings:", error);
-//     throw error;
+//console.log(err);
 //   }
 // };
 

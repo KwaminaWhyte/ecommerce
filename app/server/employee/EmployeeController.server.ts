@@ -108,7 +108,7 @@ export default class EmployeeController {
       const employee = await Employee.findById(id);
       return employee;
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 
@@ -179,7 +179,7 @@ export default class EmployeeController {
         { status: 200 }
       );
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 

@@ -1,7 +1,6 @@
 import { Popover } from "@headlessui/react";
 import {
   type ActionFunction,
-  json,
   type LoaderFunction,
   type MetaFunction,
 } from "@remix-run/node";
@@ -14,12 +13,9 @@ import {
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
-import Input from "~/components/Input";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
-import ProductController from "~/server/product/ProductController.server";
-import { validateName } from "~/server/validators.server";
 import DeleteModal from "~/components/modals/DeleteModal";
 import Container from "~/components/Container";
 import type { ExpenseInterface, UserInterface } from "~/server/types";
@@ -39,11 +35,14 @@ import { Label } from "~/components/ui/label";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
+import moment from "moment";
 
 export default function Products() {
   const { user, expenses, page, totalPages } = useLoaderData<{
@@ -96,7 +95,13 @@ export default function Products() {
 
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                   <Label htmlFor="amount">Amount</Label>
-                  <Input id="amount" name="amount" />
+                  <Input
+                    id="amount"
+                    type="number"
+                    step={0.01}
+                    min={1}
+                    name="amount"
+                  />
                 </div>
 
                 <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -128,15 +133,11 @@ export default function Products() {
                 />
 
                 <div className="flex items-center ">
-                  <Button
-                    color="error"
-                    type="button"
-                    className="ml-auto mr-3"
-                    onClick={closeModal}
-                    variant="destructive"
-                  >
-                    Close
-                  </Button>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Close
+                    </Button>
+                  </DialogClose>
 
                   <Button
                     type="submit"
@@ -181,39 +182,40 @@ export default function Products() {
           <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
             <tr>
               <th scope="col" className="px-3 py-3">
-                Name
+                Amount
               </th>
               <th scope="col" className="px-3 py-3">
-                Description
-              </th>
-              {/* <th scope="col" className="px-3 py-3">
-                Featured
+                Category
               </th>
               <th scope="col" className="px-3 py-3">
-                Status
-              </th> */}
+                Note
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Timestamp
+              </th>
               <th scope="col" className="px-3 py-3">
                 <span className="sr-only">Action</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {expenses.map((category) => (
+            {expenses.map((expense) => (
               <tr
-                key={category?._id}
+                key={expense?._id}
                 className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
               >
                 <th
                   scope="row"
                   className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
                 >
-                  <p>{category?.name}</p>
+                  <p>{expense?.amount}</p>
                 </th>
 
-                <td className="px-3 py-3">{category?.description}</td>
-                {/* <td className="px-3 py-3">
-                  {category?.featured ? "True" : "False"}
-                </td> */}
+                <td className="px-3 py-3">{expense?.category}</td>
+                <td className="px-3 py-3">{expense?.note}</td>
+                <td className="px-3 py-3">
+                  {moment(expense?.createdAt).format("MMM Do YYYY, h:mm a")}
+                </td>
                 {/* <td className="px-3 py-3">
                   <p
                     className={` w-fit  rounded-xl px-2 py-1 font-medium capitalize ${
@@ -237,7 +239,7 @@ export default function Products() {
                         <Button
                           onClick={() => {
                             setIsUpdating(true);
-                            setActiveCategory(category);
+                            setActiveCategory(expense);
                           }}
                         >
                           Update
@@ -246,7 +248,7 @@ export default function Products() {
                           variant="destructive"
                           type="button"
                           onClick={() => {
-                            setDeleteId(category?._id);
+                            setDeleteId(expense?._id);
                             setIsOpenDelete(true);
                           }}
                         >
@@ -294,44 +296,40 @@ export default function Products() {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  const productController = await new ProductController(request);
+  const expenseController = await new ExpenseController(request);
+
+  const _id = formData.get("_id") as string;
+  const amount = formData.get("amount") as string;
+  const category = formData.get("category") as string;
+  const note = formData.get("note") as string;
+
+  // if (typeof name !== "string") {
+  //   return json({ error: "Invalid name " }, { status: 400 });
+  // }
+
+  // const errors = {
+  //   name: validateName(name),
+  // };
+
+  // if (Object.values(errors).some(Boolean)) {
+  //   return json({ errors, fields: { name } }, { status: 400 });
+  // }
 
   if (formData.get("deleteId") != null) {
-    productController.deleteCategory(formData.get("deleteId") as string);
+    await expenseController.deleteExpense(formData.get("deleteId") as string);
     return true;
-  }
-
-  const name = formData.get("name");
-  const status = formData.get("status") as string;
-  const featured = formData.get("featured") as string;
-  const description = formData.get("description") as string;
-
-  if (typeof name !== "string") {
-    return json({ error: "Invalid name " }, { status: 400 });
-  }
-
-  const errors = {
-    name: validateName(name),
-  };
-
-  if (Object.values(errors).some(Boolean)) {
-    return json({ errors, fields: { name } }, { status: 400 });
-  }
-
-  if (formData.get("_id") != null) {
-    return await productController.updateCategory({
-      _id: formData.get("_id") as string,
-      name,
-      description,
-      status,
-      featured,
+  } else if (formData.get("_id") != null) {
+    return await expenseController.updateExpense({
+      _id,
+      amount,
+      category,
+      note,
     });
   } else {
-    return await productController.createCategory({
-      name,
-      description,
-      status,
-      featured,
+    return await expenseController.createExpense({
+      amount,
+      category,
+      note,
     });
   }
 };

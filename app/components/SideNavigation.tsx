@@ -144,7 +144,7 @@ export default function SideNavigation({ user }: { user: any }) {
             />
             <Transition show={!collapseNav}>
               <div className="flex flex-col">
-                <p className="m-0 p-0 text-left font-bold">{user.username}</p>
+                <p className="m-0 p-0 text-left font-bold">{user?.username}</p>
                 <p className="mr-auto">Super Admin</p>
                 {/* <p className="">{user.email}</p> */}
               </div>

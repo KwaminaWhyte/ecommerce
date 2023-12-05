@@ -66,7 +66,6 @@ export default class ProductController {
       return product;
     } catch (error) {
       console.error("Error retrieving product:", error);
-      throw error;
     }
   }
 
@@ -293,7 +292,7 @@ export default class ProductController {
       await Product.findByIdAndDelete(id);
       return json({ message: "Product deleted successfully" }, { status: 200 });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 
@@ -347,7 +346,7 @@ export default class ProductController {
 
   public async getActiveCategories() {
     try {
-      const categories = await ProductCategory.find({
+      const categories = await Category.find({
         status: "active",
       }).exec();
 
@@ -446,7 +445,7 @@ export default class ProductController {
         { status: 200 }
       );
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 
@@ -471,7 +470,7 @@ export default class ProductController {
 
       return redirect(`/console/products/${product._id}`);
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 }

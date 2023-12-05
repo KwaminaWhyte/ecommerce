@@ -110,7 +110,7 @@ export default class WishlistController {
       await this.WishList.findByIdAndDelete(id);
       return json({ message: "Item deleted successfully" }, { status: 200 });
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   };
 }
