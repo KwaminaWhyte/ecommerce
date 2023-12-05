@@ -1,4 +1,5 @@
 import { Employee } from "../employee/Employee";
+import { Expense } from "../expense/Expense";
 import { Order } from "../order/Order";
 import { Payment } from "../payment/PaymentDetails";
 
@@ -145,7 +146,47 @@ export default class ReportController {
     const toDate = to ? new Date(to) : new Date();
     toDate.setHours(23, 59, 59, 999);
 
-    const result = await Order.aggregate([
+    // const result = await Order.aggregate([
+    //   {
+    //     $match: {
+    //       createdAt: { $gte: fromDate, $lte: toDate },
+    //       paymentStatus: "paid",
+    //     },
+    //   },
+    //   {
+    //     $group: {
+    //       _id: {
+    //         $dateToString: { format: "%Y-%m", date: "$createdAt" },
+    //       },
+    //       revenue: { $sum: "$totalPrice" },
+    //       expenses: { $sum: 0 },
+    //     },
+    //   },
+    //   {
+    //     $sort: { _id: 1 }, // Sort by date in ascending order
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 0, // Exclude _id field from the result
+    //       month: "$_id", // Rename _id to 'month'
+    //       revenue: 1,
+    //     },
+    //   },
+    // ]);
+
+    // Transform the result for the desired format
+    // const labels = result.map((entry) => entry.month);
+    // const revenueData = result.map((entry) => entry.revenue);
+    // const expensesData = result.map((entry) => entry.expenses);
+
+    // console.log({
+    //   labels,
+    //   revenueData,
+    //   expensesData,
+    // });
+
+    // Aggregation for orders
+    const orderResult = await Order.aggregate([
       {
         $match: {
           createdAt: { $gte: fromDate, $lte: toDate },
@@ -158,7 +199,6 @@ export default class ReportController {
             $dateToString: { format: "%Y-%m", date: "$createdAt" },
           },
           revenue: { $sum: "$totalPrice" },
-          expenses: { $sum: 0 },
         },
       },
       {
@@ -173,9 +213,40 @@ export default class ReportController {
       },
     ]);
 
-    const labels = result.map((entry: any) => entry.month);
-    const revenueData = result.map((entry: any) => entry.revenue);
-    const expensesData = result.map((entry: any) => entry.expenses);
+    // Aggregation for expenses
+    const expenseResult = await Expense.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: fromDate, $lte: toDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m", date: "$createdAt" },
+          },
+          expenses: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    // Combine results based on month labels
+    const combinedResult = orderResult.map((orderEntry) => {
+      const correspondingExpenseEntry = expenseResult.find(
+        (expenseEntry) => expenseEntry._id === orderEntry.month
+      );
+      return {
+        month: orderEntry.month,
+        revenue: orderEntry.revenue,
+        expenses: correspondingExpenseEntry
+          ? correspondingExpenseEntry.expenses
+          : 0,
+      };
+    });
+    // Transform the combined result for the desired format
+    const labels = combinedResult.map((entry) => entry.month);
+    const revenueData = combinedResult.map((entry) => entry.revenue);
+    const expensesData = combinedResult.map((entry) => entry.expenses);
 
     let financialData = {
       labels,
@@ -214,6 +285,11 @@ export default class ReportController {
       // })
       .exec();
 
+    // expense history here
+    const expenseHistory = await Expense.find({
+      createdAt: { $gte: fromDate, $lte: toDate },
+    }).exec();
+
     // calculate total revenue
     let totalRevenue = 0;
     transactionHistory.forEach((transaction: any) => {
@@ -243,6 +319,7 @@ export default class ReportController {
     return {
       financialData,
       transactionHistory,
+      expenseHistory,
       soldData: {
         totalCostPrice,
         totalSellingPrice,

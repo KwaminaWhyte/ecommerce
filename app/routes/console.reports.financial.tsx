@@ -21,7 +21,7 @@ import ReportController from "~/server/report/ReportController.server";
 import { DatePickerWithRange } from "~/components/date-range";
 import { Button } from "~/components/ui/button";
 import moment from "moment";
-import type { PaymentInterface } from "~/server/types";
+import type { ExpenseInterface, PaymentInterface } from "~/server/types";
 
 ChartJS.register(
   CategoryScale,
@@ -35,12 +35,16 @@ ChartJS.register(
 );
 
 export default function FinancialReport() {
-  const { financialData, salesOptions, transactionHistory, soldData } =
-    useLoaderData<{
-      transactionHistory: PaymentInterface[];
-    }>();
-  console.log(transactionHistory);
-  console.log(soldData);
+  const {
+    financialData,
+    salesOptions,
+    transactionHistory,
+    soldData,
+    expenseHistory,
+  } = useLoaderData<{
+    transactionHistory: PaymentInterface[];
+    expenseHistory: ExpenseInterface[];
+  }>();
 
   return (
     <div>
@@ -86,14 +90,61 @@ export default function FinancialReport() {
         </ClientOnly>
       </Container>
 
-      <Container
-        heading="Expenses"
-        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>asfasf</p>
-      </Container>
+      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+        <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
+          <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Expenses History
+          </h3>
+        </div>
+        <table className="w-full text-left text-slate-500 dark:text-slate-400">
+          <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
+            <tr>
+              <th scope="col" className="px-3 py-3">
+                Amount
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Category
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Note
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Timestamp
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {expenseHistory.map((expense) => (
+              <tr
+                key={expense?._id}
+                className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
+              >
+                <th
+                  scope="row"
+                  className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
+                >
+                  <p>{expense?.amount}</p>
+                </th>
+
+                <td className="px-3 py-3">{expense?.category}</td>
+                <td className="px-3 py-3">GH₵ {expense?.note}</td>
+                <td className="px-3 py-3">
+                  {moment(expense?.createdAt).format(
+                    "dddd, MMM DD, YYYY h:m A"
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+        <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
+          <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Transaction History
+          </h3>
+        </div>
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
           <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
             <tr>
@@ -162,12 +213,18 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 
   const reportController = await new ReportController(request);
-  const { financialData, transactionHistory, soldData } =
+  const { financialData, transactionHistory, soldData, expenseHistory } =
     await reportController.getFinancialReport({
       to,
       from,
     });
-  return { financialData, transactionHistory, salesOptions, soldData };
+  return {
+    financialData,
+    transactionHistory,
+    salesOptions,
+    soldData,
+    expenseHistory,
+  };
 };
 
 export const meta: MetaFunction = () => {
