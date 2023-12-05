@@ -55,19 +55,30 @@ export default function FinancialReport() {
         </Form>
       </section>
 
-      <Container
-        contentClassName="flex-col flex  gap-3"
-        heading="Total revenue"
-        // subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>
-          Total Amount of Items Sold (Cost Price) :{soldData?.totalCostPrice}
-        </p>
-        <p>
-          Total Amount of Items Sold (Seld Price) :{soldData?.totalSellingPrice}
-        </p>
-        <p>Profit :{soldData?.totalProfit}</p>
-      </Container>
+      <section className="flex gap-3 ">
+        <Container
+          contentClassName="flex-col flex gap-3 "
+          heading="Total revenue"
+          className="w-full"
+          // subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
+        >
+          <p>
+            Total Amount of Items Sold (Cost Price) :{soldData?.totalCostPrice}
+          </p>
+          <p>
+            Total Amount of Items Sold (Seld Price) :
+            {soldData?.totalSellingPrice}
+          </p>
+        </Container>
+
+        <Container
+          heading="Profit"
+          className="w-full"
+          // subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
+        >
+          <p>Profit :{soldData?.totalProfit}</p>
+        </Container>
+      </section>
 
       <Container heading="Sales update" className="flex-1">
         <ClientOnly fallback={<div>Generating Chart</div>}>
@@ -77,13 +88,6 @@ export default function FinancialReport() {
 
       <Container
         heading="Expenses"
-        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>asfasf</p>
-      </Container>
-
-      <Container
-        heading="Profit"
         subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
       >
         <p>asfasf</p>

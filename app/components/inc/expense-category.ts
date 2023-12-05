@@ -1,4 +1,4 @@
-const data = [
+const expense_categories = [
   {
     _id: "656c85cbec8c89dcc554c6b6",
     name: "Rent or lease payments",
@@ -32,4 +32,4 @@ const data = [
     name: "Taxes",
   },
 ];
-export default data;
+export default expense_categories;

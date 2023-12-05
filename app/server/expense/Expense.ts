@@ -13,6 +13,10 @@ const ExpenseSchema: Schema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    category: {
+      type: String,
+      required: true,
+    },
     note: {
       type: String,
       required: false,

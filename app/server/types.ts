@@ -152,6 +152,7 @@ export interface ExpenseInterface extends Document {
   admin: AdminInterface;
   amount: number;
   note: string;
+  category: string;
   createdAt: Date;
   updatedAt: Date;
 }

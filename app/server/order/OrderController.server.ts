@@ -298,7 +298,7 @@ export default class OrderController {
       const logController = await new LogController();
       await logController.create({
         user,
-        action: "Place and order",
+        action: "place an order",
         order: order?._id,
       });
 
