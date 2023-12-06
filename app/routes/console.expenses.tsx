@@ -43,6 +43,7 @@ import {
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import moment from "moment";
+import { DatePickerWithRange } from "~/components/date-range";
 
 export default function Products() {
   const { user, expenses, page, totalPages } = useLoaderData<{
@@ -71,10 +72,19 @@ export default function Products() {
 
   return (
     <AdminLayout user={user}>
-      <div className="flex">
+      <section className="mb-3 flex items-center gap-3">
         <h1 className="text-3xl font-bold">Expenses</h1>
 
-        <section className="ml-auto flex">
+        <section className="ml-auto flex items-center gap-4">
+          <Form
+            method="GET"
+            className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+          >
+            {/* <Input placeholder="product name..." name="product_name" /> */}
+            <DatePickerWithRange />
+            <Button>Filter</Button>
+          </Form>
+
           <Dialog>
             <DialogTrigger asChild>
               <Button>+ New Expense</Button>
@@ -154,7 +164,7 @@ export default function Products() {
             </DialogContent>
           </Dialog>
         </section>
-      </div>
+      </section>
 
       <Form
         method="GET"

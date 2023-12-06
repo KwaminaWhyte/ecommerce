@@ -327,4 +327,8 @@ export default class ReportController {
       },
     };
   };
+
+  public inventoryReport = async () => {
+    console.log("generating iunventory report");
+  };
 }
