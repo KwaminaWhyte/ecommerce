@@ -58,7 +58,7 @@ export default function Login() {
             </Button>
             <p className="mr-auto">
               Don't have an Account?{" "}
-              <Link className="text-blue-600" to="/register">
+              <Link className="text-purple-600" to="/register">
                 Register
               </Link>
             </p>

@@ -46,7 +46,7 @@ export default function AdminLogin() {
           <div className="flex items-center justify-between">
             {/* <p>
               Don't have an Account?{" "}
-              <Link className="text-blue-600" to="/console/signup">
+              <Link className="text-purple-600" to="/console/signup">
                 Signup
               </Link>
             </p> */}

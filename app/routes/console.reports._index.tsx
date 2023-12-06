@@ -73,7 +73,7 @@ export default function AdminProfile() {
                   {/* <td className="px-6 py-4 text-right">
                     <a
                       href="asfaf"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      className="font-medium text-purple-600 dark:text-purple-500 hover:underline"
                     >
                       Edit
                     </a>

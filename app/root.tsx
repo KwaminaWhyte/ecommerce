@@ -46,7 +46,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="text-sm bg-gradient-to-tr from-blue-300 to-red-300 dark:bg-gradient-to-tr dark:from-yellow-700 dark:to-blue-700">
+      <body className="text-sm bg-gradient-to-tr from-purple-300 to-red-300 dark:bg-gradient-to-tr dark:from-yellow-700 dark:to-purple-700">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

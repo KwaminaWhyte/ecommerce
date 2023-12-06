@@ -9,7 +9,7 @@ export default function Toggle({ onToggleChange, enabled }) {
       checked={enabled}
       onChange={onToggleChange}
       className={`${
-        enabled ? "bg-blue-600" : "bg-slate-300"
+        enabled ? "bg-purple-600" : "bg-slate-300"
       } relative inline-flex h-6 w-11 items-center rounded-full`}
     >
       <span className="sr-only">Enable notifications</span>

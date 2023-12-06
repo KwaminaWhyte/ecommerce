@@ -21,7 +21,7 @@ export default function UserOrders() {
           className="flex rounded-lg bg-white p-2 shadow-lg dark:bg-slate-800"
         >
           {order.orderItems?.length > 1 ? (
-            <div className="mr-3 flex h-20 w-20 items-center justify-center rounded-lg bg-blue-400 text-base font-medium">
+            <div className="mr-3 flex h-20 w-20 items-center justify-center rounded-lg bg-purple-400 text-base font-medium">
               <p>{order.orderItems?.length} Items</p>
             </div>
           ) : (
@@ -45,7 +45,7 @@ export default function UserOrders() {
                     : order.deliveryStatus == "completed"
                     ? "bg-green-500/40 text-green-800 dark:text-white"
                     : order.deliveryStatus == "to ship"
-                    ? "bg-blue-500/40 text-blue-800 dark:text-white"
+                    ? "bg-purple-500/40 text-purple-800 dark:text-white"
                     : order.deliveryStatus == "shipping"
                     ? "bg-pink-500/40 text-pink-800 dark:text-white"
                     : order.deliveryStatus == "pending"

@@ -115,7 +115,7 @@ export default function SystemLogs() {
                         ? "bg-yellow-500/40 text-black dark:bg-yellow-400/80 dark:text-black"
                         : log?.action == "logout"
                         ? "bg-red-500/40 text-red-800 dark:bg-red-600/80 dark:text-white"
-                        : "bg-blue-500/40 text-blue-800 dark:bg-blue-600/80 dark:text-white"
+                        : "bg-purple-500/40 text-purple-800 dark:bg-purple-600/80 dark:text-white"
                     }`}
                   >
                     {log?.action}

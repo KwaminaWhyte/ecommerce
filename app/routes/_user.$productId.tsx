@@ -58,7 +58,7 @@ export default function ProductDetails() {
               src={image?.url}
               className={`h-16 w-16 rounded-md object-cover md:h-20 md:w-20 ${
                 image?._id == activeImage?._id
-                  ? "ring-1 ring-blue-500 ring-offset-2"
+                  ? "ring-1 ring-purple-500 ring-offset-2"
                   : ""
               } `}
               alt=""

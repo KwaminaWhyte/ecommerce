@@ -23,6 +23,7 @@ export interface ProductInterface extends Document {
   createdAt: Date;
   updatedAt: Date;
   stockHistory: StockHistoryInterface[];
+  category: CategoryInterface;
 }
 
 export interface ImageInterface extends Document {

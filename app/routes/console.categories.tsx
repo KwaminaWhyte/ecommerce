@@ -149,7 +149,7 @@ export default function Products() {
 
                 <td className="gap-1 px-3 py-3">
                   <Popover className="relative">
-                    <Popover.Button className="font-sm tansition-all rounded-lg bg-blue-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none">
+                    <Popover.Button className="font-sm tansition-all rounded-lg bg-purple-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none">
                       Actions
                     </Popover.Button>
 

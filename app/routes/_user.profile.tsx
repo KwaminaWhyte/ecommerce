@@ -199,7 +199,7 @@ export default function UserProfile() {
               : user?.username}
           </h3>
           <p className="text-slate-700 dark:text-slate-300">{user.email}</p>
-          {/* <p className="text-blue-700 dark:text-blue-300">Super buyer</p> */}
+          {/* <p className="text-purple-700 dark:text-purple-300">Super buyer</p> */}
         </div>
       </section>
 

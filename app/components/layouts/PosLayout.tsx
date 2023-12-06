@@ -88,7 +88,7 @@ export default function PosLayout({
         <Sheet>
           <SheetTrigger asChild className="ml-auto">
             <Button variant="outline" className="relative">
-              <span className="absolute -left-2 -top-1 bg-blue-600 text-white px-2 py-0.5 rounded-xl">
+              <span className="absolute -left-2 -top-1 bg-purple-600 text-white px-2 py-0.5 rounded-xl">
                 {cart_items?.length}
               </span>{" "}
               Cart

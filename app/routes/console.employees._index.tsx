@@ -158,7 +158,7 @@ export default function Employees() {
 
                 <td className="gap-1 px-3 py-3">
                   <Popover className="relative">
-                    <Popover.Button className="font-sm tansition-all rounded-lg bg-blue-600 px-2 py-1  text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none">
+                    <Popover.Button className="font-sm tansition-all rounded-lg bg-purple-600 px-2 py-1  text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none">
                       Actions
                     </Popover.Button>
 
@@ -166,7 +166,7 @@ export default function Employees() {
                       <div className="flex flex-col gap-2 rounded-lg bg-white p-3 dark:bg-slate-900">
                         <Link
                           to={`/console/employees/${employee._id}`}
-                          className="font-sm tansition-all w-32 rounded-lg bg-blue-600 px-2 py-2 text-center  text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none"
+                          className="font-sm tansition-all w-32 rounded-lg bg-purple-600 px-2 py-2 text-center  text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
                         >
                           View
                         </Link>

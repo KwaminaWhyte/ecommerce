@@ -18,7 +18,7 @@ export default function PublicLayout({
             <Link to="/" className="text-base font-semibold">
               ComClo
             </Link>
-            <p className="text-[10px] rounded-xl px-2 py-0 ml-5 bg-slate-200 text-blue-600 font-medium mr-auto">
+            <p className="text-[10px] rounded-xl px-2 py-0 ml-5 bg-slate-200 text-purple-600 font-medium mr-auto">
               Beta
             </p>
           </div>
@@ -47,7 +47,7 @@ export default function PublicLayout({
           <div className="flex-1 items-center flex justify-end">
             <Link
               to="/setup/welcome"
-              className="inline-block px-4 py-2 text-white font-semibold rounded-xl shadow-md hover:shadow-sm hover:shadow-black/70 hover:bg-blue-700 bg-gradient-to-tr from-purple-700 to-orange-600 transition-all duration-300"
+              className="inline-block px-4 py-2 text-white font-semibold rounded-xl shadow-md hover:shadow-sm hover:shadow-black/70 hover:bg-purple-700 bg-gradient-to-tr from-purple-700 to-orange-600 transition-all duration-300"
             >
               Setup my Account
             </Link>

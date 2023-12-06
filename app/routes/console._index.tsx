@@ -70,8 +70,8 @@ export default function Dashboard() {
     // {
     //   title: "Total Store Visits",
     //   value: "328",
-    //   color: "bg-blue-300/70",
-    //   textColor: "text-blue-700",
+    //   color: "bg-purple-300/70",
+    //   textColor: "text-purple-700",
     // },
     // {
     //   title: "Pending Orders",
@@ -88,8 +88,8 @@ export default function Dashboard() {
         {
           title: "Today's Sales",
           value: totalOrdersToday,
-          color: "bg-blue-300/70",
-          textColor: "text-blue-700",
+          color: "bg-purple-300/70",
+          textColor: "text-purple-700",
         },
       ]);
     }
@@ -169,7 +169,7 @@ export default function Dashboard() {
                     </div>
                   </th>
 
-                  <td className="px-3 py-3 text-blue-700">
+                  <td className="px-3 py-3 text-purple-700">
                     {product?.quantitySold}
                     {/* GH₵ {product?.quantitySold * product?.price}{" "} */}
                   </td>

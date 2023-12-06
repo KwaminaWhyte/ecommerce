@@ -434,7 +434,7 @@ export default function Pricing() {
                 <p>Premium</p>
 
                 <div className="flex mt-3">
-                  <p className="text-6xl text-blue-600">$40</p>
+                  <p className="text-6xl text-purple-600">$40</p>
                   <p className="mt-auto">/mo</p>
                 </div>
                 <p className="text-center font-normal  mt-4">

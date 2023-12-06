@@ -60,9 +60,9 @@ export default function AdminSettings() {
             key={IdGenerator(10)}
             className={({ isActive, isPending }) =>
               isPending
-                ? "rounded-lg px-2 py-1 text-blue-600 "
+                ? "rounded-lg px-2 py-1 text-purple-600 "
                 : isActive
-                ? "rounded-lg bg-blue-700 text-white px-2 py-1 transition-all duration-200 dark:bg-blue-700 dark:text-white"
+                ? "rounded-lg bg-purple-700 text-white px-2 py-1 transition-all duration-200 dark:bg-purple-700 dark:text-white"
                 : "rounded-lg px-2 py-1  transition-all duration-200"
             }
             to={link.path}

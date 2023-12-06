@@ -1,5 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
-import { Transition, Popover } from "@headlessui/react";
+import { useEffect, useState } from "react";
 import {
   json,
   type LoaderFunction,
@@ -16,8 +15,15 @@ import {
 } from "@remix-run/react";
 import { Pagination, PaginationItem } from "@mui/material";
 import * as XLSX from "xlsx";
-
-import Input from "~/components/Input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import DeleteModal from "~/components/modals/DeleteModal";
@@ -35,6 +41,7 @@ import IdGenerator from "~/lib/IdGenerator";
 import ExcelMapper from "~/components/ExcelMapper";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -42,6 +49,12 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 
 const arrayToKeyValuePairs = async (dataArray) => {
   // Assuming the first array in the input represents the keys
@@ -91,14 +104,17 @@ export default function Products() {
     page: number;
   }>();
 
+  const [activeProduct, setActiveProduct] = useState({});
+  const [deleteId, setDeleteId] = useState(null);
+  const [isOpenDelete, setIsOpenDelete] = useState(false);
+  const [isStockOpen, setIsStockOpen] = useState(false);
+
   const [excelFile, setExcelFile] = useState(null);
   const [excelData, setExcelData] = useState([]);
   const [completeData, setCompleteData] = useState([]);
-
   const handleFileChange = (event) => {
     setExcelFile(event.target.files[0]);
   };
-
   const handleReadFile = async () => {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -113,19 +129,12 @@ export default function Products() {
       console.log(keyValuePairs);
       setExcelData(keyValuePairs);
     };
-
     reader.readAsArrayBuffer(excelFile);
-    // setIsFileOpen(false);
   };
-
   const handleMapColumns = async (mappedColumns) => {
-    console.log({ mappedColumns });
-
     let mappedDataArray = await mapExcelDataArray(excelData, mappedColumns);
-    console.log({ mappedDataArray });
     setCompleteData(mappedDataArray);
   };
-
   const handleImportData = () => {
     console.log("import the data");
 
@@ -138,28 +147,11 @@ export default function Products() {
         method: "post",
       }
     );
-
-    // Use the mappedColumns to map Excel data to Mongoose model fields
-    // Send the mapped data to the server for storage
-    // Example: axios.post('/api/saveData', { data: mappedData });
-    // Reset mapped columns for the next import
-    // setMappedColumns({});
   };
-
-  const [activeProduct, setActiveProduct] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
-  const [isOpenDelete, setIsOpenDelete] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [fileOpen, setIsFileOpen] = useState(false);
-  const [isStockOpen, setIsStockOpen] = useState(false);
 
   function closeDeleteModal() {
     setIsOpenDelete(false);
     setDeleteId(null);
-  }
-  function openModal() {
-    setIsOpen(true);
   }
 
   function openDeleteModal() {
@@ -172,7 +164,6 @@ export default function Products() {
   };
 
   useEffect(() => {
-    setIsOpen(false);
     setIsOpenDelete(false);
     setIsStockOpen(false);
     setActiveProduct({});
@@ -260,7 +251,94 @@ export default function Products() {
             </DialogContent>
           </Dialog>
 
-          <Button onClick={() => openModal()}> + New Product</Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>+ New Product</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>New Product</DialogTitle>
+              </DialogHeader>
+              <Form
+                method="POST"
+                encType="multipart/form-data"
+                className="flex flex-col gap-4"
+              >
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" type="text" name="name" required />
+                </div>
+
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="cost_price">Cost Price</Label>
+                  <Input
+                    id="cost_price"
+                    type="number"
+                    step={0.01}
+                    name="cost_price"
+                    required
+                  />
+                </div>
+
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="price">Price</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    step={0.01}
+                    name="price"
+                    required
+                  />
+                </div>
+
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="category">Category</Label>
+                  <Select name="category">
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a fruit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Category</SelectLabel>
+                        {categories.map((category) => (
+                          <SelectItem key={IdGenerator()} value={category._id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <TextArea
+                  name="description"
+                  placeholder="Description"
+                  label="Description"
+                  error={actionData?.errors?.description}
+                />
+
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="quantity">Quantity</Label>
+                  <Input id="quantity" type="number" name="quantity" />
+                </div>
+
+                <div className="flex gap-3 items-center justify-end ">
+                  <DialogClose asChild>
+                    <Button type="button" variant="destructive">
+                      Close
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    type="submit"
+                    disabled={navigation.state === "submitting" ? true : false}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Form>
+            </DialogContent>
+          </Dialog>
         </section>
       </div>
 
@@ -329,7 +407,7 @@ export default function Products() {
                   <td className="px-3 py-3 ">{product?.price}</td>
                 ) : (
                   <td className="px-3 py-3 ">
-                    <Popover className="relative">
+                    {/* <Popover className="relative">
                       <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
                         {product.stockHistory.length > 0 &&
                           product.stockHistory.length}{" "}
@@ -348,7 +426,7 @@ export default function Products() {
                           ))}
                         </div>
                       </Popover.Panel>
-                    </Popover>
+                    </Popover> */}
                   </td>
                 )}
                 <td className="px-3 py-3">
@@ -366,44 +444,150 @@ export default function Products() {
                 </td>
 
                 <td className="px-3 py-3">
-                  <Popover className="relative">
-                    <Popover.Button className="font-sm tansition-all rounded-lg bg-blue-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none">
-                      Actions
-                    </Popover.Button>
-
-                    <Popover.Panel className="absolute right-6 z-10">
-                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 dark:bg-slate-900">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline">Action</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72">
+                      <div className="grid gap-4">
                         <Link
                           to={`/console/products/${product._id}`}
-                          className="font-sm tansition-all w-32 rounded-lg bg-blue-600 px-2 py-2 text-center text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none"
+                          className="font-sm tansition-all w-full rounded-lg bg-purple-600 px-2 py-2 text-center text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
                         >
                           View
                         </Link>
                         {/* <Link
                           to={`/console/products/${product._id}`}
-                          className="font-sm tansition-all rounded-lg bg-blue-600 px-2 py-2 text-center text-white shadow-sm duration-300 hover:bg-blue-700 focus:outline-none"
+                          className="font-sm tansition-all rounded-lg bg-purple-600 px-2 py-2 text-center text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
                         >
                           Inventory
                         </Link> */}
 
-                        <Button
-                          onClick={() => {
-                            openModal();
-                            setIsUpdating(true);
-                            setActiveProduct(product);
-                          }}
-                        >
-                          Update
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button>Update</Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Update Product</DialogTitle>
+                            </DialogHeader>
+                            <Form
+                              method="POST"
+                              encType="multipart/form-data"
+                              className="flex flex-col gap-4"
+                            >
+                              <input
+                                type="hidden"
+                                name="actionType"
+                                value="update"
+                              />
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="name">Name</Label>
+                                <Input
+                                  id="name"
+                                  type="text"
+                                  name="name"
+                                  defaultValue={product?.name}
+                                  required
+                                />
+                              </div>
 
-                        <Button
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="cost_price">Cost Price</Label>
+                                <Input
+                                  id="cost_price"
+                                  type="number"
+                                  step={0.01}
+                                  name="cost_price"
+                                  defaultValue={product?.costPrice}
+                                  required
+                                />
+                              </div>
+
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="price">Price</Label>
+                                <Input
+                                  id="price"
+                                  type="number"
+                                  step={0.01}
+                                  name="price"
+                                  defaultValue={product?.price}
+                                  required
+                                />
+                              </div>
+
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="category">Category</Label>
+                                <Select
+                                  name="category"
+                                  defaultValue={product?.category?._id}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a fruit" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>Category</SelectLabel>
+                                      {categories.map((category) => (
+                                        <SelectItem
+                                          key={IdGenerator()}
+                                          value={category._id}
+                                        >
+                                          {category.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <TextArea
+                                name="description"
+                                placeholder="Description"
+                                label="Description"
+                                defaultValue={product?.description}
+                              />
+
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="quantity">Quantity</Label>
+                                <Input
+                                  id="quantity"
+                                  type="number"
+                                  name="quantity"
+                                  defaultValue={product?.quantitys}
+                                />
+                              </div>
+
+                              <div className="flex gap-3 items-center justify-end ">
+                                <DialogClose asChild>
+                                  <Button type="button" variant="destructive">
+                                    Close
+                                  </Button>
+                                </DialogClose>
+
+                                <Button
+                                  type="submit"
+                                  disabled={
+                                    navigation.state === "submitting"
+                                      ? true
+                                      : false
+                                  }
+                                >
+                                  Submit
+                                </Button>
+                              </div>
+                            </Form>
+                          </DialogContent>
+                        </Dialog>
+
+                        {/* <Button
                           onClick={() => {
                             setIsStockOpen(true);
                             setActiveProduct(product);
                           }}
                         >
                           Restock
-                        </Button>
+                        </Button> */}
 
                         <Button
                           variant="destructive"
@@ -413,7 +597,7 @@ export default function Products() {
                           Delete
                         </Button>
                       </div>
-                    </Popover.Panel>
+                    </PopoverContent>
                   </Popover>
                 </td>
               </tr>
@@ -440,286 +624,6 @@ export default function Products() {
           )}
         />
       </div>
-      {/* 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50 "
-          onClose={() => {
-            setIsOpen(false);
-            setActiveProduct({});
-            setIsUpdating(false);
-          }}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto ">
-            <div className="flex min-h-full items-center justify-center p-4 text-center ">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-slate-900">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-bold leading-6 text-slate-900 dark:text-white"
-                  >
-                    {isUpdating ? "Update Product" : "New Product"}
-                  </Dialog.Title>
-                  <div className="h-4"></div>
-
-                  <Form method="POST" encType="multipart/form-data">
-                    {isUpdating ? (
-                      <input
-                        type="hidden"
-                        name="_id"
-                        value={activeProduct._id}
-                      />
-                    ) : null}
-
-                    <Input
-                      name="name"
-                      placeholder="Name"
-                      label="Name"
-                      type="text"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.name
-                          : activeProduct.name
-                      }
-                      error={actionData?.errors?.name}
-                    />
-                    <Spacer />
-
-                    <Input
-                      name="cost_price"
-                      placeholder="cost pricce"
-                      label="Cost Pricce"
-                      type="number"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.cost_price
-                          : activeProduct.cost_price
-                      }
-                      error={actionData?.errors?.cost_price}
-                    />
-                    <Spacer />
-
-                    <Input
-                      name="price"
-                      placeholder="Selling Price"
-                      label="Price"
-                      type="number"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.price
-                          : activeProduct.price
-                      }
-                      error={actionData?.errors?.price}
-                    />
-                    <Spacer />
-                    <SimpleSelect
-                      name="category"
-                      label="Category"
-                      variant="ghost"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.category
-                          : activeProduct?.category?._id
-                      }
-                    >
-                      <option value="">Select category</option>
-                      {categories.map((category) => (
-                        <option key={IdGenerator()} value={category._id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </SimpleSelect>
-
-                    <Spacer />
-                    <TextArea
-                      name="description"
-                      placeholder="Description"
-                      label="Description"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.description
-                          : activeProduct.description
-                      }
-                      error={actionData?.errors?.description}
-                    />
-                    <Spacer />
-
-                    <Input
-                      name="quantity"
-                      placeholder="Quantity"
-                      label="Quantity"
-                      type="number"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.quantity
-                          : activeProduct.quantity
-                      }
-                      error={actionData?.errors?.quantity}
-                    />
-                    <Spacer />
-
-                 
-
-                    <div className="flex items-center ">
-                      <Button
-                        type="button"
-                        className="ml-auto mr-3"
-                        onClick={() => setIsOpen(false)}
-                        variant="destructive"
-                      >
-                        Close
-                      </Button>
-
-                      <Button
-                        type="submit"
-                        disabled={
-                          navigation.state === "submitting" ? true : false
-                        }
-                      >
-                        {navigation.state === "submitting"
-                          ? "Submitting..."
-                          : isUpdating
-                          ? "Update"
-                          : "Add"}
-                      </Button>
-                    </div>
-                  </Form>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition> */}
-
-      {/* <Transition appear show={isStockOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-50 "
-          onClose={() => setIsStockOpen(false)}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto ">
-            <div className="flex min-h-full items-center justify-center p-4 text-center ">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-slate-900">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-bold leading-6 text-slate-900 dark:text-white"
-                  >
-                    Stock Product
-                  </Dialog.Title>
-                  <div className="h-4"></div>
-
-                  <Form method="POST" encType="multipart/form-data">
-                    <Input
-                      name="stockId"
-                      type="hidden"
-                      defaultValue={activeProduct?._id}
-                    />
-                    <p className="dark:text-white">
-                      Enter the quantity to add or subtrack
-                    </p>
-                    <Spacer />
-                  
-                 
-                    <Input
-                      name="quantity"
-                      placeholder="Quantity"
-                      label="Quantity"
-                      type="number"
-                      defaultValue={1}
-                      error={actionData?.errors?.quantity}
-                    />
-                    <Spacer />
-
-                    <Input
-                      name="cost_price"
-                      placeholder="cost pricce"
-                      label="Cost Pricce"
-                      type="number"
-                      defaultValue={activeProduct.cost_price}
-                      error={actionData?.errors?.cost_price}
-                    />
-                    <Spacer />
-
-                    <Input
-                      name="price"
-                      placeholder="Price"
-                      label="Selling Price"
-                      type="number"
-                      defaultValue={activeProduct.price}
-                      error={actionData?.errors?.price}
-                    />
-                    <Spacer />
-                    <div className="flex items-center ">
-                      <Button
-                        color="error"
-                        type="button"
-                        className="ml-auto mr-3"
-                        onClick={() => setIsStockOpen(false)}
-                        variant="destructive"
-                      >
-                        Close
-                      </Button>
-
-                      <Button
-                        type="submit"
-                        disabled={
-                          navigation.state === "submitting" ? true : false
-                        }
-                      >
-                        {navigation.state === "submitting"
-                          ? "Deleting..."
-                          : "Submit"}
-                      </Button>
-                    </div>
-                  </Form>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition> */}
 
       <DeleteModal
         id={deleteId}
@@ -735,25 +639,19 @@ export default function Products() {
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const productController = await new ProductController(request);
-  console.log("action called...");
 
   const imgSrc = formData.get("image") as string;
   const actionType = formData.get("actionType") as string;
   const completeData = formData.get("completeData") as string;
 
-  const name = formData.get("name");
-  const cost_price = formData.get("cost_price") as string;
+  const name = formData.get("name") as string;
+  const costPrice = formData.get("cost_price") as string;
   const price = formData.get("price") as string;
   const quantity = formData.get("quantity") as string;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
-  console.log({ actionType });
 
-  if (actionType == "batch_import") {
-    console.log("import to db");
-    let data = JSON.parse(completeData);
-    return productController.importBatch(data);
-  } else if (formData.get("deleteId") != null) {
+  if (formData.get("deleteId") != null) {
     productController.deleteProduct(formData.get("deleteId") as string);
     return true;
   } else if (formData.get("stockId") != null) {
@@ -761,27 +659,17 @@ export const action: ActionFunction = async ({ request }) => {
       _id: formData.get("stockId") as string,
       quantity,
       price,
-      costPrice: cost_price,
+      costPrice,
       // operation: formData.get("operation") as string,
       operation: "add",
     });
     return true;
   }
 
-  if (typeof name !== "string" || typeof price !== "string") {
-    return json({ error: "Invalid name or price" }, { status: 400 });
-  }
-
-  const errors = {
-    name: validateName(name),
-    price: validatePrice(parseFloat(price)),
-  };
-
-  if (Object.values(errors).some(Boolean)) {
-    return json({ errors, fields: { name, price } }, { status: 400 });
-  }
-
-  if (formData.get("_id") != null) {
+  if (actionType == "batch_import") {
+    let data = JSON.parse(completeData);
+    return productController.importBatch(data);
+  } else if (actionType == "update") {
     return await productController.updateProduct({
       _id: formData.get("_id") as string,
       name,
@@ -798,7 +686,7 @@ export const action: ActionFunction = async ({ request }) => {
       imgSrc,
       category,
       quantity,
-      costPrice: cost_price,
+      costPrice,
     });
   }
 };
@@ -861,3 +749,114 @@ export function ErrorBoundary({ error }) {
   - allow for multiple categories to be selected
   - display product rating
  */
+
+/*
+   <Transition appear show={isStockOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-50 "
+          onClose={() => setIsStockOpen(false)}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto ">
+            <div className="flex min-h-full items-center justify-center p-4 text-center ">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-slate-900">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-bold leading-6 text-slate-900 dark:text-white"
+                  >
+                    Stock Product
+                  </Dialog.Title>
+                  <div className="h-4"></div>
+
+                  <Form method="POST" encType="multipart/form-data">
+                    <Input
+                      name="stockId"
+                      type="hidden"
+                      defaultValue={activeProduct?._id}
+                    />
+                    <p className="dark:text-white">
+                      Enter the quantity to add or subtrack
+                    </p>
+                    
+                  
+                 
+                    <Input
+                      name="quantity"
+                      placeholder="Quantity"
+                      label="Quantity"
+                      type="number"
+                      defaultValue={1}
+                      error={actionData?.errors?.quantity}
+                    />
+                    
+
+                    <Input
+                      name="cost_price"
+                      placeholder="cost pricce"
+                      label="Cost Pricce"
+                      type="number"
+                      defaultValue={activeProduct.cost_price}
+                      error={actionData?.errors?.cost_price}
+                    />
+                    
+
+                    <Input
+                      name="price"
+                      placeholder="Price"
+                      label="Selling Price"
+                      type="number"
+                      defaultValue={activeProduct.price}
+                      error={actionData?.errors?.price}
+                    />
+                    
+                    <div className="flex items-center ">
+                      <Button
+                        color="error"
+                        type="button"
+                        className="ml-auto mr-3"
+                        onClick={() => setIsStockOpen(false)}
+                        variant="destructive"
+                      >
+                        Close
+                      </Button>
+
+                      <Button
+                        type="submit"
+                        disabled={
+                          navigation.state === "submitting" ? true : false
+                        }
+                      >
+                        {navigation.state === "submitting"
+                          ? "Deleting..."
+                          : "Submit"}
+                      </Button>
+                    </div>
+                  </Form>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition> 
+  */

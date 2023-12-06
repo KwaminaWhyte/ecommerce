@@ -81,7 +81,7 @@ export default function AdminProductDetails() {
                 src={image.url}
                 className={`h-20 w-20 rounded-md object-cover ${
                   image._id == activeImage?._id
-                    ? "ring-1 ring-blue-500 ring-offset-2"
+                    ? "ring-1 ring-purple-500 ring-offset-2"
                     : ""
                 } `}
                 alt=""

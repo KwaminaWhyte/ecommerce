@@ -100,7 +100,7 @@ function FancySelect({
           state.isFocused ? "border-red-600" : "border-grey-300",
         // singleValue: (state) => (state.isMulti ? "" : ""),
       }}
-      className="rounded-xl border-slate-500 bg-white shadow-sm focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 focus:ring-opacity-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-slate-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+      className="rounded-xl border-slate-500 bg-white shadow-sm focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 focus:ring-opacity-50 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder-slate-400 dark:focus:border-purple-500 dark:focus:ring-purple-500"
     />
   );
 }

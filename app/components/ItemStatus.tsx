@@ -9,7 +9,7 @@ export default function ItemStatus({ status }: { status: string }) {
           : status == "delivered" || status == "paid"
           ? "bg-green-500/40 text-green-800 dark:text-white"
           : status == "completed"
-          ? "bg-blue-500/40 text-blue-800 dark:text-white"
+          ? "bg-purple-500/40 text-purple-800 dark:text-white"
           : status == "shipped"
           ? "bg-yellow-500/40 text-yellow-800 dark:text-white"
           : status == "pending"

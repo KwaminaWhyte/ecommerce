@@ -31,7 +31,7 @@ const LinkButton: FC<ButtonProps> = ({
   }[size];
 
   const colorStyle = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white",
+    primary: "bg-purple-600 hover:bg-purple-700 text-white",
     secondary: "bg-slate-500 hover:bg-slate-600 text-white",
     warning: "bg-yellow-500 hover:bg-yellow-600 text-white",
     error: "bg-red-500 hover:bg-red-600 text-white",

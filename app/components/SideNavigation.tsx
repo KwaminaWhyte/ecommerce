@@ -80,7 +80,7 @@ export default function SideNavigation({ user }: { user: any }) {
                   isPending
                     ? "mb-1 flex items-center px-3 py-2  dark:text-slate-300"
                     : isActive
-                    ? "mb-1 flex items-center rounded-xl border-x-2 border-blue-500 bg-blue-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
+                    ? "mb-1 flex items-center rounded-xl border-x-2 border-purple-500 bg-purple-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
                     : "mb-1 flex items-center px-3 py-2 dark:text-slate-300 hover:bg-slate-200 rounded-xl"
                 }
                 end
@@ -119,7 +119,7 @@ export default function SideNavigation({ user }: { user: any }) {
                   to={child.path}
                   className={({ isActive }) =>
                     isActive
-                      ? "my-1 ml-3 flex items-center rounded-xl border-x-2 border-blue-500 bg-blue-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
+                      ? "my-1 ml-3 flex items-center rounded-xl border-x-2 border-purple-500 bg-purple-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
                       : "my-1 ml-3 flex items-center px-3 py-2  dark:text-slate-300"
                   }
                   end
@@ -136,7 +136,7 @@ export default function SideNavigation({ user }: { user: any }) {
 
       <section className="mx-4 mb-3 mt-auto flex items-center dark:text-white">
         <Dropdown>
-          <MenuButton className="flex mt-2 border border-slate-200 w-full rounded-xl items-center p-1 dark:hover:bg-blue-800/50 hover:bg-slate-100">
+          <MenuButton className="flex mt-2 border border-slate-200 w-full rounded-xl items-center p-1 dark:hover:bg-purple-800/50 hover:bg-slate-100">
             <img
               className="mr-3 h-9 w-9 rounded-full object-cover"
               src="https://images.unsplash.com/photo-1506792006437-256b665541e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"

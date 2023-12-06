@@ -80,7 +80,7 @@ export default function PosSideNavigation({ user }: { user: any }) {
                   isPending
                     ? "mb-1 flex items-center px-3 py-2  dark:text-slate-300"
                     : isActive
-                    ? "mb-1 flex items-center rounded-xl border-x-2 border-blue-500 bg-blue-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
+                    ? "mb-1 flex items-center rounded-xl border-x-2 border-purple-500 bg-purple-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
                     : "mb-1 flex items-center px-3 py-2 dark:text-slate-300 hover:bg-slate-200 rounded-xl"
                 }
                 end
@@ -119,7 +119,7 @@ export default function PosSideNavigation({ user }: { user: any }) {
                   to={child.path}
                   className={({ isActive }) =>
                     isActive
-                      ? "my-1 ml-3 flex items-center rounded-xl border-x-2 border-blue-500 bg-blue-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
+                      ? "my-1 ml-3 flex items-center rounded-xl border-x-2 border-purple-500 bg-purple-100/60 px-3 py-2  font-bold dark:bg-slate-800 dark:text-white"
                       : "my-1 ml-3 flex items-center px-3 py-2  dark:text-slate-300"
                   }
                   end

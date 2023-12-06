@@ -24,14 +24,14 @@ const SimpleSelect: FC<SelectProps> = ({
   ...rest
 }) => {
   const baseStyle =
-    "block w-full px-4 dark:text-white py-2 border rounded-xl w-40 shadow-sm dark:bg-slate-800 focus:border-blue-300 focus:outline-none focus:shadow-outline-blue";
+    "block w-full px-4 dark:text-white py-2 border rounded-xl w-40 shadow-sm dark:bg-slate-800 focus:border-purple-300 focus:outline-none focus:shadow-outline-blue";
   const sizeStyle = {
     sm: "text-xs",
     md: "text-base",
     lg: "text-lg",
   }[size];
   const colorStyle = {
-    primary: "bg-blue-500 hover:bg-blue-600 text-white",
+    primary: "bg-purple-500 hover:bg-purple-600 text-white",
     secondary: "bg-slate-500 hover:bg-slate-600 text-white",
     warning: "bg-yellow-500 hover:bg-yellow-600 text-white",
     error: "bg-red-500 hover:bg-red-600 text-white",
