@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Transition, Dialog, Popover } from "@headlessui/react";
+import { Transition, Popover } from "@headlessui/react";
 import {
   json,
   type LoaderFunction,
@@ -12,12 +12,12 @@ import {
   useActionData,
   useLoaderData,
   useNavigation,
+  useSubmit,
 } from "@remix-run/react";
 import { Pagination, PaginationItem } from "@mui/material";
+import * as XLSX from "xlsx";
 
 import Input from "~/components/Input";
-import SimpleSelect from "~/components/SimpleSelect";
-import Spacer from "~/components/Spacer";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import DeleteModal from "~/components/modals/DeleteModal";
@@ -30,11 +30,59 @@ import type {
 } from "~/server/types";
 import { validateName, validatePrice } from "~/server/validators.server";
 import Container from "~/components/Container";
-import FancySelect from "~/components/FancySelect";
 import { Button } from "~/components/ui/button";
 import IdGenerator from "~/lib/IdGenerator";
+import ExcelMapper from "~/components/ExcelMapper";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { Label } from "~/components/ui/label";
+
+const arrayToKeyValuePairs = async (dataArray) => {
+  // Assuming the first array in the input represents the keys
+  const keys = dataArray[0];
+
+  // Remove the first array (keys) from the data array
+  const dataArrayWithoutKeys = dataArray.slice(1);
+
+  // Map each data array to an object of key-value pairs
+  const result = dataArrayWithoutKeys.map((dataArray) => {
+    return keys.reduce((obj, key, index) => {
+      obj[key] = dataArray[index];
+      return obj;
+    }, {});
+  });
+
+  return result;
+};
+
+const mapExcelDataArray = async (excelDataArray, mappedColumns) => {
+  return excelDataArray.map((excelData) => {
+    const mappedData = {};
+
+    Object.keys(mappedColumns).forEach((excelColumn) => {
+      const mongooseField = mappedColumns[excelColumn];
+      const excelValue = excelData[excelColumn];
+
+      // If the mapped column exists in the excel data, add it to the mapped data
+      if (excelValue !== undefined) {
+        mappedData[mongooseField] = excelValue;
+      }
+    });
+
+    return mappedData;
+  });
+};
 
 export default function Products() {
+  const submit = useSubmit();
+  const actionData = useActionData();
+  const navigation = useNavigation();
   const { user, products, categories, page, totalPages } = useLoaderData<{
     products: ProductInterface[];
     categories: CategoryInterface[];
@@ -43,37 +91,67 @@ export default function Products() {
     page: number;
   }>();
 
-  // const [selectedColors, setSelectedColors] = useState([]);
-  // const [selectedSizes, setSelectedSizes] = useState([]);
+  const [excelFile, setExcelFile] = useState(null);
+  const [excelData, setExcelData] = useState([]);
+  const [completeData, setCompleteData] = useState([]);
 
-  // const colorOptions = [
-  //   { value: "red", label: "Red" },
-  //   { value: "blue", label: "Blue" },
-  //   { value: "green", label: "Green" },
-  // ];
+  const handleFileChange = (event) => {
+    setExcelFile(event.target.files[0]);
+  };
 
-  // const sizeOptions = [
-  //   { value: "small", label: "Small" },
-  //   { value: "medium", label: "Medium" },
-  //   { value: "large", label: "Large" },
-  // ];
+  const handleReadFile = async () => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      console.log({ jsonData });
 
-  // const handleColorChange = (selectedOptions) => {
-  //   setSelectedColors(selectedOptions);
-  // };
+      const keyValuePairs = await arrayToKeyValuePairs(jsonData);
+      console.log(keyValuePairs);
+      setExcelData(keyValuePairs);
+    };
 
-  // const handleSizeChange = (selectedOptions) => {
-  //   setSelectedSizes(selectedOptions);
-  // };
+    reader.readAsArrayBuffer(excelFile);
+    // setIsFileOpen(false);
+  };
 
-  const actionData = useActionData();
-  const navigation = useNavigation();
+  const handleMapColumns = async (mappedColumns) => {
+    console.log({ mappedColumns });
+
+    let mappedDataArray = await mapExcelDataArray(excelData, mappedColumns);
+    console.log({ mappedDataArray });
+    setCompleteData(mappedDataArray);
+  };
+
+  const handleImportData = () => {
+    console.log("import the data");
+
+    return submit(
+      {
+        actionType: "batch_import",
+        completeData: JSON.stringify(completeData),
+      },
+      {
+        method: "post",
+      }
+    );
+
+    // Use the mappedColumns to map Excel data to Mongoose model fields
+    // Send the mapped data to the server for storage
+    // Example: axios.post('/api/saveData', { data: mappedData });
+    // Reset mapped columns for the next import
+    // setMappedColumns({});
+  };
 
   const [activeProduct, setActiveProduct] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [fileOpen, setIsFileOpen] = useState(false);
   const [isStockOpen, setIsStockOpen] = useState(false);
 
   function closeDeleteModal() {
@@ -105,11 +183,83 @@ export default function Products() {
       <div className="flex">
         <h1 className="text-3xl font-bold">Products </h1>
 
-        <section className="ml-auto flex">
+        <section className="ml-auto flex gap-3">
           {/* <Button variant="outline">Export</Button> */}
-          <Spacer />
-          {/* <Button variant="outline">Print</Button> */}
-          <Spacer />
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Import</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-screen-2xl h-[93vh] overflow-y-scroll">
+              <DialogHeader>
+                <DialogTitle> Import Product from Excel File</DialogTitle>
+                <DialogDescription>
+                  Upload your file to import products.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex gap-3">
+                  <Input
+                    type="file"
+                    accept=".xlsx, .xls, .csv"
+                    onChange={handleFileChange}
+                  />
+
+                  <Button onClick={() => handleReadFile()}>Process Data</Button>
+                </div>
+
+                <div>
+                  {excelData.length > 0 && (
+                    <ExcelMapper
+                      columns={excelData[0]}
+                      onMapColumns={handleMapColumns}
+                    />
+                  )}
+                </div>
+
+                {completeData.length > 0 && (
+                  <section className="mt-11">
+                    <table className="w-full text-left text-slate-500 dark:text-slate-400">
+                      <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
+                        <tr>
+                          {Object.keys(completeData[0]).map((key, index) => (
+                            <th scope="col" className="px-3 py-3" key={index}>
+                              {key}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {completeData.slice(1, 6).map((item, index) => (
+                          <tr
+                            key={index}
+                            className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
+                          >
+                            {Object.keys(completeData[0]).map((key, index) => (
+                              <td
+                                key={index}
+                                className="px-3 py-3 font-semibold"
+                              >
+                                {item[key]}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    <Button className="w-full" onClick={handleImportData}>
+                      Complete Export
+                    </Button>
+                  </section>
+                )}
+              </div>
+              {/* <DialogFooter>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter> */}
+            </DialogContent>
+          </Dialog>
+
           <Button onClick={() => openModal()}> + New Product</Button>
         </section>
       </div>
@@ -124,19 +274,8 @@ export default function Products() {
           name="search_term"
         />
 
-        {/* <SimpleSelect name="status" variant="ghost">
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected</option>
-          <option value="shipping">Shipping</option>
-        </SimpleSelect> */}
-        <Spacer />
-
         <Button type="submit">Search</Button>
       </Form>
-
-      <div>{/* <p>tabs</p> */}</div>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
@@ -301,7 +440,7 @@ export default function Products() {
           )}
         />
       </div>
-
+      {/* 
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -405,12 +544,13 @@ export default function Products() {
                       }
                     >
                       <option value="">Select category</option>
-                      {categories.map((category: CategoryInterface) => (
+                      {categories.map((category) => (
                         <option key={IdGenerator()} value={category._id}>
                           {category.name}
                         </option>
                       ))}
                     </SimpleSelect>
+
                     <Spacer />
                     <TextArea
                       name="description"
@@ -439,32 +579,7 @@ export default function Products() {
                     />
                     <Spacer />
 
-                    {/* <label htmlFor="colors">Select Availabel Colors</label> */}
-                    {/* <FancySelect
-                      isMulti
-                      options={colorOptions}
-                      value={selectedColors}
-                      onChange={handleColorChange}
-                    /> */}
-                    {/* <label htmlFor="colors">Select Availabel Sizes</label> */}
-
-                    {/* <Spacer /> */}
-
-                    {/* {isUpdating ? null : (
-                      <>
-                        <Input
-                          name="image"
-                          placeholder="Images"
-                          accept="image/*"
-                          label="Images"
-                          type="file"
-                          // multiple
-                          defaultValue={actionData?.fields?.images}
-                          error={actionData?.errors?.images}
-                        />
-                        <Spacer />
-                      </>
-                    )} */}
+                 
 
                     <div className="flex items-center ">
                       <Button
@@ -495,9 +610,9 @@ export default function Products() {
             </div>
           </div>
         </Dialog>
-      </Transition>
+      </Transition> */}
 
-      <Transition appear show={isStockOpen} as={Fragment}>
+      {/* <Transition appear show={isStockOpen} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-50 "
@@ -545,16 +660,8 @@ export default function Products() {
                       Enter the quantity to add or subtrack
                     </p>
                     <Spacer />
-                    {/* 
-                    <SimpleSelect
-                      name="operation"
-                      className="w-full"
-                      variant="ghost"
-                    >
-                      <option value="add">Add</option>
-                      <option value="deduct">Deduct</option>
-                    </SimpleSelect> */}
-                    {/* <Spacer /> */}
+                  
+                 
                     <Input
                       name="quantity"
                       placeholder="Quantity"
@@ -612,7 +719,7 @@ export default function Products() {
             </div>
           </div>
         </Dialog>
-      </Transition>
+      </Transition> */}
 
       <DeleteModal
         id={deleteId}
@@ -628,8 +735,11 @@ export default function Products() {
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const productController = await new ProductController(request);
+  console.log("action called...");
 
   const imgSrc = formData.get("image") as string;
+  const actionType = formData.get("actionType") as string;
+  const completeData = formData.get("completeData") as string;
 
   const name = formData.get("name");
   const cost_price = formData.get("cost_price") as string;
@@ -637,8 +747,13 @@ export const action: ActionFunction = async ({ request }) => {
   const quantity = formData.get("quantity") as string;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
+  console.log({ actionType });
 
-  if (formData.get("deleteId") != null) {
+  if (actionType == "batch_import") {
+    console.log("import to db");
+    let data = JSON.parse(completeData);
+    return productController.importBatch(data);
+  } else if (formData.get("deleteId") != null) {
     productController.deleteProduct(formData.get("deleteId") as string);
     return true;
   } else if (formData.get("stockId") != null) {
@@ -703,7 +818,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     page,
   });
   const { categories } = await productController.getCategories({ page });
-
   return { user, products, categories, page, totalPages };
 };
 

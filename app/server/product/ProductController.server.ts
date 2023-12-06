@@ -5,7 +5,8 @@ import type { ProductInterface } from "../types";
 import { commitSession, getSession } from "~/session";
 import { Category, Product, StockHistory } from "./Product";
 import SettingsController from "../settings/SettingsController.server";
-
+import excelToJson from "convert-excel-to-json";
+import XLSX from "xlsx";
 export default class ProductController {
   private request: Request;
 
@@ -152,6 +153,33 @@ export default class ProductController {
 
     session.flash("message", {
       title: "Product Added Successful",
+      status: "success",
+    });
+    return redirect(`/console/products`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  };
+
+  public importBatch = async (data) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
+    const products = await Product.create(data);
+    if (!products) {
+      session.flash("message", {
+        title: "Error Importing Products",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
+    }
+
+    session.flash("message", {
+      title: "Products Imported Successful",
       status: "success",
     });
     return redirect(`/console/products`, {
