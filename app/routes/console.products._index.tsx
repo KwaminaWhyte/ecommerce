@@ -190,15 +190,15 @@ export default function Products() {
             <DialogTrigger asChild>
               <Button variant="outline">Import</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-screen-2xl h-[93vh] overflow-y-scroll">
+            <DialogContent className="max-w-screen-2xl h-[93vh] flex flex-col overflow-y-scroll">
               <DialogHeader>
                 <DialogTitle> Import Product from Excel File</DialogTitle>
                 <DialogDescription>
                   Upload your file to import products.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="flex gap-3">
+              <div className="flex flex-col mb-auto gap-3">
+                <div className="flex gap-3 mb-auto items-center">
                   <Input
                     type="file"
                     accept=".xlsx, .xls, .csv"

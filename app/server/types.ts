@@ -17,6 +17,7 @@ export interface ProductInterface extends Document {
   quantity: number;
   quantitySold: number;
   price: number;
+  costPrice: number;
   images: ImageInterface[];
   availability: string;
   createdAt: Date;

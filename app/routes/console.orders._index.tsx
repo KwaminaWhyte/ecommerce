@@ -48,7 +48,7 @@ export default function Orders() {
           />
           <Spacer />
 
-          <Select name="status">
+          {/* <Select name="status">
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
@@ -60,7 +60,7 @@ export default function Orders() {
               <SelectItem value="pineapple">Pineapple</SelectItem>
             </SelectContent>
           </Select>
-          <Spacer />
+          <Spacer /> */}
 
           <Button type="submit">Filter</Button>
         </Form>

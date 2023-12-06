@@ -1,4 +1,3 @@
-// ExcelMapper.js
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 
@@ -7,7 +6,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
@@ -19,11 +17,15 @@ const ExcelMapper = ({ columns, onMapColumns }) => {
   const [availableFields, setAvailableFields] = useState([]);
 
   useEffect(() => {
-    // Reset mapped columns when the columns change
     setMappedColumns({});
 
-    // Extract available fields from the model based on your logic
-    const modelFields = ["name", "description", "quantity", "price"];
+    const modelFields = [
+      "name",
+      "description",
+      "quantity",
+      "price",
+      "costPrice",
+    ];
     setAvailableFields(modelFields);
   }, [columns]);
 
@@ -42,8 +44,6 @@ const ExcelMapper = ({ columns, onMapColumns }) => {
 
   return (
     <div className="bg-white shadow-md p-2 rounded-xl gap-3 flex flex-col">
-      <h2>Map Excel Columns to Model Fields</h2>
-
       <table className="w-full text-left text-slate-500 dark:text-slate-400">
         <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
           <tr>
@@ -51,7 +51,7 @@ const ExcelMapper = ({ columns, onMapColumns }) => {
               Excel Column
             </th>
             <th scope="col" className="px-3 py-3">
-              Mongoose Field
+              Model Field
             </th>
           </tr>
         </thead>
