@@ -2,6 +2,7 @@ import { Employee } from "../employee/Employee";
 import { Expense } from "../expense/Expense";
 import { Order } from "../order/Order";
 import { Payment } from "../payment/PaymentDetails";
+import { Product } from "../product/Product";
 
 export default class ReportController {
   private request: Request;
@@ -146,45 +147,6 @@ export default class ReportController {
     const toDate = to ? new Date(to) : new Date();
     toDate.setHours(23, 59, 59, 999);
 
-    // const result = await Order.aggregate([
-    //   {
-    //     $match: {
-    //       createdAt: { $gte: fromDate, $lte: toDate },
-    //       paymentStatus: "paid",
-    //     },
-    //   },
-    //   {
-    //     $group: {
-    //       _id: {
-    //         $dateToString: { format: "%Y-%m", date: "$createdAt" },
-    //       },
-    //       revenue: { $sum: "$totalPrice" },
-    //       expenses: { $sum: 0 },
-    //     },
-    //   },
-    //   {
-    //     $sort: { _id: 1 }, // Sort by date in ascending order
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 0, // Exclude _id field from the result
-    //       month: "$_id", // Rename _id to 'month'
-    //       revenue: 1,
-    //     },
-    //   },
-    // ]);
-
-    // Transform the result for the desired format
-    // const labels = result.map((entry) => entry.month);
-    // const revenueData = result.map((entry) => entry.revenue);
-    // const expensesData = result.map((entry) => entry.expenses);
-
-    // console.log({
-    //   labels,
-    //   revenueData,
-    //   expensesData,
-    // });
-
     // Aggregation for orders
     const orderResult = await Order.aggregate([
       {
@@ -328,7 +290,32 @@ export default class ReportController {
     };
   };
 
-  public inventoryReport = async () => {
-    console.log("generating iunventory report");
+  public inventoryReport = async ({
+    from,
+    to,
+  }: {
+    from?: string;
+    to?: string;
+  }) => {
+    const fromDate = from ? new Date(from) : new Date();
+    fromDate.setHours(0, 0, 0, 0);
+    const toDate = to ? new Date(to) : new Date();
+    toDate.setHours(23, 59, 59, 999);
+
+    const topSellingProducts = await Product.find()
+      .sort({ quantitySold: -1 })
+      .limit(10);
+
+    const notSellingProducts = await Product.find()
+      .sort({ quantitySold: 1 })
+      .limit(10);
+
+    const lowStockProducts = await Product.find({ quantity: { $lt: 10 } });
+
+    return {
+      topSellingProducts,
+      notSellingProducts,
+      lowStockProducts,
+    };
   };
 }

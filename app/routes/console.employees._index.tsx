@@ -94,8 +94,6 @@ export default function Employees() {
         </SimpleSelect>
       </div>
 
-      <div>{/* <p>tabs</p> */}</div>
-
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
           <thead className=" uppercase text-slate-700 dark:text-slate-400 ">

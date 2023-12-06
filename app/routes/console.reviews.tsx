@@ -9,8 +9,6 @@ export default function Reviews() {
         <h1 className="text-3xl font-bold">Reviews</h1>
       </div>
 
-      <div>{/* <p>tabs</p> */}</div>
-
       <div className="relative overflow-x-auto shadow-sm sm:rounded-lg">
         <p>asfasfas</p>
       </div>

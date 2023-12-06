@@ -10,11 +10,11 @@ const settingLinks = [
     name: "General",
     path: "/console/settings",
   },
-  {
-    id: 2,
-    name: "Notifications",
-    path: "/console/settings/notifications",
-  },
+  // {
+  //   id: 2,
+  //   name: "Notifications",
+  //   path: "/console/settings/notifications",
+  // },
   // {
   //   id: 3,
   //   name: "Themes",
@@ -54,7 +54,7 @@ export default function AdminSettings() {
     <AdminLayout user={user}>
       <h1 className="text-3xl font-bold">Settings</h1>
 
-      <div className="mt-3 flex justify-between gap-2 rounded-lg border border-slate-400 bg-white px-3 py-2 shadow-sm dark:bg-black/95">
+      {/* <div className="mt-3 flex justify-between gap-2 rounded-lg border border-slate-400 bg-white px-3 py-2 shadow-sm dark:bg-black/95">
         {settingLinks.map((link) => (
           <NavLink
             key={IdGenerator(10)}
@@ -71,7 +71,7 @@ export default function AdminSettings() {
             {link.name}
           </NavLink>
         ))}
-      </div>
+      </div> */}
 
       <Outlet />
     </AdminLayout>

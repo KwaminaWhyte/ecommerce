@@ -62,40 +62,26 @@ export default function Products() {
 
   return (
     <AdminLayout user={user}>
-      <div className="flex">
-        <h1 className="text-3xl font-bold">Product Categories</h1>
+      <section className="mb-3 flex items-center gap-3">
+        <h1 className="text-3xl font-bold">Categories</h1>
+        <section className="ml-auto flex gap-3 items-center">
+          <Form
+            method="GET"
+            className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+          >
+            <Input
+              type="search"
+              placeholder="Search anything..."
+              name="search_term"
+              className="min-w-[450px]"
+            />
 
-        <section className="ml-auto flex">
-          {/* <Button variant="outline">Export</Button> */}
-          <Spacer />
-          {/* <Button variant="outline">Print</Button> */}
-          <Spacer />
+            <Button type="submit">Search</Button>
+          </Form>
+
           <Button onClick={() => openModal()}> + New Category</Button>
         </section>
-      </div>
-
-      <Form
-        method="GET"
-        className="my-3 flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
-      >
-        <Input
-          type="search"
-          placeholder="Search anything..."
-          name="search_term"
-        />
-
-        <Button type="submit">Search</Button>
-      </Form>
-
-      {/* <SimpleSelect name="status" variant="ghost">
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected</option>
-          <option value="shipping">Shipping</option>
-        </SimpleSelect> */}
-
-      <div>{/* <p>tabs</p> */}</div>
+      </section>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
@@ -409,7 +395,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "ComClo - Product Categories" },
+    { title: "ComClo - Categories" },
     {
       name: "description",
       content: "The best e-Commerce platform for your business.",

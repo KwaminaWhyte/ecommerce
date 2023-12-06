@@ -196,6 +196,7 @@ export default class ProductController {
     description,
     category,
     quantity,
+    costPrice,
   }: {
     _id: string;
     name: string;
@@ -203,6 +204,7 @@ export default class ProductController {
     description: string;
     category: string;
     quantity: string;
+    costPrice: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
 
@@ -215,6 +217,7 @@ export default class ProductController {
           description,
           category,
           quantity,
+          costPrice,
         }
       );
 

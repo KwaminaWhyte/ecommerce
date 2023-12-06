@@ -273,11 +273,11 @@ const sideNavLinks = [
         name: "General",
         path: "/console/reports",
       },
-      {
-        id: 1,
-        name: "Sales",
-        path: "/console/reports/sales",
-      },
+      // {
+      //   id: 1,
+      //   name: "Sales",
+      //   path: "/console/reports/sales",
+      // },
       {
         id: 12,
         name: "Inventory",

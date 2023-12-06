@@ -171,10 +171,40 @@ export default function Products() {
 
   return (
     <AdminLayout user={user}>
-      <div className="flex">
+      <section className="mb-3 flex items-center gap-3">
         <h1 className="text-3xl font-bold">Products </h1>
 
-        <section className="ml-auto flex gap-3">
+        <div className="ml-auto flex gap-3 items-center">
+          <Form
+            method="GET"
+            className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+          >
+            <Input
+              type="search"
+              placeholder="Search by name..."
+              name="search_term"
+              className="min-w-[450px]"
+            />
+
+            <Select name="category">
+              <SelectTrigger className="min-w-[200pxs]">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Category</SelectLabel>
+                  {categories.map((category) => (
+                    <SelectItem key={IdGenerator()} value={category._id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <Button type="submit">Search</Button>
+          </Form>
+
           {/* <Button variant="outline">Export</Button> */}
 
           <Dialog>
@@ -295,7 +325,7 @@ export default function Products() {
                   <Label htmlFor="category">Category</Label>
                   <Select name="category">
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a fruit" />
+                      <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -339,21 +369,8 @@ export default function Products() {
               </Form>
             </DialogContent>
           </Dialog>
-        </section>
-      </div>
-
-      <Form
-        method="GET"
-        className="my-3 flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
-      >
-        <Input
-          type="search"
-          placeholder="Search anything..."
-          name="search_term"
-        />
-
-        <Button type="submit">Search</Button>
-      </Form>
+        </div>
+      </section>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
@@ -481,6 +498,11 @@ export default function Products() {
                                 name="actionType"
                                 value="update"
                               />
+                              <input
+                                type="hidden"
+                                name="_id"
+                                value={product?._id}
+                              />
                               <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
@@ -554,7 +576,7 @@ export default function Products() {
                                   id="quantity"
                                   type="number"
                                   name="quantity"
-                                  defaultValue={product?.quantitys}
+                                  defaultValue={product?.quantity}
                                 />
                               </div>
 
@@ -670,10 +692,13 @@ export const action: ActionFunction = async ({ request }) => {
     let data = JSON.parse(completeData);
     return productController.importBatch(data);
   } else if (actionType == "update") {
+    console.log("running update");
+
     return await productController.updateProduct({
       _id: formData.get("_id") as string,
       name,
       price,
+      costPrice,
       description,
       category,
       quantity,

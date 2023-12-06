@@ -145,14 +145,14 @@ export default function SideNavigation({ user }: { user: any }) {
             <Transition show={!collapseNav}>
               <div className="flex flex-col">
                 <p className="m-0 p-0 text-left font-bold">{user?.username}</p>
-                <p className="mr-auto">Super Admin</p>
+                <p className="mr-auto">Admin</p>
                 {/* <p className="">{user.email}</p> */}
               </div>
             </Transition>
           </MenuButton>
-          <Menu className="z-50 p-2 bg-white rounded-lg shadow-lg my-5 mx-3 border border-slate-300 w-52">
+          <Menu className="z-50 p-2 gap-3 bg-white rounded-lg shadow-lg my-5 mx-3 border border-slate-300 w-52">
             <MenuItem className="p-2 flex list-none cursor-default hover:bg-slate-200 rounded-lg">
-              <Link to="/console/profile" className="w-full">
+              <Link to="/console/profile" className="w-full text-center">
                 Profile
               </Link>
             </MenuItem>
@@ -160,7 +160,7 @@ export default function SideNavigation({ user }: { user: any }) {
             <Form
               action="/console/logout"
               method="POST"
-              className="flex w-full p-2 list-none cursor-default hover:bg-slate-200 rounded-lg "
+              className="flex w-full list-none cursor-default rounded-lg "
             >
               <Button
                 type="submit"
