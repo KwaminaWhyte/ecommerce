@@ -14,7 +14,6 @@ import {
   useNavigation,
 } from "@remix-run/react";
 
-import Input from "~/components/Input";
 import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
@@ -30,6 +29,7 @@ import Container from "~/components/Container";
 import type { EmployeeInterface } from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 
 export default function Employees() {
   let { user, employees, totalPages, page } = useLoaderData();
@@ -71,28 +71,27 @@ export default function Employees() {
 
   return (
     <AdminLayout user={user}>
-      <div className="flex">
+      <section className="mb-3 flex items-center gap-3">
         <h1 className="text-3xl font-bold">Employees </h1>
 
-        <section className="ml-auto flex">
-          {/* <Button variant="outline">Export</Button> */}
-          <Spacer />
-          {/* <Button variant="outline">Print</Button> */}
-          <Spacer />
+        <div className=" flex items-center gap-3 ml-auto">
+          <Form
+            method="GET"
+            className=" ml-auto flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
+          >
+            <Input
+              type="search"
+              placeholder="Search anything..."
+              name="search_term"
+              className="w-60"
+            />
+
+            <Button type="submit">Filter</Button>
+          </Form>
+
           <Button onClick={() => openModal()}> + New Employee</Button>
-        </section>
-      </div>
-
-      <div className="my-3 flex rounded-lg bg-slate-50 p-2 dark:bg-slate-900">
-        <Input type="search" placeholder="Search anything..." name="term" />
-        <Spacer />
-
-        <SimpleSelect name="status" variant="ghost">
-          <option value="">Select Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </SimpleSelect>
-      </div>
+        </div>
+      </section>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">

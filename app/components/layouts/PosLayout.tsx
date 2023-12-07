@@ -92,7 +92,7 @@ export default function PosLayout({
               Cart
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-[900px] ">
+          <SheetContent className="min-w-[700px] ">
             <SheetHeader>
               <SheetTitle>Cart</SheetTitle>
               <SheetDescription>
@@ -263,10 +263,7 @@ export default function PosLayout({
 
                   <div className="mt-2 ">
                     <Label>Amount Paid</Label>
-                    <Input
-                      name="amount_paid"
-                      placeholder="Amount customern paid"
-                    />
+                    <Input name="amount_paid" type="number" />
                   </div>
 
                   <div className="mt-2 ">

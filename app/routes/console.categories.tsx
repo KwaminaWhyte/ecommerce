@@ -231,7 +231,7 @@ export default function Products() {
                                   defaultValue={category?.category?._id}
                                 >
                                   <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select a fruit" />
+                                    <SelectValue placeholder="Selects" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectGroup>

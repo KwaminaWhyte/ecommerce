@@ -6,9 +6,6 @@ import {
 import { Form, Link, useLoaderData, useSubmit } from "@remix-run/react";
 import { Pagination, PaginationItem } from "@mui/material";
 
-import Input from "~/components/Input";
-import SimpleSelect from "~/components/SimpleSelect";
-import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import OrderCard from "~/components/OrderCard";
 import type { AdminInterface, OrderInterface } from "~/server/types";
@@ -22,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { Input } from "~/components/ui/input";
 
 export default function Orders() {
   const submit = useSubmit();
@@ -46,10 +44,10 @@ export default function Orders() {
             type="search"
             placeholder="Search anything..."
             name="search_term"
+            className="w-60"
           />
-          <Spacer />
 
-          <Select name="status">
+          {/* <Select name="status">
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
@@ -60,8 +58,7 @@ export default function Orders() {
               <SelectItem value="grapes">Grapes</SelectItem>
               <SelectItem value="pineapple">Pineapple</SelectItem>
             </SelectContent>
-          </Select>
-          <Spacer />
+          </Select> */}
 
           <Button type="submit">Filter</Button>
         </Form>

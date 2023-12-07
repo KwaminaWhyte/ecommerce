@@ -4,24 +4,26 @@ import {
   type ActionFunction,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-  useSubmit,
-} from "@remix-run/react";
+import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 
 import Container from "~/components/Container";
-import Input from "~/components/Input";
-import SimpleSelect from "~/components/SimpleSelect";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import SettingsController from "~/server/settings/SettingsController.server";
 
 export default function GeneralSettings() {
-  const data = useActionData();
-  const { generalSettings } = useLoaderData();
-  const navigation = useNavigation();
+  const { generalSettings } = useLoaderData<{ generalSettings: any }>();
   const submit = useSubmit();
+  console.log(generalSettings);
 
   return (
     <Container
@@ -31,75 +33,105 @@ export default function GeneralSettings() {
     >
       <Form
         method="POST"
-        className="flex-col grid grid-cols-2 gap-3 w-full"
+        className="flex-col grid grid-cols-2 gap-4 w-full"
         onChange={(event) => submit(event.currentTarget, { replace: true })}
       >
-        <Input
-          name="businessName"
-          placeholder="Name"
-          label="Shop Name"
-          type="text"
-          defaultValue={generalSettings?.businessName}
-          error={data?.errors?.businessName}
-        />
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="businessName">Business Name</Label>
+          <Input
+            id="businessName"
+            name="businessName"
+            type="text"
+            defaultValue={generalSettings?.businessName}
+            required
+          />
+        </div>
 
-        <Input
-          name="slogan"
-          placeholder="Slogan"
-          label="Slogan"
-          type="text"
-          defaultValue={generalSettings?.slogan}
-          error={data?.errors?.slogan}
-        />
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="slogan">Slogan</Label>
+          <Input
+            id="slogan"
+            name="slogan"
+            type="text"
+            defaultValue={generalSettings?.slogan}
+            required
+          />
+        </div>
 
-        <Input
-          name="email"
-          placeholder="Email"
-          label="Email"
-          type="email"
-          defaultValue={generalSettings?.email}
-          error={data?.errors?.email}
-        />
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="text"
+            defaultValue={generalSettings?.email}
+            required
+          />
+        </div>
 
-        <Input
-          name="phone"
-          placeholder="Phone"
-          label="Phone Number"
-          type="phone"
-          defaultValue={generalSettings?.phone}
-          error={data?.errors?.phone}
-        />
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            name="phone"
+            type="text"
+            defaultValue={generalSettings?.phone}
+            required
+          />
+        </div>
 
-        <Input
-          name="orderIdPrefix"
-          placeholder="Order Id Prefix"
-          label="Order Id Prefix"
-          type="orderIdPrefix"
-          defaultValue={generalSettings?.orderIdPrefix}
-          error={data?.errors?.orderIdPrefix}
-        />
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="orderIdPrefix">Order Id Prefix</Label>
+          <Input
+            id="orderIdPrefix"
+            name="orderIdPrefix"
+            type="text"
+            defaultValue={generalSettings?.orderIdPrefix}
+            required
+          />
+        </div>
 
-        <SimpleSelect
-          defaultValue={generalSettings?.allowInscription}
-          name="allow_inscription"
-          variant="ghost"
-          label="Allow Inscription on Item (will be moved to order settings)"
-        >
-          <option value="">Select</option>
-          <option value="true">Yes</option>
-          <option value="false">No</option>
-        </SimpleSelect>
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="allow_inscription">
+            Allow Inscription on Item (will be moved to order settings)
+          </Label>
+          <Select
+            name="allow_inscription"
+            defaultValue={generalSettings?.allowInscription ? "true" : "false"}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Select</SelectLabel>
+                <SelectItem value="true">Yes</SelectItem>
+                <SelectItem value="false">No</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <SimpleSelect
-          defaultValue={generalSettings?.separateStocks}
-          name="separate_stocks"
-          variant="ghost"
-          label="Allow seperate stocks record"
-        >
-          <option value="">Select </option>
-          <option value="true">Yes</option>
-          <option value="false">No</option>
-        </SimpleSelect>
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="separate_stocks">
+            Allow seperate stocks recordAllow seperate stocks record
+          </Label>
+          <Select
+            name="separate_stocks"
+            defaultValue={generalSettings?.allowInscription ? "true" : "false"}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select " />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Select</SelectLabel>
+                <SelectItem value="true">Yes</SelectItem>
+                <SelectItem value="false">No</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </Form>
     </Container>
   );

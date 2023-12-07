@@ -1,8 +1,5 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData, useSubmit } from "@remix-run/react";
-import Input from "~/components/Input";
-import SimpleSelect from "~/components/SimpleSelect";
-import Spacer from "~/components/Spacer";
+import { Form, Link, useLoaderData, useSubmit } from "@remix-run/react";
 import OrderCard from "~/components/OrderCard";
 import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
@@ -14,6 +11,7 @@ import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
 import IdGenerator from "~/lib/IdGenerator";
+import { Input } from "~/components/ui/input";
 
 export default function PosOrders() {
   const submit = useSubmit();
@@ -28,23 +26,38 @@ export default function PosOrders() {
 
   return (
     <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
-      <div className="flex">
+      <section className="mb-3 flex items-center gap-3">
         <h1 className="text-3xl font-bold">Orders on Credit</h1>
-      </div>
-      <div className="my-3 flex rounded-lg bg-slate-50 p-2 dark:bg-slate-900">
-        <Input type="search" placeholder="Search anything..." name="term" />
-        <Spacer />
 
-        <SimpleSelect color="secondary" variant="ghost">
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected</option>
-        </SimpleSelect>
-      </div>
-      {/* <div>
-        <p>tabs</p>
-      </div> */}
+        <Form
+          method="GET"
+          className=" ml-auto flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
+        >
+          <Input
+            type="search"
+            placeholder="Search anything..."
+            name="search_term"
+            className="w-60"
+          />
+
+          {/* <Select name="status">
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="apple">Apple</SelectItem>
+              <SelectItem value="banana">Banana</SelectItem>
+              <SelectItem value="blueberry">Blueberry</SelectItem>
+              <SelectItem value="grapes">Grapes</SelectItem>
+              <SelectItem value="pineapple">Pineapple</SelectItem>
+            </SelectContent>
+          </Select>
+          <Spacer /> */}
+
+          <Button type="submit">Filter</Button>
+        </Form>
+      </section>
+
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
           <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
