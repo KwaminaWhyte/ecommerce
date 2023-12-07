@@ -59,15 +59,12 @@ export default function Products() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
-
-  function closeModal() {
-    setActiveCategory({});
-    setIsUpdating(false);
-  }
+  const [showAddModel, setShowAddModel] = useState(false);
 
   useEffect(() => {
     setIsOpenDelete(false);
     setActiveCategory({});
+    setShowAddModel(false);
   }, [expenses]);
 
   return (
@@ -85,7 +82,10 @@ export default function Products() {
             <Button>Filter</Button>
           </Form>
 
-          <Dialog>
+          <Dialog
+            open={showAddModel}
+            onOpenChange={() => setShowAddModel(!showAddModel)}
+          >
             <DialogTrigger asChild>
               <Button>+ New Expense</Button>
             </DialogTrigger>
@@ -142,7 +142,7 @@ export default function Products() {
                   error={actionData?.errors?.note}
                 />
 
-                <div className="flex items-center ">
+                <div className="flex items-center gap-3 justify-end">
                   <DialogClose asChild>
                     <Button type="button" variant="secondary">
                       Close
@@ -178,14 +178,6 @@ export default function Products() {
 
         <Button type="submit">Search</Button>
       </Form>
-
-      {/* <SimpleSelect name="status" variant="ghost">
-          <option value="">Select Status</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected</option>
-          <option value="shipping">Shipping</option>
-        </SimpleSelect> */}
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">

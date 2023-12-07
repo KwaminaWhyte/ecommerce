@@ -106,6 +106,7 @@ export default function Products() {
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [isStockOpen, setIsStockOpen] = useState(false);
+  const [showAddModel, setShowAddModel] = useState(false);
 
   const [excelFile, setExcelFile] = useState(null);
   const [excelData, setExcelData] = useState([]);
@@ -161,6 +162,7 @@ export default function Products() {
     setIsOpenDelete(false);
     setIsStockOpen(false);
     setActiveProduct({});
+    setShowAddModel(false);
   }, [products, actionData]);
 
   return (
@@ -269,13 +271,13 @@ export default function Products() {
                   </section>
                 )}
               </div>
-              {/* <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter> */}
             </DialogContent>
           </Dialog>
 
-          <Dialog>
+          <Dialog
+            open={showAddModel}
+            onOpenChange={() => setShowAddModel(!showAddModel)}
+          >
             <DialogTrigger asChild>
               <Button>+ New Product</Button>
             </DialogTrigger>

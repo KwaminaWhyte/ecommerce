@@ -264,6 +264,7 @@ export default function Employees() {
                       placeholder="First Name"
                       label="First Name"
                       type="text"
+                      required
                       defaultValue={
                         actionData?.fields
                           ? actionData?.fields?.firstName
@@ -272,24 +273,13 @@ export default function Employees() {
                       error={actionData?.errors?.firstName}
                     />
                     <Spacer />
-                    <Input
-                      name="middleName"
-                      placeholder="Middle Name"
-                      label="Middle Name"
-                      type="text"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.middleName
-                          : selectedEmmployee?.middleName
-                      }
-                      error={actionData?.errors?.middleName}
-                    />
-                    <Spacer />
+
                     <Input
                       name="lastName"
                       placeholder="Last Name"
                       label="Last Name"
                       type="text"
+                      required
                       defaultValue={
                         actionData?.fields
                           ? actionData?.fields?.lastName
@@ -302,6 +292,7 @@ export default function Employees() {
                       name="username"
                       placeholder="Username "
                       label="Username"
+                      required
                       type="text"
                       defaultValue={
                         actionData?.fields
@@ -316,6 +307,7 @@ export default function Employees() {
                       placeholder="Email"
                       label="Email"
                       type="text"
+                      required
                       defaultValue={
                         actionData?.fields
                           ? actionData?.fields?.email
@@ -331,9 +323,9 @@ export default function Employees() {
                           name="password"
                           placeholder="Password"
                           label="Password"
+                          required
                           type="password"
                           defaultValue={actionData?.fields?.password}
-                          error={actionData?.errors?.password}
                         />
                         <Spacer />
                       </>
@@ -374,11 +366,7 @@ export default function Employees() {
                           navigation.state === "submitting" ? true : false
                         }
                       >
-                        {navigation.state === "submitting"
-                          ? "Submitting..."
-                          : selectedEmmployee
-                          ? "Update"
-                          : "Add"}
+                        {selectedEmmployee ? "Update" : "Add"}
                       </Button>
                     </div>
                   </Form>
