@@ -120,7 +120,7 @@ export default class ProductController {
       costPrice: parseFloat(costPrice),
     };
 
-    if (!generalSettings.separateStocks) {
+    if (!generalSettings?.separateStocks) {
       productData["price"] = parseFloat(price);
     }
     const product = await Product.create(productData);
@@ -137,7 +137,7 @@ export default class ProductController {
       });
     }
 
-    if (generalSettings.separateStocks) {
+    if (generalSettings?.separateStocks) {
       const productt = await Product.findById(product?._id);
       let stockk = await StockHistory.create({
         user: adminId,
