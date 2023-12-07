@@ -1,4 +1,4 @@
-import { Transition, Dialog, Popover } from "@headlessui/react";
+import { Transition } from "@headlessui/react";
 import {
   type ActionFunction,
   json,
@@ -27,6 +27,19 @@ import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 
 export default function Products() {
   const { user, categories, page, totalPages } = useLoaderData<{
@@ -35,29 +48,17 @@ export default function Products() {
     page: number;
     totalPages: number;
   }>();
-  const actionData = useActionData();
   const navigation = useNavigation();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
-
-  function closeModal() {
-    setIsOpen(false);
-    setActiveCategory({});
-    setIsUpdating(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
+  const [showAddModel, setShowAddModel] = useState(false);
+  const [showUpdateModel, setShowUpdateModel] = useState(false);
 
   useEffect(() => {
-    setIsOpen(false);
     setIsOpenDelete(false);
-    setActiveCategory({});
+    setShowAddModel(false);
+    setShowUpdateModel(false);
   }, [categories]);
 
   return (
@@ -79,7 +80,50 @@ export default function Products() {
             <Button type="submit">Search</Button>
           </Form>
 
-          <Button onClick={() => openModal()}> + New Category</Button>
+          <Dialog
+            open={showAddModel}
+            onOpenChange={() => setShowAddModel(!showAddModel)}
+          >
+            <DialogTrigger asChild>
+              <Button>+ New Category</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>New Category</DialogTitle>
+              </DialogHeader>
+              <Form
+                method="POST"
+                encType="multipart/form-data"
+                className="flex flex-col gap-4"
+              >
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" type="text" name="name" required />
+                </div>
+
+                <TextArea
+                  name="description"
+                  placeholder="Description"
+                  label="Description"
+                />
+
+                <div className="flex gap-3 items-center justify-end ">
+                  <DialogClose asChild>
+                    <Button type="button" variant="destructive">
+                      Close
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    type="submit"
+                    disabled={navigation.state === "submitting" ? true : false}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Form>
+            </DialogContent>
+          </Dialog>
         </section>
       </section>
 
@@ -105,7 +149,7 @@ export default function Products() {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category: CategoryInterface) => (
+            {categories.map((category) => (
               <tr
                 key={category?._id}
                 className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
@@ -134,22 +178,136 @@ export default function Products() {
                 </td> */}
 
                 <td className="gap-1 px-3 py-3">
-                  <Popover className="relative">
-                    <Popover.Button className="font-sm tansition-all rounded-lg bg-purple-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none">
-                      Actions
-                    </Popover.Button>
-
-                    <Popover.Panel className="absolute right-6 z-10">
-                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 dark:bg-slate-900">
-                        <Button
-                          onClick={() => {
-                            openModal();
-                            setIsUpdating(true);
-                            setActiveCategory(category);
-                          }}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline">Action</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-56">
+                      <div className="grid gap-4">
+                        <Dialog
+                          open={showUpdateModel}
+                          onOpenChange={() =>
+                            setShowUpdateModel(!showUpdateModel)
+                          }
                         >
-                          Update
-                        </Button>
+                          <DialogTrigger asChild>
+                            <Button>Update</Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Update Category</DialogTitle>
+                            </DialogHeader>
+                            <Form
+                              method="POST"
+                              encType="multipart/form-data"
+                              className="flex flex-col gap-4"
+                            >
+                              <input
+                                type="hidden"
+                                name="actionType"
+                                value="update"
+                              />
+                              <input
+                                type="hidden"
+                                name="_id"
+                                value={category?._id}
+                              />
+
+                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="name">Name</Label>
+                                <Input
+                                  id="name"
+                                  type="text"
+                                  name="name"
+                                  defaultValue={category?.name}
+                                  required
+                                />
+                              </div>
+
+                              {/* <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="category">Category</Label>
+                                <Select
+                                  name="category"
+                                  defaultValue={category?.category?._id}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a fruit" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>Category</SelectLabel>
+                                      {categories.map((category) => (
+                                        <SelectItem
+                                          key={IdGenerator()}
+                                          value={category._id}
+                                        >
+                                          {category.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div> */}
+
+                              {/* <SimpleSelect
+                      name="featured"
+                      label="Featured"
+                      variant="ghost"
+                      defaultValue={
+                        actionData?.fields
+                          ? actionData?.fields?.featured
+                          : activeCategory?.featured
+                      }
+                    >
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </SimpleSelect>
+                    <Spacer /> */}
+
+                              {/* <SimpleSelect
+                      name="status"
+                      label="Status"
+                      variant="ghost"
+                      defaultValue={
+                        actionData?.fields
+                          ? actionData?.fields?.status
+                          : activeCategory?.status
+                      }
+                    >
+                      <option value="">Select Status</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </SimpleSelect>
+                    <Spacer /> */}
+                              <TextArea
+                                name="description"
+                                placeholder="Description"
+                                label="Description"
+                                defaultValue={category?.description}
+                              />
+
+                              <div className="flex gap-3 items-center justify-end ">
+                                <DialogClose asChild>
+                                  <Button type="button" variant="destructive">
+                                    Close
+                                  </Button>
+                                </DialogClose>
+
+                                <Button
+                                  type="submit"
+                                  disabled={
+                                    navigation.state === "submitting"
+                                      ? true
+                                      : false
+                                  }
+                                >
+                                  Submit
+                                </Button>
+                              </div>
+                            </Form>
+                          </DialogContent>
+                        </Dialog>
+
                         <Button
                           variant="destructive"
                           type="button"
@@ -161,7 +319,7 @@ export default function Products() {
                           Delete
                         </Button>
                       </div>
-                    </Popover.Panel>
+                    </PopoverContent>
                   </Popover>
                 </td>
               </tr>
@@ -189,133 +347,6 @@ export default function Products() {
         />
       </div>
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50 " onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto ">
-            <div className="flex min-h-full items-center justify-center p-4 text-center ">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-slate-900">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-bold leading-6 text-slate-900"
-                  >
-                    {isUpdating ? "Update Category" : "New Category"}
-                  </Dialog.Title>
-                  <div className="h-4"></div>
-
-                  <Form
-                    method="POST"
-                    encType="multipart/form-data"
-                    className="gap-4 flex flex-col"
-                  >
-                    {isUpdating ? (
-                      <input
-                        type="hidden"
-                        name="_id"
-                        value={activeCategory._id}
-                      />
-                    ) : null}
-
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" type="text" name="name" required />
-                    </div>
-
-                    <TextArea
-                      name="description"
-                      placeholder="Description"
-                      label="Description"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.description
-                          : activeCategory.description
-                      }
-                      error={actionData?.errors?.description}
-                    />
-
-                    {/* <SimpleSelect
-                      name="featured"
-                      label="Featured"
-                      variant="ghost"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.featured
-                          : activeCategory?.featured
-                      }
-                    >
-                      <option value="true">True</option>
-                      <option value="false">False</option>
-                    </SimpleSelect>
-                    <Spacer /> */}
-
-                    {/* <SimpleSelect
-                      name="status"
-                      label="Status"
-                      variant="ghost"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.status
-                          : activeCategory?.status
-                      }
-                    >
-                      <option value="">Select Status</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </SimpleSelect>
-                    <Spacer /> */}
-
-                    <div className="flex items-center ">
-                      <Button
-                        color="error"
-                        type="button"
-                        className="ml-auto mr-3"
-                        onClick={closeModal}
-                        variant="destructive"
-                      >
-                        Close
-                      </Button>
-
-                      <Button
-                        type="submit"
-                        disabled={
-                          navigation.state === "submitting" ? true : false
-                        }
-                      >
-                        {navigation.state === "submitting"
-                          ? "Submitting..."
-                          : isUpdating
-                          ? "Update"
-                          : "Add"}
-                      </Button>
-                    </div>
-                  </Form>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
-
       <DeleteModal
         id={deleteId}
         isOpen={isOpenDelete}
@@ -331,29 +362,17 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const productController = await new ProductController(request);
 
-  if (formData.get("deleteId") != null) {
-    productController.deleteCategory(formData.get("deleteId") as string);
-    return true;
-  }
-
-  const name = formData.get("name");
+  const actionType = formData.get("actionType") as string;
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
   const status = formData.get("status") as string;
   const featured = formData.get("featured") as string;
-  const description = formData.get("description") as string;
 
-  if (typeof name !== "string") {
-    return json({ error: "Invalid name " }, { status: 400 });
-  }
-
-  const errors = {
-    name: validateName(name),
-  };
-
-  if (Object.values(errors).some(Boolean)) {
-    return json({ errors, fields: { name } }, { status: 400 });
-  }
-
-  if (formData.get("_id") != null) {
+  if (formData.get("deleteId") != null) {
+    return await productController.deleteCategory(
+      formData.get("deleteId") as string
+    );
+  } else if (actionType == "update") {
     return await productController.updateCategory({
       _id: formData.get("_id") as string,
       name,

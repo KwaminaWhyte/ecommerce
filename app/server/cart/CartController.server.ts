@@ -34,12 +34,9 @@ export default class CartController {
     });
 
     if (existingCart) {
-      Cart.findOneAndUpdate(
-        { _id: existingCart._id },
-        {
-          $inc: { quantity: 1 },
-        }
-      ).exec();
+      Cart.findByIdAndUpdate(existingCart._id, {
+        $inc: { quantity: 1 },
+      }).exec();
     } else {
       const cart = await Cart.create({
         user,
@@ -205,12 +202,9 @@ export default class CartController {
     id: string;
   }) => {
     try {
-      await Cart.findOneAndUpdate(
-        { _id: id },
-        {
-          inscription,
-        }
-      ).exec();
+      await Cart.findByIdAndUpdate(id, {
+        inscription,
+      }).exec();
 
       return redirect(`/cart`, 200);
     } catch (error) {

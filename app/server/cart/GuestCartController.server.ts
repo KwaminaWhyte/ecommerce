@@ -65,12 +65,9 @@ export default class GuestCartController {
     });
 
     if (existingCart) {
-      this.GuestCart.findOneAndUpdate(
-        { _id: existingCart._id },
-        {
-          $inc: { quantity: 1 },
-        }
-      ).exec();
+      this.GuestCart.findByIdAndUpdate(existingCart._id, {
+        $inc: { quantity: 1 },
+      }).exec();
     } else {
       const cart = await this.GuestCart.create({
         guestId,
@@ -160,12 +157,9 @@ export default class GuestCartController {
     id: string;
   }) => {
     try {
-      await this.GuestCart.findOneAndUpdate(
-        { _id: id },
-        {
-          inscription,
-        }
-      ).exec();
+      await this.GuestCart.findByIdAndUpdate(id, {
+        inscription,
+      }).exec();
 
       return redirect(`/cart`, 200);
     } catch (error) {

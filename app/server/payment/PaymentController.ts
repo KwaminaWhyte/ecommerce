@@ -60,12 +60,9 @@ export default class PaymentController {
     });
 
     if (existingPaymentDetail) {
-      this.PaymentDetails.findOneAndUpdate(
-        { _id: existingPaymentDetail._id },
-        {
-          $inc: { quantity: 1 },
-        }
-      ).exec();
+      this.PaymentDetails.findByIdAndUpdate(existingPaymentDetail._id, {
+        $inc: { quantity: 1 },
+      }).exec();
     } else {
       // create new admin
       const cart = await this.PaymentDetails.create({
@@ -209,22 +206,16 @@ export default class PaymentController {
       console.log("somemthing went wrong...");
     }
 
-    await Order.findOneAndUpdate(
-      { _id: orderId },
-      {
-        $inc: { amountPaid: parseFloat(amount) },
-      }
-    ).exec();
+    await Order.findByIdAndUpdate(orderId, {
+      $inc: { amountPaid: parseFloat(amount) },
+    }).exec();
 
     const order = await Order.findOne({ _id: orderId }).exec();
 
     if (order?.amountPaid >= order?.totalPrice) {
-      await Order.findOneAndUpdate(
-        { _id: orderId },
-        {
-          $set: { paymentStatus: "paid" },
-        }
-      ).exec();
+      await Order.findByIdAndUpdate(orderId, {
+        $set: { paymentStatus: "paid" },
+      }).exec();
     }
 
     return true;

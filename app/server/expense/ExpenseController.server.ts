@@ -121,14 +121,11 @@ export default class ExpenseController {
     const session = await getSession(this.request.headers.get("Cookie"));
 
     try {
-      await Expense.findOneAndUpdate(
-        { _id },
-        {
-          amount,
-          category,
-          note,
-        }
-      );
+      await Expense.findByIdAndUpdate(_id, {
+        amount,
+        category,
+        note,
+      });
 
       session.flash("message", {
         title: "Expense Updated Successful",

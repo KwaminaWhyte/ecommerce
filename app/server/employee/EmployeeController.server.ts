@@ -136,18 +136,15 @@ export default class EmployeeController {
     _id: string;
   }) => {
     // try {
-    await Employee.findOneAndUpdate(
-      { _id },
-      {
-        firstName,
-        middleName,
-        lastName,
-        email,
-        username,
-        role,
-        gender,
-      }
-    );
+    await Employee.findByIdAndUpdate(_id, {
+      firstName,
+      middleName,
+      lastName,
+      email,
+      username,
+      role,
+      gender,
+    });
     return redirect(`/console/employees`, 200);
     // } catch (error) {
     //   return json(

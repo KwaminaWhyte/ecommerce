@@ -56,12 +56,9 @@ export default class WishlistController {
     });
 
     if (existingItem) {
-      this.WishList.findOneAndUpdate(
-        { _id: existingItem._id },
-        {
-          $inc: { quantity: 1 },
-        }
-      ).exec();
+      this.WishList.findByIdAndUpdate(existingItem._id, {
+        $inc: { quantity: 1 },
+      }).exec();
     } else {
       const cart = await this.WishList.create({
         user,

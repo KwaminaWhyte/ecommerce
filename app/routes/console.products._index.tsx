@@ -102,11 +102,12 @@ export default function Products() {
     page: number;
   }>();
 
-  const [activeProduct, setActiveProduct] = useState({});
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [isStockOpen, setIsStockOpen] = useState(false);
   const [showAddModel, setShowAddModel] = useState(false);
+  const [showUpdateModel, setShowUpdateModel] = useState(false);
+  const [showImportModel, setShowImportModel] = useState(false);
 
   const [excelFile, setExcelFile] = useState(null);
   const [excelData, setExcelData] = useState([]);
@@ -161,8 +162,9 @@ export default function Products() {
   useEffect(() => {
     setIsOpenDelete(false);
     setIsStockOpen(false);
-    setActiveProduct({});
     setShowAddModel(false);
+    setShowImportModel(false);
+    setShowUpdateModel(false);
   }, [products, actionData]);
 
   return (
@@ -201,9 +203,10 @@ export default function Products() {
             <Button type="submit">Search</Button>
           </Form>
 
-          {/* <Button variant="outline">Export</Button> */}
-
-          <Dialog>
+          <Dialog
+            open={showImportModel}
+            onOpenChange={() => setShowImportModel(!showImportModel)}
+          >
             <DialogTrigger asChild>
               <Button variant="outline">Import</Button>
             </DialogTrigger>
@@ -461,7 +464,7 @@ export default function Products() {
                     <PopoverTrigger asChild>
                       <Button variant="outline">Action</Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-72">
+                    <PopoverContent className="w-56">
                       <div className="grid gap-4">
                         <Link
                           to={`/console/products/${product._id}`}
@@ -469,12 +472,6 @@ export default function Products() {
                         >
                           View
                         </Link>
-                        {/* <Link
-                          to={`/console/products/${product._id}`}
-                          className="font-sm tansition-all rounded-lg bg-purple-600 px-2 py-2 text-center text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
-                        >
-                          Inventory
-                        </Link> */}
 
                         <Dialog>
                           <DialogTrigger asChild>
@@ -541,7 +538,7 @@ export default function Products() {
                                   defaultValue={product?.category?._id}
                                 >
                                   <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select a fruit" />
+                                    <SelectValue placeholder="Select a category" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectGroup>
@@ -601,7 +598,6 @@ export default function Products() {
                         {/* <Button
                           onClick={() => {
                             setIsStockOpen(true);
-                            setActiveProduct(product);
                           }}
                         >
                           Restock
@@ -670,8 +666,9 @@ export const action: ActionFunction = async ({ request }) => {
   const category = formData.get("category") as string;
 
   if (formData.get("deleteId") != null) {
-    productController.deleteProduct(formData.get("deleteId") as string);
-    return true;
+    return await productController.deleteProduct(
+      formData.get("deleteId") as string
+    );
   } else if (formData.get("stockId") != null) {
     await productController.stockProduct({
       _id: formData.get("stockId") as string,
@@ -682,12 +679,15 @@ export const action: ActionFunction = async ({ request }) => {
       operation: "add",
     });
     return true;
-  }
-
-  if (actionType == "batch_import") {
+  } else if (actionType == "batch_import") {
     let data = JSON.parse(completeData);
     return productController.importBatch(data);
   } else if (actionType == "update") {
+    console.log("updating...");
+
+    console.log(formData.get("_id") as string);
+    console.log(category);
+
     return await productController.updateProduct({
       _id: formData.get("_id") as string,
       name,

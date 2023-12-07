@@ -229,16 +229,13 @@ export default class UserController {
     const userId = await this.getUserId();
 
     try {
-      await User.findOneAndUpdate(
-        { _id: userId },
-        {
-          firstName,
-          middleName,
-          lastName,
-          email,
-          username,
-        }
-      );
+      await User.findByIdAndUpdate(userId, {
+        firstName,
+        middleName,
+        lastName,
+        email,
+        username,
+      });
       return redirect("/personal_data");
     } catch (error) {
       return json(
@@ -275,12 +272,9 @@ export default class UserController {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      await User.findOneAndUpdate(
-        { _id: user._id },
-        {
-          password: hashedPassword,
-        }
-      );
+      await User.findByIdAndUpdate(user._id, {
+        password: hashedPassword,
+      });
 
       return redirect("/personal_data");
     } else {

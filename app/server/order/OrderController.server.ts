@@ -365,12 +365,9 @@ export default class OrderController {
     });
 
     if (hubtelResponse?.status == "Success") {
-      await Order.findOneAndUpdate(
-        { _id: orderId },
-        {
-          shippingAddress,
-        }
-      );
+      await Order.findByIdAndUpdate(orderId, {
+        shippingAddress,
+      });
       senderController.createEmail({
         subject: "Order Successful",
         body: `some email body!`,
@@ -390,12 +387,9 @@ export default class OrderController {
     _id: string;
   }) => {
     try {
-      await Order.findOneAndUpdate(
-        { _id },
-        {
-          deliveryStatus: status,
-        }
-      ).exec();
+      await Order.findByIdAndUpdate(_id, {
+        deliveryStatus: status,
+      }).exec();
 
       return true;
     } catch (error) {
@@ -420,13 +414,10 @@ export default class OrderController {
     paymentReff: string;
   }) => {
     try {
-      await Order.findOneAndUpdate(
-        { orderId },
-        {
-          paymentStatus: status,
-          paymentReff,
-        }
-      ).exec();
+      await Order.findByIdAndUpdate(orderId, {
+        paymentStatus: status,
+        paymentReff,
+      }).exec();
 
       return true;
     } catch (error) {

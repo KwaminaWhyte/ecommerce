@@ -51,12 +51,9 @@ export default class PaymentDetailsController {
     });
 
     if (existingPaymentDetail) {
-      this.PaymentDetails.findOneAndUpdate(
-        { _id: existingPaymentDetail._id },
-        {
-          $inc: { quantity: 1 },
-        }
-      ).exec();
+      this.PaymentDetails.findByIdAndUpdate(existingPaymentDetail._id, {
+        $inc: { quantity: 1 },
+      }).exec();
     } else {
       // create new admin
       const cart = await this.PaymentDetails.create({

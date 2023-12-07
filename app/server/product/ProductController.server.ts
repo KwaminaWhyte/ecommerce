@@ -5,8 +5,7 @@ import type { ProductInterface } from "../types";
 import { commitSession, getSession } from "~/session";
 import { Category, Product, StockHistory } from "./Product";
 import SettingsController from "../settings/SettingsController.server";
-import excelToJson from "convert-excel-to-json";
-import XLSX from "xlsx";
+
 export default class ProductController {
   private request: Request;
 
@@ -209,17 +208,14 @@ export default class ProductController {
     const session = await getSession(this.request.headers.get("Cookie"));
 
     try {
-      await Product.findOneAndUpdate(
-        { _id },
-        {
-          name,
-          price,
-          description,
-          category,
-          quantity,
-          costPrice,
-        }
-      );
+      await Product.findByIdAndUpdate(_id, {
+        name,
+        price,
+        description,
+        category,
+        quantity,
+        costPrice,
+      });
 
       session.flash("message", {
         title: "Product Updated Successful",
@@ -231,16 +227,17 @@ export default class ProductController {
         },
       });
     } catch (error) {
-      return json(
-        {
-          errors: {
-            name: "Error occured while updating product",
-            error: error,
-          },
-          fields: { name, price, description },
+      console.log(error);
+
+      session.flash("message", {
+        title: "Error Updating Product",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
   };
 
@@ -319,11 +316,32 @@ export default class ProductController {
   };
 
   public deleteProduct = async (id: string) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     try {
       await Product.findByIdAndDelete(id);
-      return json({ message: "Product deleted successfully" }, { status: 200 });
+
+      session.flash("message", {
+        title: "Product Deleted Successful",
+        status: "success",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     } catch (err) {
       console.log(err);
+
+      session.flash("message", {
+        title: "Error Deleting Product",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
   };
 
@@ -398,19 +416,22 @@ export default class ProductController {
     status: string;
     featured: string;
   }) {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     const existingCategory = await Category.findOne({ name });
 
     if (existingCategory) {
-      return json(
-        {
-          errors: { name: "Category already exists" },
-          fields: { name, status, description },
+      session.flash("message", {
+        title: "Category already exists",
+        status: "error",
+      });
+      return redirect(`/console/categories`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
 
-    // create new admin
     const category = await Category.create({
       name,
       status,
@@ -419,15 +440,26 @@ export default class ProductController {
     });
 
     if (!category) {
-      return json(
-        {
-          error: "Error creating category",
-          fields: { name, status, description },
+      session.flash("message", {
+        title: "Error Adding Category",
+        status: "error",
+      });
+      return redirect(`/console/categories`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
-    return redirect("/console/categories", 200);
+
+    session.flash("message", {
+      title: "Category Added Successful",
+      status: "success",
+    });
+    return redirect(`/console/categories`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   }
 
   public async updateCategory({
@@ -443,40 +475,65 @@ export default class ProductController {
     status: string;
     featured: string;
   }) {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     try {
-      await Category.findOneAndUpdate(
-        { _id },
-        {
-          name,
-          status,
-          description,
-          featured: featured == "true" ? true : false,
-        }
-      );
-      return redirect(`/console/categories`, 200);
-    } catch (error) {
-      return json(
-        {
-          errors: {
-            name: "Error occured while updating product category",
-            error: error,
-          },
-          fields: { name, status, description },
+      await Category.findByIdAndUpdate(_id, {
+        name,
+        status,
+        description,
+        featured: featured == "true" ? true : false,
+      });
+      session.flash("message", {
+        title: "Category Updated Successful",
+        status: "success",
+      });
+      return redirect(`/console/categories`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
+    } catch (error) {
+      console.log();
+
+      session.flash("message", {
+        title: "Error Updating Category",
+        status: "error",
+      });
+      return redirect(`/console/categories`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
   }
 
   public deleteCategory = async (id: string) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     try {
       await Category.findByIdAndDelete(id);
-      return json(
-        { message: "Product Category deleted successfully" },
-        { status: 200 }
-      );
+
+      session.flash("message", {
+        title: "Category Deleted Successful",
+        status: "success",
+      });
+      return redirect(`/console/categories`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     } catch (err) {
       console.log(err);
+      session.flash("message", {
+        title: "Error Deleting Category",
+        status: "error",
+      });
+      return redirect(`/console/categories`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
   };
 
