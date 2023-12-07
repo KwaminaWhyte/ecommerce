@@ -1,9 +1,11 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
+import { DatePickerWithRange } from "~/components/date-range";
+import { Button } from "~/components/ui/button";
 import AdminController from "~/server/admin/AdminController.server";
 import ReportController from "~/server/report/ReportController.server";
-import { ProductInterface } from "~/server/types";
+import type { ProductInterface } from "~/server/types";
 
 export default function InventoryReport() {
   let { topSellingProducts, notSellingProducts, lowStockProducts } =
@@ -17,35 +19,163 @@ export default function InventoryReport() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold">Inventory Reports </h1>
+      <section className="mb-3 flex items-center gap-3">
+        <h1 className="text-3xl font-bold">Inventory Report</h1>
+        {/* <Form
+          method="GET"
+          className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+        >
+          <DatePickerWithRange />
+          <Button>Filter</Button>
+        </Form> */}
+      </section>
 
-      <Container
-        heading="Products Sold"
-        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>asfasf</p>
-      </Container>
+      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+        <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
+          <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Top Products Selling
+          </h3>
+        </div>
+        <table className="w-full text-left text-slate-500 dark:text-slate-400">
+          <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
+            <tr>
+              <th scope="col" className="px-3 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Category
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Quantity
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {topSellingProducts.map((product) => (
+              <tr
+                key={product?._id}
+                className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
+              >
+                <th
+                  scope="row"
+                  className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
+                >
+                  <p>{product?.name}</p>
+                </th>
 
-      <Container
-        heading="Products Running Low"
-        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>asfasf</p>
-      </Container>
+                <td className="px-3 py-3">GH₵ {product?.price}</td>
+                <td className="px-3 py-3">{product?.category?.name}</td>
+                <td className="px-3 py-3">{product?.quantity}</td>
+                <td className="px-3 py-3"> {product?.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      <Container
-        heading="Products Not Selling"
-        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>asfasf</p>
-      </Container>
+      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+        <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
+          <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Products Running Low
+          </h3>
+        </div>
+        <table className="w-full text-left text-slate-500 dark:text-slate-400">
+          <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
+            <tr>
+              <th scope="col" className="px-3 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Category
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Quantity
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {lowStockProducts.map((product) => (
+              <tr
+                key={product?._id}
+                className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
+              >
+                <th
+                  scope="row"
+                  className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
+                >
+                  <p>{product?.name}</p>
+                </th>
 
-      <Container
-        heading="Top Products Selling"
-        subHeading="Display sales trends over time, such as daily, weekly, and monthly comparisons."
-      >
-        <p>asfasf</p>
-      </Container>
+                <td className="px-3 py-3">GH₵ {product?.price}</td>
+                <td className="px-3 py-3">{product?.category?.name}</td>
+                <td className="px-3 py-3">{product?.quantity}</td>
+                <td className="px-3 py-3"> {product?.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+        <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
+          <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Products Not Selling
+          </h3>
+        </div>
+        <table className="w-full text-left text-slate-500 dark:text-slate-400">
+          <thead className=" uppercase text-slate-700 dark:text-slate-400 ">
+            <tr>
+              <th scope="col" className="px-3 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Category
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Quantity
+              </th>
+              <th scope="col" className="px-3 py-3">
+                Description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {notSellingProducts.map((product) => (
+              <tr
+                key={product?._id}
+                className="cursor-pointer rounded-xl hover:bg-slate-50 hover:shadow-md dark:border-slate-400 dark:bg-slate-800 dark:hover:bg-slate-600"
+              >
+                <th
+                  scope="row"
+                  className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
+                >
+                  <p>{product?.name}</p>
+                </th>
+
+                <td className="px-3 py-3">GH₵ {product?.price}</td>
+                <td className="px-3 py-3">{product?.category?.name}</td>
+                <td className="px-3 py-3">{product?.quantity}</td>
+                <td className="px-3 py-3"> {product?.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

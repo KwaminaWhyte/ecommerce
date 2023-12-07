@@ -69,28 +69,6 @@ export default function Login() {
   );
 }
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "ComClo - Login" },
-    {
-      name: "description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    { name: "og:title", content: "ComClo" },
-    { property: "og:type", content: "websites" },
-    {
-      name: "og:description",
-      content: "The best e-Commerce platform for your business.",
-    },
-    {
-      name: "og:image",
-      content:
-        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
-    },
-    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
-  ];
-};
-
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   let email = formData.get("email");
@@ -116,4 +94,26 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   const userController = await new UserController(request);
   return (await userController.getUser()) ? redirect("/") : null;
+};
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "ComClo - Login" },
+    {
+      name: "description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    { name: "og:title", content: "ComClo" },
+    { property: "og:type", content: "websites" },
+    {
+      name: "og:description",
+      content: "The best e-Commerce platform for your business.",
+    },
+    {
+      name: "og:image",
+      content:
+        "https://res.cloudinary.com/app-deity/image/upload/v1700242905/l843bauo5zpierh3noug.png",
+    },
+    { name: "og:url", content: "https://single-ecommerce.vercel.app" },
+  ];
 };

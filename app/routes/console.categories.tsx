@@ -14,8 +14,6 @@ import {
 } from "@remix-run/react";
 import { Fragment, useEffect, useState } from "react";
 
-import Input from "~/components/Input";
-import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
@@ -27,6 +25,8 @@ import Container from "~/components/Container";
 import type { CategoryInterface, UserInterface } from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 
 export default function Products() {
   const { user, categories, page, totalPages } = useLoaderData<{
@@ -223,7 +223,11 @@ export default function Products() {
                   </Dialog.Title>
                   <div className="h-4"></div>
 
-                  <Form method="POST" encType="multipart/form-data">
+                  <Form
+                    method="POST"
+                    encType="multipart/form-data"
+                    className="gap-4 flex flex-col"
+                  >
                     {isUpdating ? (
                       <input
                         type="hidden"
@@ -231,19 +235,12 @@ export default function Products() {
                         value={activeCategory._id}
                       />
                     ) : null}
-                    <Input
-                      name="name"
-                      placeholder="Name"
-                      label="Name"
-                      type="text"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.name
-                          : activeCategory.name
-                      }
-                      error={actionData?.errors?.name}
-                    />
-                    <Spacer />
+
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                      <Label htmlFor="name">Name</Label>
+                      <Input id="name" type="text" name="name" required />
+                    </div>
+
                     <TextArea
                       name="description"
                       placeholder="Description"
@@ -255,7 +252,6 @@ export default function Products() {
                       }
                       error={actionData?.errors?.description}
                     />
-                    <Spacer />
 
                     {/* <SimpleSelect
                       name="featured"

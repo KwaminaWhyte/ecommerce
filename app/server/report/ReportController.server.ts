@@ -303,14 +303,18 @@ export default class ReportController {
     toDate.setHours(23, 59, 59, 999);
 
     const topSellingProducts = await Product.find()
+      .populate("category")
       .sort({ quantitySold: -1 })
       .limit(10);
 
     const notSellingProducts = await Product.find()
+      .populate("category")
       .sort({ quantitySold: 1 })
       .limit(10);
 
-    const lowStockProducts = await Product.find({ quantity: { $lt: 10 } });
+    const lowStockProducts = await Product.find({
+      quantity: { $lt: 10 },
+    }).populate("category");
 
     return {
       topSellingProducts,
