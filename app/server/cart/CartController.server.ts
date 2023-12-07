@@ -45,13 +45,15 @@ export default class CartController {
       });
 
       if (!cart) {
-        return json(
-          {
-            error: "Error creating cart",
-            fields: {},
+        session.flash("message", {
+          title: "Error adding product to cart",
+          status: "error",
+        });
+        return redirect(`/pos/products`, {
+          headers: {
+            "Set-Cookie": await commitSession(session),
           },
-          { status: 400 }
-        );
+        });
       }
     }
 

@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import { Admin } from "./Admin";
+import { commitSession, getSession } from "~/session";
 
 export default class AdminController {
   private request: Request;
@@ -84,26 +85,33 @@ export default class AdminController {
     email: string;
     password: string;
   }) {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     const admin = await Admin.findOne({ email });
 
     if (!admin) {
-      return json(
-        { message: "No account associated with this Email", type: "error" },
-        { status: 400 }
-      );
+      session.flash("message", {
+        title: "Invalid Credentials",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
 
     const valid = await bcrypt.compare(password, admin.password);
-
     if (!valid) {
-      return json(
-        {
-          message: "Invalid Credentials",
-          type: "error",
-          fields: { email, password },
+      session.flash("message", {
+        title: "Invalid Credentials",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
 
     return this.createAdminSession(admin._id, "/console");
