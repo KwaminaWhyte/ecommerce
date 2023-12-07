@@ -69,8 +69,6 @@ export default function PosLayout({
       setTotalPrice(totalPricez);
     } else {
       cart_items?.forEach((cartItem) => {
-        console.log(cartItem);
-
         const productPrice = cartItem?.product?.price;
         const quantity = cartItem.quantity;
         totalPricez += productPrice * quantity;

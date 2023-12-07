@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  json,
   type LoaderFunction,
   type MetaFunction,
   type ActionFunction,
@@ -34,7 +33,6 @@ import type {
   CategoryInterface,
   ProductInterface,
 } from "~/server/types";
-import { validateName, validatePrice } from "~/server/validators.server";
 import Container from "~/components/Container";
 import { Button } from "~/components/ui/button";
 import IdGenerator from "~/lib/IdGenerator";
@@ -123,10 +121,8 @@ export default function Products() {
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      console.log({ jsonData });
 
       const keyValuePairs = await arrayToKeyValuePairs(jsonData);
-      console.log(keyValuePairs);
       setExcelData(keyValuePairs);
     };
     reader.readAsArrayBuffer(excelFile);
@@ -136,8 +132,6 @@ export default function Products() {
     setCompleteData(mappedDataArray);
   };
   const handleImportData = () => {
-    console.log("import the data");
-
     return submit(
       {
         actionType: "batch_import",
@@ -692,8 +686,6 @@ export const action: ActionFunction = async ({ request }) => {
     let data = JSON.parse(completeData);
     return productController.importBatch(data);
   } else if (actionType == "update") {
-    console.log("running update");
-
     return await productController.updateProduct({
       _id: formData.get("_id") as string,
       name,

@@ -1,8 +1,6 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import Container from "~/components/Container";
-import { DatePickerWithRange } from "~/components/date-range";
-import { Button } from "~/components/ui/button";
 import AdminController from "~/server/admin/AdminController.server";
 import ReportController from "~/server/report/ReportController.server";
 import type { ProductInterface } from "~/server/types";
@@ -15,19 +13,10 @@ export default function InventoryReport() {
       lowStockProducts: ProductInterface[];
     }>();
 
-  console.log(topSellingProducts, notSellingProducts, lowStockProducts);
-
   return (
     <div>
       <section className="mb-3 flex items-center gap-3">
         <h1 className="text-3xl font-bold">Inventory Report</h1>
-        {/* <Form
-          method="GET"
-          className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
-        >
-          <DatePickerWithRange />
-          <Button>Filter</Button>
-        </Form> */}
       </section>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">

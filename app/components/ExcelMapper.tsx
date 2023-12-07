@@ -30,8 +30,6 @@ const ExcelMapper = ({ columns, onMapColumns }) => {
   }, [columns]);
 
   const handleMapColumn = (excelColumn, mongooseField) => {
-    console.log(excelColumn, "->", mongooseField);
-
     setMappedColumns({
       ...mappedColumns,
       [excelColumn]: mongooseField,
