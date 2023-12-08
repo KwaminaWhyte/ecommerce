@@ -251,20 +251,19 @@ export default function Shop() {
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
 
+  const cartController = await new CartController(request);
+  const orderController = await new OrderController(request);
   const authControlle = await new EmployeeAuthController(request);
   const user = await authControlle.requireEmployeeId();
 
   const product = formData.get("product_id") as string;
-
-  const cartController = await new CartController(request);
-  const orderController = await new OrderController(request);
 
   if ((formData.get("type") as string) == "complete") {
     const ress = await orderController.checkout({
       user,
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
-      sales_person: formData.get("sales_person") as string,
+      salesPerson: formData.get("sales_person") as string,
       onCredit: formData.get("on_credit") as string,
       amountPaid: formData.get("amount_paid") as string,
     });

@@ -9,6 +9,7 @@ import EmployeeAuthController from "../employee/EmployeeAuthController";
 import { Order } from "./Order";
 import { Product, StockHistory } from "../product/Product";
 import { Cart } from "../cart/Cart";
+import { Payment } from "../payment/PaymentDetails";
 
 export default class OrderController {
   private request: Request;
@@ -190,14 +191,14 @@ export default class OrderController {
     user,
     customerName,
     customerPhone,
-    sales_person,
+    salesPerson,
     amountPaid,
     onCredit = "false",
   }: {
     user: string;
     customerName: string;
     customerPhone: string;
-    sales_person: string;
+    salesPerson: string;
     onCredit: string;
     amountPaid: string;
   }) => {
@@ -268,7 +269,7 @@ export default class OrderController {
         orderItems: newCartItems,
         deliveryStatus: "delivered",
         paymentStatus: onCredit == "true" ? "pending" : "paid",
-        sales_person,
+        salesPerson: salesPerson ? salesPerson : user,
         attendant,
         onCredit: onCredit == "true" ? true : false,
         status: "completed",
@@ -308,6 +309,12 @@ export default class OrderController {
         paymentMethod: "cash",
         mobileNumber: customerPhone,
         amount: amountPaid,
+      });
+
+      await Payment.create({
+        amountPaid,
+        order: order?._id,
+        cashier: user,
       });
 
       return await Order.findById(order?._id)

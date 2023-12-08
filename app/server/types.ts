@@ -103,6 +103,7 @@ export interface OrderInterface extends Document {
   deliveryDate: Date;
   amountPaid: number;
   customerPhone: string;
+  salesPerson: EmployeeInterface;
   customerName: string;
   createdAt: Date;
   updatedAt: Date;

@@ -76,10 +76,10 @@ const OrderSchema = new mongoose.Schema(
       default: "pending",
     },
     paymentReff: String,
-    sales_person: {
+    salesPerson: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "employees",
-      required: true,
+      // required: true,
     },
     attendant: {
       type: mongoose.Schema.Types.ObjectId,

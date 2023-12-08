@@ -3,7 +3,7 @@ import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
 import type { ProductInterface } from "../types";
 import { commitSession, getSession } from "~/session";
-import { Category, Product, StockHistory } from "./Product";
+import { Category, Product, ProductImage, StockHistory } from "./Product";
 import SettingsController from "../settings/SettingsController.server";
 
 export default class ProductController {
@@ -542,23 +542,42 @@ export default class ProductController {
     image,
   }: {
     productId: string;
-    image: string;
+    image: any;
   }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     try {
       const product = await Product.findById(productId);
 
-      let imageRes = await this.ProductImages.create({
-        url: image.url,
-        imageId: image.externalId,
-        product: product._id,
+      let imageRes = await ProductImage.create({
+        url: image?.url,
+        imageId: image?.externalId,
+        product: product?._id,
       });
 
       product.images.push(imageRes);
       await product.save();
 
-      return redirect(`/console/products/${product._id}`);
+      session.flash("message", {
+        title: "Image Added Successful",
+        status: "success",
+      });
+      return redirect(`/console/products/${productId}`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     } catch (err) {
       console.log(err);
+      session.flash("message", {
+        title: "Error Adding Image",
+        status: "error",
+      });
+      return redirect(`/console/products/${productId}`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
   };
 }

@@ -117,10 +117,6 @@ export default function AdminProductDetails() {
         <h1 className="text-3xl font-bold">Product Details </h1>
 
         <section className="ml-auto flex">
-          {/* <Button variant="outline">Export</Button> */}
-          <Spacer />
-          {/* <Button variant="outline">Print</Button> */}
-          <Spacer />
           {product?.images.length < 5 ? (
             <Button onClick={() => openModal()}> + Add Image</Button>
           ) : null}
@@ -159,10 +155,6 @@ export default function AdminProductDetails() {
           <p>quantity</p>
         </section>
       </div>
-
-      <Container heading="Reviews">
-        <p>Reviews</p>
-      </Container>
 
       <Container heading="Stocking History">
         <p>Inventory</p>
