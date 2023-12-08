@@ -77,7 +77,7 @@ export default function Employees() {
         <div className=" flex items-center gap-3 ml-auto">
           <Form
             method="GET"
-            className=" ml-auto flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
+            className="ml-auto flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
           >
             <Input
               type="search"

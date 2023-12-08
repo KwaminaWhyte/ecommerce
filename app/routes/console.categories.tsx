@@ -96,7 +96,7 @@ export default function Products() {
                 encType="multipart/form-data"
                 className="flex flex-col gap-4"
               >
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" type="text" name="name" required />
                 </div>
@@ -213,7 +213,7 @@ export default function Products() {
                                 value={category?._id}
                               />
 
-                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
                                   id="name"
@@ -224,7 +224,7 @@ export default function Products() {
                                 />
                               </div>
 
-                              {/* <div className="grid w-full max-w-sm items-center gap-1.5">
+                              {/* <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="category">Category</Label>
                                 <Select
                                   name="category"

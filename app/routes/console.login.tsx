@@ -7,12 +7,12 @@ import {
 } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 
-import Input from "~/components/Input";
-import Spacer from "~/components/Spacer";
 import AdminController from "~/server/admin/AdminController.server";
 import { validateEmail, validatePassword } from "~/server/validators.server";
 import AdminPublicLayout from "~/components/layouts/AdminPublicLayout";
 import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
 
 export default function AdminLogin() {
   let data = useActionData();
@@ -23,33 +23,18 @@ export default function AdminLogin() {
       <div className="m-auto w-2/5 rounded-md bg-white p-4 shadow-sm dark:bg-slate-800">
         <h2 className="my-5 text-3xl font-bold">Log into your Dashboard</h2>
 
-        <Form method="POST">
-          <Input
-            name="email"
-            placeholder="Email"
-            label="Email"
-            type="email"
-            defaultValue={data?.fields?.email}
-            error={data?.errors?.email}
-          />
-          <Spacer />
-          <Input
-            name="password"
-            placeholder="Password"
-            label="Password"
-            type="password"
-            defaultValue={data?.fields?.password}
-            error={data?.errors?.password}
-          />
-          <Spacer />
+        <Form method="POST" className="flex flex-col gap-4">
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="text" name="email" required />
+          </div>
+
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" name="password" required />
+          </div>
 
           <div className="flex items-center justify-between">
-            {/* <p>
-              Don't have an Account?{" "}
-              <Link className="text-purple-600" to="/console/signup">
-                Signup
-              </Link>
-            </p> */}
             <Button
               type="submit"
               className="ml-auto"

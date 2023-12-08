@@ -293,12 +293,12 @@ export default function Products() {
                 encType="multipart/form-data"
                 className="flex flex-col gap-4"
               >
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full p-1.5">
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" type="text" name="name" required />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="cost_price">Cost Price</Label>
                   <Input
                     id="cost_price"
@@ -309,7 +309,7 @@ export default function Products() {
                   />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="price">Price</Label>
                   <Input
                     id="price"
@@ -320,7 +320,7 @@ export default function Products() {
                   />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="category">Category</Label>
                   <Select name="category">
                     <SelectTrigger className="w-full">
@@ -346,7 +346,7 @@ export default function Products() {
                   error={actionData?.errors?.description}
                 />
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full p-1.5">
                   <Label htmlFor="quantity">Quantity</Label>
                   <Input id="quantity" type="number" name="quantity" />
                 </div>
@@ -496,7 +496,7 @@ export default function Products() {
                                 name="_id"
                                 value={product?._id}
                               />
-                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
                                   id="name"
@@ -507,7 +507,7 @@ export default function Products() {
                                 />
                               </div>
 
-                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="cost_price">Cost Price</Label>
                                 <Input
                                   id="cost_price"
@@ -519,7 +519,7 @@ export default function Products() {
                                 />
                               </div>
 
-                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="price">Price</Label>
                                 <Input
                                   id="price"
@@ -531,7 +531,7 @@ export default function Products() {
                                 />
                               </div>
 
-                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="category">Category</Label>
                                 <Select
                                   name="category"
@@ -563,7 +563,7 @@ export default function Products() {
                                 defaultValue={product?.description}
                               />
 
-                              <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="quantity">Quantity</Label>
                                 <Input
                                   id="quantity"

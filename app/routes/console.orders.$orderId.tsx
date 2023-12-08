@@ -248,7 +248,7 @@ export default function AdminOrderDetails() {
           </div>
         </Container>
 
-        <section className="flex flex-1 flex-col ">
+        <section className="flex flex-1 flex-col gap-3 ">
           <Container
             heading="Payment"
             contentClassName="flex-wrap grid grid-cols-2"
@@ -274,12 +274,25 @@ export default function AdminOrderDetails() {
             </div>
 
             <div className="mb-2">
-              <p className="font-medium">Charge</p>
+              <p className="font-medium">Price</p>
               <p className="text-slate-500 dark:text-slate-400">
-                $ {order?.totalPrice}
+                GH₵ {order?.totalPrice}
               </p>
             </div>
 
+            <div className="mb-2">
+              <p className="font-medium">Paid</p>
+              <p className="text-slate-500 dark:text-slate-400">
+                GH₵ {order?.amountPaid}
+              </p>
+            </div>
+
+            <div className="mb-2">
+              <p className="font-medium">Balance</p>
+              <p className="text-slate-500 dark:text-slate-400">
+                GH₵ {order?.amountPaid - order?.totalPrice}
+              </p>
+            </div>
             {/* <div className="mb-2">
               <p className="font-medium">Shipping Charge</p>
               <p className="text-slate-500 dark:text-slate-400">

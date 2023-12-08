@@ -5,6 +5,7 @@ import { Toaster } from "../ui/toaster";
 export default function AdminLayout({
   children,
   user,
+  className,
 }: {
   children: React.ReactNode;
   user?: AdminInterface;
@@ -13,6 +14,7 @@ export default function AdminLayout({
     type: "success" | "error";
     message: string;
   };
+  className?: string;
 }) {
   return (
     <div className="flex min-h-screen w-full flex-col bg-opacity-70 backdrop-blur-lg bg-white">
@@ -23,7 +25,9 @@ export default function AdminLayout({
       <section className="flex">
         <SideNavigation user={user} />
 
-        <main className="flex min-h-full w-full flex-1 flex-col px-5 py-8  dark:bg-black/90 dark:text-white ">
+        <main
+          className={`flex min-h-full w-full flex-1 flex-col px-5 py-8  dark:bg-black/90 dark:text-white ${className}`}
+        >
           {children}
         </main>
       </section>

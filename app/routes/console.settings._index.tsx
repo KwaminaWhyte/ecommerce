@@ -118,7 +118,7 @@ export default function GeneralSettings() {
           </Label>
           <Select
             name="separate_stocks"
-            defaultValue={generalSettings?.allowInscription ? "true" : "false"}
+            defaultValue={generalSettings?.separateStocks ? "true" : "false"}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select " />

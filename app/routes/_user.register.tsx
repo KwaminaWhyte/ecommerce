@@ -5,12 +5,13 @@ import {
   type LoaderFunction,
   type MetaFunction,
 } from "@remix-run/node";
-import { Link, useActionData, useNavigation } from "@remix-run/react";
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 
-import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
 import UserLayout from "~/components/layouts/UserLayout";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import UserController from "~/server/user/UserController.server";
 import {
   validateEmail,
@@ -30,35 +31,21 @@ export default function Signup() {
             {data.error}
           </div>
         )}
-        <form action="" method="POST">
-          <Input
-            name="username"
-            placeholder="Username"
-            label="Username"
-            defaultValue={data?.fields?.username}
-            error={data?.errors?.username}
-          />
-          <Spacer />
+        <Form method="POST" className="flex flex-col gap-4">
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="username">Username</Label>
+            <Input id="username" type="text" name="username" required />
+          </div>
 
-          <Input
-            name="email"
-            placeholder="Email"
-            label="Email"
-            type="email"
-            defaultValue={data?.fields?.email}
-            error={data?.errors?.email}
-          />
-          <Spacer />
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="text" name="email" required />
+          </div>
 
-          <Input
-            name="password"
-            placeholder="Password"
-            label="Password"
-            type="password"
-            defaultValue={data?.fields?.password}
-            error={data?.errors?.password}
-          />
-          <Spacer />
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="text" name="password" required />
+          </div>
 
           <div className="flex flex-col items-center justify-between">
             <Button
@@ -76,7 +63,7 @@ export default function Signup() {
               </Link>
             </p>
           </div>
-        </form>
+        </Form>
       </div>
     </UserLayout>
   );

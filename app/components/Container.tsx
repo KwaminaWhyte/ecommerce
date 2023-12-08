@@ -15,7 +15,7 @@ export default function Container({
 }) {
   return (
     <section
-      className={`mt-5 rounded-xl bg-white p-3 shadow-sm dark:bg-black/95 backdrop-blur-lg bg-opacity-60 ${className}`}
+      className={`rounded-xl bg-white p-3 shadow-sm dark:bg-black/95 backdrop-blur-lg bg-opacity-60 ${className}`}
     >
       {heading && (
         <h3 className="text-2xl font-semibold text-slate-800 dark:text-white">

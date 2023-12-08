@@ -96,7 +96,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <AdminLayout user={user}>
+    <AdminLayout user={user} className="gap-3">
       {/* <h1 className="text-xl font-bold">Dashboard</h1> */}
 
       <section className="">
@@ -108,7 +108,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className="mt-5 flex w-full justify-between gap-3 overflow-hidden overflow-x-auto py-2">
+      <section className="flex w-full justify-between gap-3 overflow-hidden overflow-x-auto py-2">
         {topTotals.map((total) => (
           <div
             key={total.title}
@@ -133,7 +133,7 @@ export default function Dashboard() {
         ))}
       </section>
 
-      <div className="mt-5 flex w-full gap-3">
+      <div className="flex w-full gap-3">
         <Container
           heading="Bestselling Products"
           className="w-1/2"

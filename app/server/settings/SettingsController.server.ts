@@ -36,40 +36,37 @@ export default class SettingsController {
     separate_stocks: string;
   }) => {
     try {
-      // Check if the settings record already exists in the database
       const existingSettings = await GeneralSettings.findOne();
 
-      // If the settings record exists, update it
       if (existingSettings) {
         existingSettings.businessName = businessName;
         existingSettings.slogan = slogan;
         existingSettings.email = email;
         existingSettings.phone = phone;
         existingSettings.orderIdPrefix = orderIdPrefix;
-        existingSettings.allowInscription = allow_inscription == "true" ? 1 : 0;
-        existingSettings.separateStocks = separate_stocks == "true" ? 1 : 0;
+        existingSettings.allowInscription =
+          allow_inscription == "true" ? true : false;
+        existingSettings.separateStocks =
+          separate_stocks == "true" ? true : false;
 
         await existingSettings.save();
       } else {
-        // If the settings record doesn't exist, create a new one
         const newSettings = new GeneralSettings({
           businessName,
           slogan,
           email,
           phone,
           orderIdPrefix,
-          allowInscription: allow_inscription == "true" ? 1 : 0,
-          separateStocks: separate_stocks == "true" ? 1 : 0,
+          allowInscription: allow_inscription == "true" ? true : false,
+          separateStocks: separate_stocks == "true" ? true : false,
         });
 
         await newSettings.save();
       }
-
-      // Respond with a success messag
       return json({ message: "Success" }, 200);
     } catch (err) {
-      // Handle errors
-      return json({ message: "Success", error: err }, 200);
+      console.log(err);
+      return json({ message: "Error", error: err }, 400);
     }
   };
 

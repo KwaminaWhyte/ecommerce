@@ -1,4 +1,3 @@
-import { Popover } from "@headlessui/react";
 import {
   type ActionFunction,
   type LoaderFunction,
@@ -12,6 +11,7 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
@@ -32,7 +32,6 @@ import {
 import expense_categories from "~/components/inc/expense-category";
 import IdGenerator from "~/lib/IdGenerator";
 import { Label } from "~/components/ui/label";
-
 import {
   Dialog,
   DialogClose,
@@ -42,10 +41,14 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
-import moment from "moment";
 import { DatePickerWithRange } from "~/components/date-range";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 
-export default function Products() {
+export default function Expenses() {
   const { user, expenses, page, totalPages } = useLoaderData<{
     user: UserInterface;
     expenses: ExpenseInterface[];
@@ -56,15 +59,16 @@ export default function Products() {
   const navigation = useNavigation();
 
   const [activeCategory, setActiveCategory] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
   const [showAddModel, setShowAddModel] = useState(false);
+  const [showUpdateModel, setShowUpdateModel] = useState(false);
 
   useEffect(() => {
     setIsOpenDelete(false);
     setActiveCategory({});
     setShowAddModel(false);
+    setShowUpdateModel(false);
   }, [expenses]);
 
   return (
@@ -75,9 +79,14 @@ export default function Products() {
         <section className="ml-auto flex items-center gap-4">
           <Form
             method="GET"
-            className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+            className="ml-auto flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
           >
-            {/* <Input placeholder="product name..." name="product_name" /> */}
+            <Input
+              type="search"
+              placeholder="Search anything..."
+              name="search_term"
+              className="w-60"
+            />
             <DatePickerWithRange />
             <Button>Filter</Button>
           </Form>
@@ -99,11 +108,7 @@ export default function Products() {
                 encType="multipart/form-data"
                 className="grid gap-4 py-4"
               >
-                {isUpdating ? (
-                  <input type="hidden" name="_id" value={activeCategory._id} />
-                ) : null}
-
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="amount">Amount</Label>
                   <Input
                     id="amount"
@@ -114,7 +119,7 @@ export default function Products() {
                   />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label>Category</Label>
                   <Select name="category">
                     <SelectTrigger className="w-full">
@@ -153,11 +158,7 @@ export default function Products() {
                     type="submit"
                     disabled={navigation.state === "submitting" ? true : false}
                   >
-                    {navigation.state === "submitting"
-                      ? "Submitting..."
-                      : isUpdating
-                      ? "Update"
-                      : "Add"}
+                    Add
                   </Button>
                 </div>
               </Form>
@@ -165,19 +166,6 @@ export default function Products() {
           </Dialog>
         </section>
       </section>
-
-      <Form
-        method="GET"
-        className="my-3 flex items-center gap-3 rounded-lg bg-slate-50 p-2 dark:bg-slate-900"
-      >
-        <Input
-          type="search"
-          placeholder="Search anything..."
-          name="search_term"
-        />
-
-        <Button type="submit">Search</Button>
-      </Form>
 
       <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2">
         <table className="w-full text-left text-slate-500 dark:text-slate-400">
@@ -210,7 +198,7 @@ export default function Products() {
                   scope="row"
                   className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
                 >
-                  <p>{expense?.amount}</p>
+                  <p>GH₵ {expense?.amount}</p>
                 </th>
 
                 <td className="px-3 py-3">{expense?.category}</td>
@@ -231,21 +219,105 @@ export default function Products() {
                 </td> */}
 
                 <td className="gap-1 px-3 py-3">
-                  <Popover className="relative">
-                    <Popover.Button className="font-sm tansition-all rounded-lg bg-purple-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none">
-                      Actions
-                    </Popover.Button>
-
-                    <Popover.Panel className="absolute right-6 z-10">
-                      <div className="flex flex-col gap-2 rounded-lg bg-white p-3 dark:bg-slate-900">
-                        <Button
-                          onClick={() => {
-                            setIsUpdating(true);
-                            setActiveCategory(expense);
-                          }}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline">Action</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-56">
+                      <div className="grid gap-4">
+                        <Dialog
+                          open={showUpdateModel}
+                          onOpenChange={() =>
+                            setShowUpdateModel(!showUpdateModel)
+                          }
                         >
-                          Update
-                        </Button>
+                          <DialogTrigger asChild>
+                            <Button>Update</Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Update Expense</DialogTitle>
+                            </DialogHeader>
+
+                            <Form
+                              method="POST"
+                              encType="multipart/form-data"
+                              className="grid gap-4 py-4"
+                            >
+                              <input
+                                type="hidden"
+                                name="actionType"
+                                value="update"
+                              />
+                              <input
+                                type="hidden"
+                                name="_id"
+                                value={expense?._id}
+                              />
+
+                              <div className="grid w-full  items-center gap-1.5">
+                                <Label htmlFor="amount">Amount</Label>
+                                <Input
+                                  id="amount"
+                                  type="number"
+                                  step={0.01}
+                                  min={1}
+                                  name="amount"
+                                  defaultValue={expense?.amount}
+                                />
+                              </div>
+
+                              <div className="grid w-full  items-center gap-1.5">
+                                <Label>Category</Label>
+                                <Select
+                                  name="category"
+                                  defaultValue={expense?.category}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a category" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {expense_categories.map((cateory) => (
+                                      <SelectItem
+                                        key={IdGenerator(15)}
+                                        value={cateory.name}
+                                      >
+                                        {cateory.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <TextArea
+                                name="note"
+                                placeholder="note"
+                                label="Note"
+                                defaultValue={expense?.note}
+                              />
+
+                              <div className="flex items-center gap-3 justify-end">
+                                <DialogClose asChild>
+                                  <Button type="button" variant="secondary">
+                                    Close
+                                  </Button>
+                                </DialogClose>
+
+                                <Button
+                                  type="submit"
+                                  disabled={
+                                    navigation.state === "submitting"
+                                      ? true
+                                      : false
+                                  }
+                                >
+                                  Update
+                                </Button>
+                              </div>
+                            </Form>
+                          </DialogContent>
+                        </Dialog>
+
                         <Button
                           variant="destructive"
                           type="button"
@@ -257,7 +329,7 @@ export default function Products() {
                           Delete
                         </Button>
                       </div>
-                    </Popover.Panel>
+                    </PopoverContent>
                   </Popover>
                 </td>
               </tr>
@@ -304,23 +376,12 @@ export const action: ActionFunction = async ({ request }) => {
   const amount = formData.get("amount") as string;
   const category = formData.get("category") as string;
   const note = formData.get("note") as string;
-
-  // if (typeof name !== "string") {
-  //   return json({ error: "Invalid name " }, { status: 400 });
-  // }
-
-  // const errors = {
-  //   name: validateName(name),
-  // };
-
-  // if (Object.values(errors).some(Boolean)) {
-  //   return json({ errors, fields: { name } }, { status: 400 });
-  // }
+  const actionType = formData.get("actionType") as string;
 
   if (formData.get("deleteId") != null) {
     await expenseController.deleteExpense(formData.get("deleteId") as string);
     return true;
-  } else if (formData.get("_id") != null) {
+  } else if (actionType == "update") {
     return await expenseController.updateExpense({
       _id,
       amount,
