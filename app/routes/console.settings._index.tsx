@@ -48,17 +48,6 @@ export default function GeneralSettings() {
         </div>
 
         <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="slogan">Slogan</Label>
-          <Input
-            id="slogan"
-            name="slogan"
-            type="text"
-            defaultValue={generalSettings?.slogan}
-            required
-          />
-        </div>
-
-        <div className="grid w-full items-center gap-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
@@ -76,6 +65,28 @@ export default function GeneralSettings() {
             name="phone"
             type="text"
             defaultValue={generalSettings?.phone}
+            required
+          />
+        </div>
+
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="address">Address</Label>
+          <Input
+            id="address"
+            name="address"
+            type="text"
+            defaultValue={generalSettings?.address}
+            required
+          />
+        </div>
+
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="slogan">Slogan</Label>
+          <Input
+            id="slogan"
+            name="slogan"
+            type="text"
+            defaultValue={generalSettings?.slogan}
             required
           />
         </div>
@@ -140,13 +151,14 @@ export default function GeneralSettings() {
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
 
-  let businessName = formData.get("businessName") as string;
-  let slogan = formData.get("slogan") as string;
-  let email = formData.get("email") as string;
-  let phone = formData.get("phone") as string;
-  let orderIdPrefix = formData.get("orderIdPrefix") as string;
-  let allow_inscription = formData.get("allow_inscription") as string;
-  let separate_stocks = formData.get("separate_stocks") as string;
+  const businessName = formData.get("businessName") as string;
+  const slogan = formData.get("slogan") as string;
+  const email = formData.get("email") as string;
+  const phone = formData.get("phone") as string;
+  const orderIdPrefix = formData.get("orderIdPrefix") as string;
+  const allow_inscription = formData.get("allow_inscription") as string;
+  const separate_stocks = formData.get("separate_stocks") as string;
+  const address = formData.get("address") as string;
 
   const settingsController = await new SettingsController(request);
   await settingsController.updateGeneralSettings({
@@ -157,6 +169,7 @@ export const action: ActionFunction = async ({ request }) => {
     orderIdPrefix,
     allow_inscription,
     separate_stocks,
+    address,
   });
 
   return redirect(`/console/settings`);

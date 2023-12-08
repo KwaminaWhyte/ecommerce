@@ -26,6 +26,7 @@ export default class SettingsController {
     orderIdPrefix,
     allow_inscription,
     separate_stocks,
+    address,
   }: {
     businessName: string;
     slogan: string;
@@ -34,11 +35,13 @@ export default class SettingsController {
     orderIdPrefix: string;
     allow_inscription: string;
     separate_stocks: string;
+    address: string;
   }) => {
     try {
       const existingSettings = await GeneralSettings.findOne();
 
       if (existingSettings) {
+        existingSettings.address = address;
         existingSettings.businessName = businessName;
         existingSettings.slogan = slogan;
         existingSettings.email = email;
@@ -52,6 +55,7 @@ export default class SettingsController {
         await existingSettings.save();
       } else {
         const newSettings = new GeneralSettings({
+          address,
           businessName,
           slogan,
           email,

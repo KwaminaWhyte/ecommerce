@@ -10,6 +10,11 @@ const OrderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
+      required: false,
+    },
+    cashier: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employees",
       required: true,
     },
     shippingAddress: {

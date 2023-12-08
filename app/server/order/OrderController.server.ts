@@ -141,6 +141,10 @@ export default class OrderController {
           select: "_id firstName lastName email phone address",
         })
         .populate({
+          path: "cashier",
+          select: "_id firstName lastName email phone address",
+        })
+        .populate({
           path: "shippingAddress",
         })
         .populate({

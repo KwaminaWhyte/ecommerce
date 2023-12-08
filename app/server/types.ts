@@ -58,6 +58,8 @@ export interface AdminInterface extends Document {
 export interface UserInterface extends Document {
   _id: string;
   username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
@@ -96,17 +98,18 @@ export interface OrderInterface extends Document {
   deliveryStatus: string;
   status: string;
   user: UserInterface;
+  cashier: EmployeeInterface;
   onCredit: boolean;
   shippingAddress: AddressInterface;
   paymentInfo: PaymentInterface;
   paymentStatus: "pending" | "paid" | "failed";
-  deliveryDate: Date;
+  deliveryDate: string;
   amountPaid: number;
   customerPhone: string;
   salesPerson: EmployeeInterface;
   customerName: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AddressInterface extends Document {
@@ -156,6 +159,18 @@ export interface ExpenseInterface extends Document {
   amount: number;
   note: string;
   category: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface GeneralSettingsInterface extends Document {
+  _id: string;
+  address: string;
+  businessName: string;
+  phine: string;
+  email: string;
+  separateStocks: boolean;
+  allowInscription: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

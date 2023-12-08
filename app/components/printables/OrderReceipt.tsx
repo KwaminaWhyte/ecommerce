@@ -2,68 +2,80 @@ import moment from "moment";
 import React from "react";
 import logo from "~/components/inc/logo.png";
 import IdGenerator from "~/lib/IdGenerator";
-import { type OrderInterface } from "~/server/types";
+import type { GeneralSettingsInterface, OrderInterface } from "~/server/types";
 
-export const OrderReceipt = React.forwardRef<HTMLDivElement>((props, ref) => {
-  const { order, generalSettings } = props;
+interface OrderReceiptProps {
+  order: OrderInterface;
+  generalSettings: GeneralSettingsInterface;
+}
 
-  return (
-    <div
-      className="container mx-auto mt-10 p-5 rounded-lg hidden print:block"
-      ref={ref}
-    >
-      <div className="text-center">
-        <img src={logo} alt="Shop Logo" className="mx-auto h-28 w-28" />
-        <h1 className="text-2xl font-semibold mt-2">
-          {generalSettings?.businessName}
-        </h1>
-        <p className="text-slate-600">123 Main Street, City, Zip Code</p>
-      </div>
+export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
+  (props, ref) => {
+    const { order, generalSettings } = props;
+    console.log(order.orderItems);
 
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">Order Receipt</h2>
-        <div className="flex justify-between mt-3">
+    return (
+      <div
+        className="print-font container mx-auto mt-10 p-5 rounded-lg hidden print:block"
+        ref={ref}
+      >
+        <section className="text-center">
+          {/* <img src={logo} alt="Shop Logo" className="mx-auto h-28 w-28" /> */}
+          <h1 className="text-2xl font-semibold mt-2">
+            {generalSettings?.businessName}
+          </h1>
+          <p className="text-slate-600">{generalSettings.address}</p>
+        </section>
+
+        <section className="mt-6 flex flex-col justify-between">
+          <p>
+            Cashier:{" "}
+            <span className="font-semibold">
+              {order?.cashier?.firstName} {order.cashier?.lastName}
+            </span>
+          </p>
           <p>
             Order ID: <span className="font-semibold">{order?.orderId}</span>
           </p>
           {/* <p>
             Transaction ID: <span className="font-semibold">7890ABC</span>
           </p> */}
-        </div>
-        <p className="mt-3">
-          Date:{" "}
-          <span className="font-semibold">
-            {moment(order?.createdAt).format("MMM Do YYYY, h:mm a")}
-          </span>
-        </p>
-      </div>
+          <p className="">
+            Date:{" "}
+            <span className="font-semibold">
+              {moment(order?.createdAt).format("MMM Do YYYY, h:mm a")}
+            </span>
+          </p>
+        </section>
 
-      <div className="mt-6">
-        <h3 className="text-md font-semibold">Items:</h3>
-        <ul className="mt-2">
-          {order?.orderItems?.map((item) => (
-            <li className="flex gap-5" key={IdGenerator()}>
-              <span>{item?.product?.name}</span>
-              <span>
-                Qty: {item?.quantity} * GH₵ {item?.stock?.price}
-              </span>
-              {" = "}
-              <span className="font-semibold">
-                GH₵ {item?.quantity * item?.stock?.price}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
+        <section className="mt-6">
+          <h3 className="text-md font-semibold">Items:</h3>
+          <ul className="mt-2">
+            {order?.orderItems?.map((item) => (
+              <li className="flex gap-5" key={IdGenerator()}>
+                <span className="font-semibold w-11">{item?.quantity}</span>
+                <span>{item?.product?.name}</span>
+                <span>
+                  - GH₵{" "}
+                  {item?.stock ? item?.stock?.price : item?.product?.price} each
+                </span>
+                <span className="font-semibold ml-auto">
+                  GH₵{" "}
+                  {item?.quantity *
+                    (item?.stock ? item?.stock?.price : item?.product?.price)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      <div className="mt-6">
-        <h3 className="text-md font-semibold">Total Amount:</h3>
-        <p className="mt-2 text-xl font-semibold">${order?.totalPrice}</p>
+        <section className="mt-3 flex items-center  justify-between">
+          <h3 className="text-md font-semibold">Total Amount:</h3>
+          <p className="text-md font-semibold"> GH₵ {order?.totalPrice}</p>
+        </section>
       </div>
-
-      <div className="mx-auto mt-5"></div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 OrderReceipt.displayName = "OrderReceipt";
