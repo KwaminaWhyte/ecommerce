@@ -13,18 +13,18 @@ export default class LogController {
   }
 
   public async create({
-    user,
+    employee,
     action,
     order,
     product,
   }: {
-    user: string;
+    employee: string;
     action: string;
     order?: string;
     product?: string;
   }) {
     await Log.create({
-      user,
+      employee,
       action,
       order,
       product,
@@ -32,6 +32,7 @@ export default class LogController {
 
     return true;
   }
+
   public async getLogs({
     page,
     employee,

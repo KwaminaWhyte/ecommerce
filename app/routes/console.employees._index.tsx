@@ -257,7 +257,7 @@ export default function Employees() {
                       <div className="grid gap-4">
                         <Link
                           to={`/console/employees/${employee._id}`}
-                          className="font-sm tansition-all w-32 rounded-lg bg-purple-600 px-2 py-2 text-center  text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
+                          className="font-sm tansition-all w-full rounded-lg bg-purple-600 px-2 py-2 text-center  text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
                         >
                           View
                         </Link>

@@ -131,6 +131,7 @@ export default function Shop() {
                 {/* <Link to={`/pos/products/${product?._id}`}>View</Link> */}
 
                 <Form method="POST" className="ml-auto">
+                  <input type="hidden" name="actionType" value="add_to_cart" />
                   <input type="hidden" name="product_id" value={product?._id} />
                   <input type="hidden" name="user_id" value={user?._id} />
                   <Button type="submit">Add to Cart</Button>
@@ -254,13 +255,15 @@ export const action: ActionFunction = async ({ request }) => {
   const cartController = await new CartController(request);
   const orderController = await new OrderController(request);
   const authControlle = await new EmployeeAuthController(request);
-  const user = await authControlle.requireEmployeeId();
+  const employee = await authControlle.requireEmployeeId();
 
   const product = formData.get("product_id") as string;
+  const stock = formData.get("stock") as string;
+  const actionType = formData.get("actionType") as string;
 
-  if ((formData.get("type") as string) == "complete") {
+  if (actionType == "complete") {
     const ress = await orderController.checkout({
-      user,
+      employee,
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
       salesPerson: formData.get("sales_person") as string,
@@ -269,12 +272,18 @@ export const action: ActionFunction = async ({ request }) => {
     });
 
     return ress;
-  } else if ((formData.get("type") as string) == "increase") {
-    return await cartController.increaseItem({ product, user });
-  } else if ((formData.get("type") as string) == "decrease") {
-    return await cartController.decreaseItem({ product, user });
-  } else {
-    return await cartController.addToCart({ user, product });
+  } else if (actionType == "increase") {
+    return await cartController.increaseItem({ product, employee });
+  } else if (actionType == "decrease") {
+    return await cartController.decreaseItem({ product, employee });
+  } else if (actionType == "add_to_cart") {
+    return await cartController.addToCart({ employee, product });
+  } else if (actionType == "remove_from_cart") {
+    return await cartController.removeFromCart({ employee, product });
+  } else if (actionType == "clear_cart") {
+    return await cartController.clear_cart({ employee, product });
+  } else if (actionType == "set_stock") {
+    return await cartController.setStock({ stock, product, employee });
   }
 };
 

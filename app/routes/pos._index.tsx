@@ -103,7 +103,12 @@ export default function Shop() {
   }, []);
 
   return (
-    <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
+    <PosLayout
+      user={user}
+      cart_items={cart_items}
+      settings={generalSettings}
+      className="gap-3"
+    >
       {/* <h1 className="text-xl font-bold">Dashboard</h1> */}
 
       <section className="">

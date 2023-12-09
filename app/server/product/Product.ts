@@ -88,7 +88,7 @@ const StockHistorySchema: Schema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "admins",
       required: true,
     },
     product: {
@@ -117,7 +117,7 @@ try {
   Product = mongoose.model<ProductInterface>("products");
   ProductImage = mongoose.model<ImageInterface>("images");
   Category = mongoose.model<CategoryInterface>("categories");
-  StockHistory = mongoose.model<StockHistoryInterface>("categories");
+  StockHistory = mongoose.model<StockHistoryInterface>("stock_histories");
 } catch (error) {
   Product = mongoose.model<ProductInterface>("products", ProductSchema);
   ProductImage = mongoose.model<ImageInterface>("images", ProductImageSchema);

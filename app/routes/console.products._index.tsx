@@ -293,7 +293,7 @@ export default function Products() {
                 encType="multipart/form-data"
                 className="flex flex-col gap-4"
               >
-                <div className="grid w-full p-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" type="text" name="name" required />
                 </div>
@@ -422,16 +422,15 @@ export default function Products() {
                 {product?.price ? (
                   <td className="px-3 py-3 ">{product?.price}</td>
                 ) : (
-                  <td className="px-3 py-3 ">
-                    {/* <Popover className="relative">
-                      <Popover.Button className="font-semibold tansition-all border border-gray-600 rounded-lg px-2 py-1 shadow-sm duration-300 focus:outline-none">
-                        {product.stockHistory.length > 0 &&
-                          product.stockHistory.length}{" "}
-                        Stocks
-                      </Popover.Button>
-
-                      <Popover.Panel className="absolute right-6 z-10 ">
-                        <div className="flex flex-col gap-2 rounded-lg bg-white p-3 shadow-lg dark:bg-slate-900 w-60">
+                  <td className="">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline">
+                          {product?.stockHistory?.length} Stock(s)
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-60">
+                        <div className="grid gap-4">
                           {product.stockHistory.map((stock) => (
                             <p
                               key={IdGenerator()}
@@ -441,8 +440,8 @@ export default function Products() {
                             </p>
                           ))}
                         </div>
-                      </Popover.Panel>
-                    </Popover> */}
+                      </PopoverContent>
+                    </Popover>
                   </td>
                 )}
                 <td className="px-3 py-3">
@@ -595,13 +594,13 @@ export default function Products() {
                           </DialogContent>
                         </Dialog>
 
-                        {/* <Button
+                        <Button
                           onClick={() => {
                             setIsStockOpen(true);
                           }}
                         >
                           Restock
-                        </Button> */}
+                        </Button>
 
                         <Button
                           variant="destructive"

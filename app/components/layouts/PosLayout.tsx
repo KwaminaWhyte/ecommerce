@@ -31,6 +31,7 @@ export default function PosLayout({
   cart_items = [],
   settings,
   sales_persons,
+  className,
 }: {
   children: React.ReactNode;
   user?: EmployeeInterface;
@@ -38,6 +39,7 @@ export default function PosLayout({
   settings?: any;
   cart_items?: CartInterface[];
   sales_persons?: any;
+  className?: string;
 }) {
   const submit = useSubmit();
   const [totalPrice, setTotalPrice] = useState(0);
@@ -59,23 +61,15 @@ export default function PosLayout({
   useEffect(() => {
     let totalPricez = 0;
 
-    if (settings?.separateStocks) {
-      cart_items?.forEach((cartItem) => {
-        const productPrice = cartItem?.stock?.price;
-        const quantity = cartItem.quantity;
-        totalPricez += productPrice * quantity;
-      });
+    cart_items?.forEach((cartItem) => {
+      const productPrice = cartItem?.stock
+        ? cartItem?.stock?.price
+        : cartItem?.product?.price;
+      const quantity = cartItem.quantity;
+      totalPricez += productPrice * quantity;
+    });
 
-      setTotalPrice(totalPricez);
-    } else {
-      cart_items?.forEach((cartItem) => {
-        const productPrice = cartItem?.product?.price;
-        const quantity = cartItem.quantity;
-        totalPricez += productPrice * quantity;
-      });
-
-      setTotalPrice(totalPricez);
-    }
+    setTotalPrice(totalPricez);
   }, [cart_items]);
 
   return (
@@ -119,9 +113,9 @@ export default function PosLayout({
                             onClick={() => {
                               submit(
                                 {
-                                  type: "set_stock",
+                                  actionType: "set_stock",
                                   product_id: item?.product?._id,
-                                  stock_id: stock?._id,
+                                  stock: stock?._id,
                                 },
                                 {
                                   method: "post",
@@ -155,7 +149,7 @@ export default function PosLayout({
                             <Form method="POST">
                               <input
                                 type="hidden"
-                                name="type"
+                                name="actionType"
                                 value="decrease"
                               />
                               <input
@@ -185,7 +179,11 @@ export default function PosLayout({
                           <p>{item?.quantity}</p>
 
                           <Form method="POST">
-                            <input type="hidden" name="type" value="increase" />
+                            <input
+                              type="hidden"
+                              name="actionType"
+                              value="increase"
+                            />
                             <input
                               type="hidden"
                               name="product_id"
@@ -234,7 +232,7 @@ export default function PosLayout({
 
               <section className="border-t border-slate-700 py-2">
                 <Form method="POST" className="gap-2 flex flex-col">
-                  <input type="hidden" name="type" value="complete" />
+                  <input type="hidden" name="actionType" value="complete" />
                   <input
                     type="hidden"
                     name="on_credit"
@@ -295,7 +293,9 @@ export default function PosLayout({
       <section className="flex">
         <PosSideNavigation user={user} />
 
-        <main className="flex min-h-full w-full flex-1 flex-col px-5 py-20  dark:bg-black/95 dark:text-white ">
+        <main
+          className={`flex min-h-full w-full flex-1 flex-col px-5 py-20  dark:bg-black/95 dark:text-white ${className}`}
+        >
           {children}
         </main>
       </section>

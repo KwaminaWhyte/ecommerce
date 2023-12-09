@@ -12,7 +12,6 @@ interface OrderReceiptProps {
 export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
   (props, ref) => {
     const { order, generalSettings } = props;
-    console.log(order.orderItems);
 
     return (
       <div
@@ -31,7 +30,7 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
           <p>
             Cashier:{" "}
             <span className="font-semibold">
-              {order?.cashier?.firstName} {order.cashier?.lastName}
+              {order?.cashier?.firstName} {order?.cashier?.lastName}
             </span>
           </p>
           <p>

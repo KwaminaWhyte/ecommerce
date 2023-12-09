@@ -3,7 +3,7 @@ import type { LogInterface } from "../types";
 
 const LogSchema = new mongoose.Schema(
   {
-    user: {
+    employee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "employees",
       required: true,

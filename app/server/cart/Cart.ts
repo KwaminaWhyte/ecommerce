@@ -6,6 +6,12 @@ const CartSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
+      required: false,
+    },
+    employee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employees",
+      required: false,
     },
     product: {
       type: mongoose.Schema.Types.ObjectId,

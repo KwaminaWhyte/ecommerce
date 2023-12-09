@@ -20,16 +20,16 @@ export default class CartController {
   }
 
   public addToCart = async ({
-    user,
+    employee,
     product,
   }: {
-    user: string;
+    employee: string;
     product: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
 
     const existingCart = await Cart.findOne({
-      user,
+      employee,
       product,
     });
 
@@ -39,7 +39,7 @@ export default class CartController {
       }).exec();
     } else {
       const cart = await Cart.create({
-        user,
+        employee,
         product,
         quantity: 1,
       });
@@ -74,7 +74,7 @@ export default class CartController {
 
   public getUserCart = async ({ user }: { user: string }) => {
     try {
-      const carts = await Cart.find({ user })
+      const carts = await Cart.find({ employee: user })
         .populate({
           path: "product",
           populate: [
@@ -97,14 +97,14 @@ export default class CartController {
 
   public increaseItem = async ({
     product,
-    user,
+    employee,
   }: {
     product: string;
-    user: string;
+    employee: string;
   }) => {
     try {
       await Cart.findOneAndUpdate(
-        { product, user },
+        { product, employee },
         {
           $inc: { quantity: 1 }, // Increase the quantity by 1
         }
@@ -126,18 +126,18 @@ export default class CartController {
 
   public setStock = async ({
     product,
-    user,
-    stockId,
+    employee,
+    stock,
   }: {
     product: string;
-    user: string;
-    stockId: string;
+    employee: string;
+    stock: string;
   }) => {
     try {
       await Cart.findOneAndUpdate(
-        { product, user },
+        { product, employee },
         {
-          stock: stockId,
+          stock,
         }
       ).exec();
 
@@ -161,14 +161,14 @@ export default class CartController {
    */
   public decreaseItem = async ({
     product,
-    user,
+    employee,
   }: {
     product: string;
-    user: string;
+    employee: string;
   }) => {
     try {
       await Cart.findOneAndUpdate(
-        { product, user },
+        { product, employee },
         {
           $inc: { quantity: -1 }, // Decrease the quantity by 1
         }

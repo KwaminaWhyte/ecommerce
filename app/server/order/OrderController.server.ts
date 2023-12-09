@@ -192,14 +192,14 @@ export default class OrderController {
    * @returns null
    */
   public checkout = async ({
-    user,
+    employee,
     customerName,
     customerPhone,
     salesPerson,
     amountPaid,
     onCredit = "false",
   }: {
-    user: string;
+    employee: string;
     customerName: string;
     customerPhone: string;
     salesPerson: string;
@@ -214,7 +214,7 @@ export default class OrderController {
     const settings = await settingsController.getGeneralSettings();
 
     try {
-      const cartItems = await Cart.find({ user })
+      const cartItems = await Cart.find({ employee })
         .populate("product")
         .populate({
           path: "stock",
@@ -235,25 +235,23 @@ export default class OrderController {
       }
 
       let totalPrice = 0;
-      if (settings?.separateStocks) {
-        cartItems?.forEach((cartItem) => {
-          const productPrice = cartItem?.stock?.price;
-          const quantity = cartItem.quantity;
-          totalPrice += productPrice * quantity;
-        });
-      } else {
-        cartItems?.forEach((cartItem) => {
-          const productPrice = cartItem?.product?.price;
-          const quantity = cartItem.quantity;
-          totalPrice += productPrice * quantity;
-        });
-      }
+      cartItems?.forEach((cartItem) => {
+        const productPrice = cartItem?.stock
+          ? cartItem?.stock?.price
+          : cartItem?.product?.price;
+        const quantity = cartItem.quantity;
+        totalPrice += productPrice * quantity;
+      });
 
       let newCartItems: any = [];
       cartItems?.forEach((cartItem) => {
         const quantity = cartItem.quantity;
-        const costPrice = cartItem?.product?.costPrice;
-        const sellingPrice = cartItem?.product?.price;
+        const costPrice = cartItem?.stock
+          ? cartItem?.stock?.costPrice
+          : cartItem?.product?.costPrice;
+        const sellingPrice = cartItem?.stock
+          ? cartItem?.stock?.price
+          : cartItem?.product?.price;
         const product = cartItem?.product?._id;
         const stock = cartItem?.stock?._id;
         newCartItems.push({
@@ -268,12 +266,12 @@ export default class OrderController {
       const orderId = this.generateOrderId(settings?.orderIdPrefix);
       const order = await Order.create({
         orderId,
-        user,
+        cashier: employee,
         totalPrice,
         orderItems: newCartItems,
         deliveryStatus: "delivered",
         paymentStatus: onCredit == "true" ? "pending" : "paid",
-        salesPerson: salesPerson ? salesPerson : user,
+        salesPerson: salesPerson ? salesPerson : employee,
         attendant,
         onCredit: onCredit == "true" ? true : false,
         status: "completed",
@@ -282,7 +280,7 @@ export default class OrderController {
         customerPhone,
       });
 
-      await Cart.deleteMany({ user }).exec();
+      await Cart.deleteMany({ employee }).exec();
 
       for (const item of cartItems) {
         const product = await Product.findById(item.product?._id);
@@ -302,7 +300,7 @@ export default class OrderController {
 
       const logController = await new LogController();
       await logController.create({
-        user,
+        employee,
         action: "place an order",
         order: order?._id,
       });
@@ -316,9 +314,9 @@ export default class OrderController {
       });
 
       await Payment.create({
-        amountPaid,
+        amount: amountPaid,
         order: order?._id,
-        cashier: user,
+        cashier: employee,
       });
 
       return await Order.findById(order?._id)
@@ -330,7 +328,7 @@ export default class OrderController {
           },
         })
         .populate({
-          path: "user",
+          path: "employee",
           select: "_id firstName lastName email phone address",
         })
         .exec();

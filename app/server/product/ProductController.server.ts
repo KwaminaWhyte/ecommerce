@@ -92,13 +92,15 @@ export default class ProductController {
     const generalSettings = await settingsController.getGeneralSettings();
 
     if (existingProduct) {
-      return json(
-        {
-          errors: { name: "Product already exists" },
-          fields: { name, price, description, category },
+      session.flash("message", {
+        title: "Product already exists",
+        status: "error",
+      });
+      return redirect(`/console/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
 
     let productData = {
@@ -128,17 +130,16 @@ export default class ProductController {
     }
 
     if (generalSettings?.separateStocks) {
-      const productt = await Product.findById(product?._id);
-      let stockk = await StockHistory.create({
+      const newProduct = await Product.findById(product?._id);
+      let stock = await StockHistory.create({
         user: adminId,
-        product: productt?._id,
-        quantity,
+        product: product?._id,
+        quantity: parseInt(quantity),
         price: parseFloat(price),
-        costPrice: parseFloat(cost_price),
+        costPrice: parseFloat(costPrice),
       });
-
-      productt.stockHistory.push(stockk);
-      await productt.save();
+      newProduct.stockHistory.push(stock);
+      await newProduct.save();
     }
 
     session.flash("message", {
@@ -152,6 +153,11 @@ export default class ProductController {
     });
   };
 
+  /**
+   * Import products from csv
+   * @param data Array of products
+   * @returns null
+   */
   public importBatch = async (data) => {
     const session = await getSession(this.request.headers.get("Cookie"));
 
@@ -179,6 +185,11 @@ export default class ProductController {
     });
   };
 
+  /**
+   * Update product
+   * @param param0 _id, name, price, description, category, quantity, costPrice
+   * @returns null
+   */
   public updateProduct = async ({
     _id,
     name,
