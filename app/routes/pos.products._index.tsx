@@ -1,17 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type {
   ActionFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
-import { Transition, Dialog, Popover } from "@headlessui/react";
+import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Popover } from "@headlessui/react";
 
 import PosLayout from "~/components/layouts/PosLayout";
 import CartController from "~/server/cart/CartController.server";

@@ -66,10 +66,6 @@ export default class CartController {
         "Set-Cookie": await commitSession(session),
       },
     });
-
-    return json({
-      status: "success",
-    });
   };
 
   public getUserCart = async ({ user }: { user: string }) => {
@@ -186,13 +182,37 @@ export default class CartController {
    * @param id String
    * @returns null
    */
-  public deleteItem = async ({ id }: { id: string }) => {
-    // delete entry
+  public removeFromCart = async ({
+    employee,
+    product,
+  }: {
+    product: string;
+    employee: string;
+  }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
     try {
-      await Cart.findByIdAndDelete(id);
-      return json({ message: "Product deleted successfully" }, { status: 200 });
+      await Cart.findOneAndDelete({ employee, product });
+      session.flash("message", {
+        title: "Product removed from cart",
+        status: "success",
+      });
+      return redirect(`/pos/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     } catch (err) {
       console.log(err);
+      session.flash("message", {
+        title: "Error deleting product from cart",
+        status: "error",
+      });
+      return redirect(`/pos/products`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
     }
   };
 
@@ -218,7 +238,6 @@ export default class CartController {
         },
         { status: 400 }
       );
-      // Handle the error appropriately
     }
   };
 }

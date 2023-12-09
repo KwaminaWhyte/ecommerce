@@ -75,8 +75,6 @@ export default function PosLayout({
   return (
     <div className="flex min-h-screen w-full flex-col bg-slate-100/90">
       <nav className="fixed z-20 flex h-16 w-full items-center border-b dark:text-white border-b-slate-400 bg-white px-5 dark:border-b-slate-700 dark:bg-black/90">
-        {/* <p>Pos Dashboard</p> */}
-
         <Sheet>
           <SheetTrigger asChild className="ml-auto">
             <Button variant="outline" className="relative">
@@ -89,13 +87,10 @@ export default function PosLayout({
           <SheetContent className="min-w-[700px] ">
             <SheetHeader>
               <SheetTitle>Cart</SheetTitle>
-              <SheetDescription>
-                {/* Make changes to your profile here. Click save when you're done. */}
-              </SheetDescription>
             </SheetHeader>
 
             <div className="w-full flex flex-col">
-              <section className="flex flex-col overflow-y-scroll gap-2 mt-4 h-[60%] pb-4 pt-2">
+              <section className="flex flex-col overflow-y-scroll gap-2 mt-4 pb-4 pt-2 max-h-[470px]">
                 {cart_items?.map((item) => (
                   <div key={IdGenerator()} className="flex justify-center">
                     <img
@@ -133,7 +128,7 @@ export default function PosLayout({
                         ))}
                       </div>
 
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         {item?.product?.price ? (
                           <p className="font-medium">
                             GH₵ {item?.product?.price}
@@ -144,70 +139,91 @@ export default function PosLayout({
                           </p>
                         )}
 
-                        <div className="flex">
+                        <div className="flex items-center gap-3">
                           {item.quantity <= 1 ? null : (
-                            <Form method="POST">
-                              <input
-                                type="hidden"
-                                name="actionType"
-                                value="decrease"
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="h-6 w-6 cursor-pointer"
+                              onClick={() => {
+                                submit(
+                                  {
+                                    actionType: "decrease",
+                                    product_id: item?.product?._id,
+                                  },
+                                  {
+                                    method: "post",
+                                  }
+                                );
+                              }}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                               />
-                              <input
-                                type="hidden"
-                                name="product_id"
-                                value={item.product._id}
-                              />
-                              <button className="w-fit mr-3 border-none bg-none outline-none">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="h-6 w-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                                  />
-                                </svg>
-                              </button>
-                            </Form>
+                            </svg>
                           )}
 
                           <p>{item?.quantity}</p>
 
-                          <Form method="POST">
-                            <input
-                              type="hidden"
-                              name="actionType"
-                              value="increase"
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="h-6 w-6 cursor-pointer"
+                            onClick={() => {
+                              submit(
+                                {
+                                  actionType: "increase",
+                                  product_id: item?.product?._id,
+                                },
+                                {
+                                  method: "post",
+                                }
+                              );
+                            }}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
-                            <input
-                              type="hidden"
-                              name="product_id"
-                              value={item.product._id}
-                            />
-                            <button className="ml-3 mr-3 w-fit border-none bg-none outline-none">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-6 w-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            </button>
-                          </Form>
+                          </svg>
                         </div>
                       </div>
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-6 w-6 ml-auto"
+                        onClick={() => {
+                          submit(
+                            {
+                              actionType: "remove_from_cart",
+                              product_id: item?.product?._id,
+                            },
+                            {
+                              method: "post",
+                            }
+                          );
+                        }}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+
                       {settings?.allowInscription && (
                         <Input
                           name="writing"
@@ -230,61 +246,62 @@ export default function PosLayout({
                 </div>
               </section>
 
-              <section className="border-t border-slate-700 py-2">
-                <Form method="POST" className="gap-2 flex flex-col">
-                  <input type="hidden" name="actionType" value="complete" />
-                  <input
-                    type="hidden"
-                    name="on_credit"
-                    value={onCredit.toString()}
+              <Form
+                method="POST"
+                className="gap-2 flex flex-col border-t border-slate-700 py-2"
+              >
+                <input type="hidden" name="actionType" value="complete" />
+                <input
+                  type="hidden"
+                  name="on_credit"
+                  value={onCredit.toString()}
+                />
+                <div className="flex items-center mt-2 space-x-2">
+                  <Switch
+                    id="on_credit"
+                    onCheckedChange={(value) => setOnCredit(value)}
                   />
-                  <div className="flex items-center mt-2 space-x-2">
-                    <Switch
-                      id="on_credit"
-                      onCheckedChange={(value) => setOnCredit(value)}
-                    />
-                    <Label htmlFor="on_credit">On Credit</Label>
-                  </div>
+                  <Label htmlFor="on_credit">On Credit</Label>
+                </div>
 
-                  <div className="mt-2 ">
-                    <Label>Customer Name</Label>
-                    <Input name="customer_name" placeholder="Customer Name" />
-                  </div>
+                <div className="mt-2 ">
+                  <Label>Customer Name</Label>
+                  <Input name="customer_name" placeholder="Customer Name" />
+                </div>
 
-                  <div className="mt-2 ">
-                    <Label>Customer Phone</Label>
-                    <Input
-                      name="customer_phone"
-                      placeholder="Customer Phone Number"
-                    />
-                  </div>
+                <div className="mt-2 ">
+                  <Label>Customer Phone</Label>
+                  <Input
+                    name="customer_phone"
+                    placeholder="Customer Phone Number"
+                  />
+                </div>
 
-                  <div className="mt-2 ">
-                    <Label>Amount Paid</Label>
-                    <Input name="amount_paid" type="number" />
-                  </div>
+                <div className="mt-2 ">
+                  <Label>Amount Paid</Label>
+                  <Input name="amount_paid" type="number" />
+                </div>
 
-                  <div className="mt-2 ">
-                    <Label>Sales Person</Label>
-                    <Select name="sales_person">
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a sales person" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sales_persons?.map((person) => (
-                          <SelectItem key={IdGenerator()} value={person?._id}>
-                            {person?.firstName} {person?.lastName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="mt-2 ">
+                  <Label>Sales Person</Label>
+                  <Select name="sales_person">
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a sales person" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sales_persons?.map((person) => (
+                        <SelectItem key={IdGenerator()} value={person?._id}>
+                          {person?.firstName} {person?.lastName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <Button className="w-full mt-auto" type="submit">
-                    Continue to Payment
-                  </Button>
-                </Form>
-              </section>
+                <Button className="w-full mt-auto" type="submit">
+                  Continue to Payment
+                </Button>
+              </Form>
             </div>
           </SheetContent>
         </Sheet>

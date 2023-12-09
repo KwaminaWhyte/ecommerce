@@ -67,7 +67,7 @@ export default class LogController {
     const logs = await Log.find(searchFilter)
       .skip(skipCount)
       .limit(limit)
-      .populate("user")
+      .populate("employee")
       .sort({ createdAt: "desc" })
       .exec();
 

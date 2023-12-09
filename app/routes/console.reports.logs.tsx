@@ -4,7 +4,6 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
-import Input from "~/components/Input";
 import AdminController from "~/server/admin/AdminController.server";
 import Container from "~/components/Container";
 import type {

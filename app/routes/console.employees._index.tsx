@@ -89,7 +89,7 @@ export default function Employees() {
               type="search"
               placeholder="Search anything..."
               name="search_term"
-              className="w-60"
+              className="min-w-[450px]"
             />
 
             <Button type="submit">Filter</Button>

@@ -1,25 +1,15 @@
-import { Transition } from "@headlessui/react";
 import {
   type ActionFunction,
-  json,
   type LoaderFunction,
   type MetaFunction,
 } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
-import { Fragment, useEffect, useState } from "react";
+import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
 
-import Spacer from "~/components/Spacer";
 import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import ProductController from "~/server/product/ProductController.server";
-import { validateName } from "~/server/validators.server";
 import DeleteModal from "~/components/modals/DeleteModal";
 import Container from "~/components/Container";
 import type { CategoryInterface, UserInterface } from "~/server/types";
@@ -224,61 +214,6 @@ export default function Products() {
                                 />
                               </div>
 
-                              {/* <div className="grid w-full  items-center gap-1.5">
-                                <Label htmlFor="category">Category</Label>
-                                <Select
-                                  name="category"
-                                  defaultValue={category?.category?._id}
-                                >
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Selects" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      <SelectLabel>Category</SelectLabel>
-                                      {categories.map((category) => (
-                                        <SelectItem
-                                          key={IdGenerator()}
-                                          value={category._id}
-                                        >
-                                          {category.name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              </div> */}
-
-                              {/* <SimpleSelect
-                      name="featured"
-                      label="Featured"
-                      variant="ghost"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.featured
-                          : activeCategory?.featured
-                      }
-                    >
-                      <option value="true">True</option>
-                      <option value="false">False</option>
-                    </SimpleSelect>
-                    <Spacer /> */}
-
-                              {/* <SimpleSelect
-                      name="status"
-                      label="Status"
-                      variant="ghost"
-                      defaultValue={
-                        actionData?.fields
-                          ? actionData?.fields?.status
-                          : activeCategory?.status
-                      }
-                    >
-                      <option value="">Select Status</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </SimpleSelect>
-                    <Spacer /> */}
                               <TextArea
                                 name="description"
                                 placeholder="Description"

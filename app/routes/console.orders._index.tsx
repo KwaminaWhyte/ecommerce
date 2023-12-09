@@ -12,13 +12,6 @@ import type { AdminInterface, OrderInterface } from "~/server/types";
 import AdminController from "~/server/admin/AdminController.server";
 import OrderController from "~/server/order/OrderController.server";
 import { Button } from "~/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { Input } from "~/components/ui/input";
 
 export default function Orders() {
@@ -44,7 +37,7 @@ export default function Orders() {
             type="search"
             placeholder="Search anything..."
             name="search_term"
-            className="w-60"
+            className="min-w-[450px]"
           />
 
           {/* <Select name="status">

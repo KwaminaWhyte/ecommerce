@@ -429,15 +429,102 @@ export default function Products() {
                           {product?.stockHistory?.length} Stock(s)
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-60">
+                      <PopoverContent className="w-fit">
                         <div className="grid gap-4">
                           {product.stockHistory.map((stock) => (
-                            <p
+                            <div
                               key={IdGenerator()}
-                              className="bg-gray-200 px-2 py-1 rounded-sm font-semibold"
+                              className="flex items-center gap-2"
                             >
-                              {stock.quantity} items @ GH₵ {stock.price} each
-                            </p>
+                              <p className="bg-gray-200 px-2 py-1 rounded-sm font-semibold">
+                                {stock.quantity} items @ GH₵ {stock.price} each
+                              </p>
+
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button>Update</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Update Stock</DialogTitle>
+                                  </DialogHeader>
+                                  <Form
+                                    method="POST"
+                                    encType="multipart/form-data"
+                                    className="flex flex-col gap-4"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="actionType"
+                                      value="update_stock"
+                                    />
+                                    <input
+                                      type="hidden"
+                                      name="_id"
+                                      value={stock?._id}
+                                    />
+
+                                    <div className="grid w-full  items-center gap-1.5">
+                                      <Label htmlFor="cost_price">
+                                        Cost Price
+                                      </Label>
+                                      <Input
+                                        id="cost_price"
+                                        type="number"
+                                        step={0.01}
+                                        name="cost_price"
+                                        defaultValue={stock?.costPrice}
+                                        required
+                                      />
+                                    </div>
+
+                                    <div className="grid w-full  items-center gap-1.5">
+                                      <Label htmlFor="price">Price</Label>
+                                      <Input
+                                        id="price"
+                                        type="number"
+                                        step={0.01}
+                                        name="price"
+                                        defaultValue={stock?.price}
+                                        required
+                                      />
+                                    </div>
+
+                                    <div className="grid w-full  items-center gap-1.5">
+                                      <Label htmlFor="quantity">Quantity</Label>
+                                      <Input
+                                        id="quantity"
+                                        type="number"
+                                        name="quantity"
+                                        defaultValue={stock?.quantity}
+                                      />
+                                    </div>
+
+                                    <div className="flex gap-3 items-center justify-end ">
+                                      <DialogClose asChild>
+                                        <Button
+                                          type="button"
+                                          variant="destructive"
+                                        >
+                                          Close
+                                        </Button>
+                                      </DialogClose>
+
+                                      <Button
+                                        type="submit"
+                                        disabled={
+                                          navigation.state === "submitting"
+                                            ? true
+                                            : false
+                                        }
+                                      >
+                                        Submit
+                                      </Button>
+                                    </div>
+                                  </Form>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
                           ))}
                         </div>
                       </PopoverContent>
@@ -696,7 +783,6 @@ export const action: ActionFunction = async ({ request }) => {
       name,
       price,
       description,
-      imgSrc,
       category,
       quantity,
       costPrice,
