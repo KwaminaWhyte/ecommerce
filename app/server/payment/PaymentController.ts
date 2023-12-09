@@ -64,7 +64,6 @@ export default class PaymentController {
         $inc: { quantity: 1 },
       }).exec();
     } else {
-      // create new admin
       const cart = await this.PaymentDetails.create({
         user,
         product,

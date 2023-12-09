@@ -23,7 +23,6 @@ import SettingsController from "~/server/settings/SettingsController.server";
 export default function GeneralSettings() {
   const { generalSettings } = useLoaderData<{ generalSettings: any }>();
   const submit = useSubmit();
-  console.log(generalSettings);
 
   return (
     <Container

@@ -683,11 +683,6 @@ export const action: ActionFunction = async ({ request }) => {
     let data = JSON.parse(completeData);
     return productController.importBatch(data);
   } else if (actionType == "update") {
-    console.log("updating...");
-
-    console.log(formData.get("_id") as string);
-    console.log(category);
-
     return await productController.updateProduct({
       _id: formData.get("_id") as string,
       name,

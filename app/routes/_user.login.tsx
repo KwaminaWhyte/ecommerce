@@ -36,7 +36,7 @@ export default function Login() {
 
           <div className="grid w-full  items-center gap-1.5">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="text" name="password" required />
+            <Input id="password" type="password" name="password" required />
           </div>
 
           <div className="flex flex-col items-center justify-between">

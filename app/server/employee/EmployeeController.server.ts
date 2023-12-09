@@ -1,6 +1,7 @@
 import { json, redirect } from "@remix-run/node";
 import bcrypt from "bcryptjs";
 import { Employee } from "./Employee";
+import { commitSession, getSession } from "~/session";
 
 export default class EmployeeController {
   private request: Request;
@@ -36,7 +37,6 @@ export default class EmployeeController {
    */
   public createEmployee = async ({
     firstName,
-    middleName,
     lastName,
     email,
     username,
@@ -45,7 +45,6 @@ export default class EmployeeController {
     gender,
   }: {
     firstName: string;
-    middleName: string;
     lastName: string;
     email: string;
     username: string;
@@ -53,31 +52,22 @@ export default class EmployeeController {
     role: string;
     gender: string;
   }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
     const existingEmployee = await Employee.findOne({ username });
 
     if (existingEmployee) {
       return json(
         {
           errors: { name: "Employee already exists" },
-          fields: { firstName, lastName, middleName, username, email },
+          fields: { firstName, lastName, username, email },
         },
         { status: 400 }
       );
     }
 
-    // const myString = imgSrc;
-    // const myArray = myString.split("|");
-    // let image = await EmployeeImages.create({
-    //   url: myArray[0],
-    //   imageId: myArray[1],
-    // });
-
-    // create new admin
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const employee = await Employee.create({
       firstName,
-      middleName,
       lastName,
       email,
       username,
@@ -87,15 +77,26 @@ export default class EmployeeController {
     });
 
     if (!employee) {
-      return json(
-        {
-          error: "Error creating employee",
-          fields: { firstName, lastName, middleName, username, email },
+      session.flash("message", {
+        title: "Error creating employee",
+        status: "error",
+      });
+      return redirect(`/console/employees`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
         },
-        { status: 400 }
-      );
+      });
     }
-    return redirect("/console/employees");
+
+    session.flash("message", {
+      title: "Employee created successfully",
+      status: "success",
+    });
+    return redirect(`/console/employees`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   };
 
   /**
@@ -118,7 +119,6 @@ export default class EmployeeController {
    */
   public updateEmployee = async ({
     firstName,
-    middleName,
     lastName,
     email,
     username,
@@ -127,7 +127,6 @@ export default class EmployeeController {
     _id,
   }: {
     firstName: string;
-    middleName: string;
     lastName: string;
     email: string;
     username: string;
@@ -135,37 +134,25 @@ export default class EmployeeController {
     gender: string;
     _id: string;
   }) => {
-    // try {
+    const session = await getSession(this.request.headers.get("Cookie"));
     await Employee.findByIdAndUpdate(_id, {
       firstName,
-      middleName,
       lastName,
       email,
       username,
       role,
       gender,
     });
-    return redirect(`/console/employees`, 200);
-    // } catch (error) {
-    //   return json(
-    //     {
-    //       errors: {
-    //         name: "Error occured while updating product category",
-    //         error: error,
-    //       },
-    //       fields: {
-    //         firstName,
-    //         middleName,
-    //         lastName,
-    //         email,
-    //         username,
-    //         role,
-    //         gender,
-    //       },
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
+
+    session.flash("message", {
+      title: "Employee deleted successfully",
+      status: "success",
+    });
+    return redirect(`/console/employees`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   };
 
   public deleteEmployee = async (id: string) => {

@@ -73,7 +73,6 @@ export default class ProductController {
     name,
     price,
     description,
-    imgSrc,
     category,
     quantity,
     costPrice,
@@ -81,7 +80,6 @@ export default class ProductController {
     name: string;
     price: string;
     description: string;
-    imgSrc: string;
     category: string;
     quantity: string;
     costPrice: string;
@@ -102,13 +100,6 @@ export default class ProductController {
         { status: 400 }
       );
     }
-
-    // const myString = imgSrc;
-    // const myArray = myString.split("|");
-    // let image = await this.ProductImages.create({
-    //   url: myArray[0],
-    //   imageId: myArray[1],
-    // });
 
     let productData = {
       name,
