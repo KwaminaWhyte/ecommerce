@@ -20,7 +20,6 @@ import {
 } from "@remix-run/react";
 
 import Container from "~/components/Container";
-import Input from "~/components/Input";
 import SimpleSelect from "~/components/SimpleSelect";
 import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
@@ -28,6 +27,8 @@ import AdminController from "~/server/admin/AdminController.server";
 import EmployeeController from "~/server/employee/EmployeeController.server";
 import { Button } from "~/components/ui/button";
 import type { AdminInterface, EmployeeInterface } from "~/server/types";
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
 
 export default function ProductDetails() {
   let { user, employee } = useLoaderData<{
@@ -47,7 +48,7 @@ export default function ProductDetails() {
   }
 
   return (
-    <AdminLayout user={user}>
+    <AdminLayout user={user} className="gap-4">
       <div className="mb-3 flex items-center">
         <div
           className="border border-gray-400 rounded-sm p-1 mr-3"
@@ -85,61 +86,66 @@ export default function ProductDetails() {
         <Form
           method="POST"
           encType="multipart/form-data"
-          className="w-full grid grid-cols-2 gap-3"
+          className="w-full grid grid-cols-2 gap-4"
         >
-          <Input
-            name="firstName"
-            placeholder="First Name"
-            label="First Name"
-            type="text"
-            value={employee?.firstName}
-            defaultValue={actionData?.fields?.firstName}
-            error={actionData?.errors?.firstName}
-          />
+          <div className="grid w-full  items-center gap-1.5">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              type="text"
+              name="firstName"
+              required
+              defaultValue={employee?.firstName}
+            />
+          </div>
 
-          <Input
-            name="lastName"
-            placeholder="Last Name"
-            label="Last Name"
-            type="text"
-            value={employee?.lastName}
-            defaultValue={actionData?.fields?.lastName}
-            error={actionData?.errors?.lastName}
-          />
+          <div className="grid w-full  items-center gap-1.5">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              type="text"
+              name="lastName"
+              required
+              defaultValue={employee?.lastName}
+            />
+          </div>
 
-          <Input
-            name="username"
-            placeholder="Username "
-            label="Username"
-            type="text"
-            value={employee?.username}
-            defaultValue={actionData?.fields?.username}
-            error={actionData?.errors?.username}
-          />
+          <div className="grid w-full  items-center gap-1.5">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              type="text"
+              name="username"
+              required
+              defaultValue={employee?.username}
+            />
+          </div>
 
-          <Input
-            name="email"
-            placeholder="Email"
-            label="Email"
-            type="text"
-            value={employee?.email}
-            defaultValue={actionData?.fields?.email}
-            error={actionData?.errors?.email}
-          />
-          <Input
+          <div className="grid w-full  items-center gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              required
+              defaultValue={employee?.email}
+            />
+          </div>
+
+          {/* <Input
             name="role"
             placeholder="Role"
             label="Role"
             type="text"
             defaultValue={actionData?.fields?.role}
             error={actionData?.errors?.role}
-          />
-
+          /> */}
+          {/* 
           <SimpleSelect label="Gender" variant="ghost">
             <option value="">Select Gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
-          </SimpleSelect>
+          </SimpleSelect> */}
 
           <div className="flex items-center ">
             <Button
@@ -147,7 +153,7 @@ export default function ProductDetails() {
               className="ml-auto"
               disabled={navigation.state === "submitting" ? true : false}
             >
-              {navigation.state === "submitting" ? "Submitting..." : "Update"}
+              Update
             </Button>
           </div>
         </Form>
@@ -155,24 +161,21 @@ export default function ProductDetails() {
 
       <Container heading="Password">
         <Form method="POST" encType="multipart/form-data" className="w-full">
-          <div className="flex w-full">
-            <Input
-              name="password"
-              placeholder="Password"
-              label="Password"
-              type="password"
-              defaultValue={actionData?.fields?.password}
-              error={actionData?.errors?.password}
-            />
-            <Spacer />
-            <Input
-              name="confirm_password"
-              placeholder="Confirm Password"
-              label="Confirm Password"
-              type="password"
-              defaultValue={actionData?.fields?.password}
-              error={actionData?.errors?.password}
-            />
+          <div className="flex w-full gap-3">
+            <div className="grid w-full  items-center gap-1.5">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" name="password" required />
+            </div>
+
+            <div className="grid w-full  items-center gap-1.5">
+              <Label htmlFor="confirm_password">Confirm Password</Label>
+              <Input
+                id="confirm_password"
+                type="confirm_password"
+                name="confirm_password"
+                required
+              />
+            </div>
           </div>
 
           <div className="flex items-center mt-3">
@@ -181,100 +184,15 @@ export default function ProductDetails() {
               className="ml-auto"
               disabled={navigation.state === "submitting" ? true : false}
             >
-              {navigation.state === "submitting"
-                ? "Submitting..."
-                : "Change Password"}
+              Change Password
             </Button>
           </div>
         </Form>
       </Container>
-
+      {/* 
       <Container heading="Statistics">
         <p>employee specific stats</p>
-      </Container>
-
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50 " onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto ">
-            <div className="flex min-h-full items-center justify-center p-4 text-center ">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-slate-900">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-bold leading-6 text-slate-900"
-                  >
-                    New Product
-                  </Dialog.Title>
-                  <div className="h-4"></div>
-
-                  <Form method="POST" encType="multipart/form-data">
-                    <Input
-                      name="productId"
-                      type="hidden"
-                      defaultValue={employee._id}
-                    />
-
-                    <Input
-                      name="image"
-                      placeholder="Images"
-                      accept="image/*"
-                      label="Images"
-                      type="file"
-                      // multiple
-                      defaultValue={actionData?.fields?.images}
-                      error={actionData?.errors?.images}
-                    />
-                    <Spacer />
-
-                    <div className="flex items-center ">
-                      <Button
-                        color="error"
-                        type="button"
-                        className="ml-auto mr-3"
-                        onClick={closeModal}
-                        variant="destructive"
-                      >
-                        Close
-                      </Button>
-
-                      <Button
-                        type="submit"
-                        disabled={
-                          navigation.state === "submitting" ? true : false
-                        }
-                      >
-                        {navigation.state === "submitting"
-                          ? "Uploading..."
-                          : "Upload"}
-                      </Button>
-                    </div>
-                  </Form>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
+      </Container> */}
     </AdminLayout>
   );
 }

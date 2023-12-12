@@ -1,9 +1,10 @@
-import { Popover } from "@headlessui/react";
 import { Link, type SubmitFunction } from "@remix-run/react";
 import moment from "moment";
 import type { OrderInterface } from "~/server/types";
 import ItemStatus from "./ItemStatus";
 import IdGenerator from "~/lib/IdGenerator";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "./ui/button";
 
 const OrderCard = ({
   order,
@@ -27,43 +28,44 @@ const OrderCard = ({
         className="px-3 py-3 font-medium text-slate-900 dark:text-white"
       >
         {order.orderItems?.length > 1 ? (
-          <Popover className="relative">
-            <Popover.Button className="focus:outline-none">
-              <p className="w-fit rounded-xl bg-slate-200 border px-2 py-1 hover:border-slate-400 text-slate-800 dark:bg-slate-700 dark:text-white">
+          <Popover>
+            <PopoverTrigger asChild>
+              <p
+                variant="outline"
+                className="w-fit rounded-xl bg-slate-200 border px-2 py-1 hover:border-slate-400 text-slate-800 dark:bg-slate-700 dark:text-white"
+              >
                 {order.orderItems?.length} Items
               </p>
-            </Popover.Button>
-            <Popover.Panel className="absolute z-10 w-96">
-              <div className="overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-slate-800">
-                <div className="relative grid gap-3 bg-white px-3 py-4 dark:bg-slate-800 sm:gap-8 sm:p-8">
-                  {order.orderItems?.map((item) => (
-                    <div
-                      key={IdGenerator(8)}
-                      className="flex items-center space-x-4"
-                    >
-                      <img
-                        className="h-16 w-16 flex-none rounded-lg bg-slate-100 object-cover"
-                        src={item?.product?.images[0]?.url}
-                        alt=""
-                      />
-                      <div className="flex-auto">
-                        <div className="flex flex-wrap">
-                          <h3 className="flex-auto text-lg font-medium dark:text-white">
-                            {item?.product?.name}
-                          </h3>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">
-                            {item?.quantity} x GH₵ {item?.stock?.price}
-                          </p>
-                        </div>
-                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-1">
-                          {item?.product?.description}
+            </PopoverTrigger>
+            <PopoverContent className="w-96">
+              <div className="relative grid gap-3 dark:bg-slate-800">
+                {order.orderItems?.map((item) => (
+                  <div
+                    key={IdGenerator(8)}
+                    className="flex items-center space-x-4"
+                  >
+                    <img
+                      className="h-14 w-14 flex-none rounded-lg bg-slate-100 object-cover"
+                      src={item?.product?.images[0]?.url}
+                      alt=""
+                    />
+                    <div className="flex-auto flex flex-col gap-1">
+                      <div className="flex flex-wrap">
+                        <h3 className="flex-auto font-semibold dark:text-white">
+                          {item?.product?.name}
+                        </h3>
+                        <p className="text-slate-500 dark:text-slate-400">
+                          {item?.quantity} x GH₵ {item?.stock?.price}
                         </p>
                       </div>
+                      <p className="text-slate-500 dark:text-slate-400 line-clamp-1">
+                        {item?.product?.description}
+                      </p>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            </Popover.Panel>
+            </PopoverContent>
           </Popover>
         ) : (
           <p className="text-slate-900 dark:text-white">
@@ -127,7 +129,7 @@ const OrderCard = ({
       <td className="px-3 py-3 text-right">
         <Link
           to={`/${root_path}/orders/${order?._id}`}
-          className="tansition-all rounded-sm bg-purple-600 px-2 py-1 text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
+          className="tansition-all rounded-sm bg-purple-600 p-2 text-white shadow-sm duration-300 hover:bg-purple-700 focus:outline-none"
         >
           View
         </Link>

@@ -47,8 +47,8 @@ export default function FinancialReport() {
   }>();
 
   return (
-    <div>
-      <section className="mb-3 flex items-center gap-3">
+    <div className="flex flex-col gap-4">
+      <section className=" flex items-center gap-3">
         <h1 className="text-3xl font-bold">Financial Reports </h1>
         <Form
           method="GET"
@@ -90,7 +90,7 @@ export default function FinancialReport() {
         </ClientOnly>
       </Container>
 
-      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 ">
         <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
           <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
             Expenses History
@@ -139,7 +139,7 @@ export default function FinancialReport() {
         </table>
       </div>
 
-      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 mt-5">
+      <div className="relative shadow-sm bg-white dark:bg-slate-700 rounded-xl pb-2 ">
         <div className="flex items-center justify-between px-3 py-3 border-b dark:border-slate-400">
           <h3 className="text-2xl font-semibold text-slate-900 dark:text-white">
             Transaction History
