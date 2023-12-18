@@ -263,7 +263,7 @@ export default class OrderController {
         });
       });
 
-      const orderId = this.generateOrderId(settings?.orderIdPrefix);
+      const orderId = this.generateOrderId("ORD");
       const order = await Order.create({
         orderId,
         cashier: employee,
