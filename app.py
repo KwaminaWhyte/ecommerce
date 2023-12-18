@@ -22,8 +22,6 @@
 
 # if __name__ == "__main__":
 #     run_react_app()
-
-
 import subprocess
 import os
 
@@ -46,5 +44,4 @@ finally:
 
 
 # pip install pyinstaller
-# pyinstaller --onefile app.py
-# password: Famous10@3310, gmail: admin@gmail.com
+# pyinstaller --onefile run_node_app.py
