@@ -47,8 +47,8 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
           </p>
         </section>
 
-        <section className="mt-6 text-xs">
-          <h3 className="text-sm font-semibold">Items:</h3>
+        <section className="mt-6">
+          <h3 className="text-md font-semibold">Items:</h3>
           <ul className="mt-2">
             {order?.orderItems?.map((item) => (
               <li className="flex gap-5" key={IdGenerator()}>
@@ -69,8 +69,8 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
         </section>
 
         <section className="mt-3 flex items-center  justify-between">
-          <h3 className="text-sm font-semibold">Total Amount:</h3>
-          <p className="text-sm font-semibold"> GH₵ {order?.totalPrice}</p>
+          <h3 className="text-md font-semibold">Total Amount:</h3>
+          <p className="text-md font-semibold"> GH₵ {order?.totalPrice}</p>
         </section>
       </div>
     );
