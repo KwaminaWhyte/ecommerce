@@ -24,6 +24,16 @@ import pkg from "react-to-print";
 import { OrderReceipt } from "~/components/printables/OrderReceipt";
 import EmployeeController from "~/server/employee/EmployeeController.server";
 import IdGenerator from "~/lib/IdGenerator";
+import { Input } from "~/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 const { useReactToPrint } = pkg;
 
@@ -63,6 +73,38 @@ export default function Shop() {
       settings={generalSettings}
       sales_persons={sales_persons}
     >
+      <div className="ml-auto flex gap-3 items-center">
+        <Form
+          method="GET"
+          className="flex gap-3 items-center bg-white shadow-md p-2 rounded-lg ml-auto"
+        >
+          <Input
+            type="search"
+            placeholder="Search by name..."
+            name="search_term"
+            className="min-w-[450px]"
+          />
+
+          {/* <Select name="category">
+              <SelectTrigger className="min-w-[200pxs]">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Category</SelectLabel>
+                  {categories.map((category) => (
+                    <SelectItem key={IdGenerator()} value={category._id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select> */}
+
+          <Button type="submit">Search</Button>
+        </Form>
+      </div>
+
       <section className="my-3 flex w-full gap-2 overflow-x-hidden">
         {featured_categories?.map((category) => (
           <Link
