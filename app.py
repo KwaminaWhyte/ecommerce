@@ -38,3 +38,7 @@ subprocess.run(['npm', 'install'], check=True)
 
 # Command to start the Node.js app
 subprocess.run(['npm', 'start'], check=True)
+
+
+# pip install pyinstaller
+# pyinstaller --onefile run_node_app.py
