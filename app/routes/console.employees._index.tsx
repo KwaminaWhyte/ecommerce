@@ -159,7 +159,7 @@ export default function Employees() {
                       <SelectGroup>
                         <SelectLabel>Role</SelectLabel>
                         <SelectItem value="cashier">Cashier</SelectItem>
-                        <SelectItem value="attendant">Attendant</SelectItem>
+                        {/* <SelectItem value="attendant">Attendant</SelectItem> */}
                         <SelectItem value="sales_person">
                           Sales Person
                         </SelectItem>

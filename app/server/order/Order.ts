@@ -17,6 +17,11 @@ const OrderSchema = new mongoose.Schema(
       ref: "employees",
       required: true,
     },
+    salesPerson: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "employees",
+      // required: true,
+    },
     shippingAddress: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "addresses",
@@ -81,16 +86,6 @@ const OrderSchema = new mongoose.Schema(
       default: "pending",
     },
     paymentReff: String,
-    salesPerson: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "employees",
-      // required: true,
-    },
-    attendant: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "employees",
-      required: true,
-    },
     onCredit: {
       type: Boolean,
       default: false,

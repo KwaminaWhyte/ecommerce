@@ -192,14 +192,12 @@ export default class OrderController {
    * @returns null
    */
   public checkout = async ({
-    employee,
     customerName,
     customerPhone,
     salesPerson,
     amountPaid,
     onCredit = "false",
   }: {
-    employee: string;
     customerName: string;
     customerPhone: string;
     salesPerson: string;
@@ -208,13 +206,13 @@ export default class OrderController {
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const employeeAuth = await new EmployeeAuthController(this.request);
-    const attendant = await employeeAuth.getEmployeeId();
-
+    const cashier = await employeeAuth.getEmployeeId();
+    // salesPerson
     const settingsController = await new SettingsController(this.request);
     const settings = await settingsController.getGeneralSettings();
 
     try {
-      const cartItems = await Cart.find({ employee })
+      const cartItems = await Cart.find({ employee: cashier })
         .populate("product")
         .populate({
           path: "stock",
@@ -268,13 +266,12 @@ export default class OrderController {
       );
       const order = await Order.create({
         orderId,
-        cashier: employee,
+        cashier: cashier,
         totalPrice,
         orderItems: newCartItems,
         deliveryStatus: "delivered",
         paymentStatus: onCredit == "true" ? "pending" : "paid",
-        salesPerson: salesPerson ? salesPerson : employee,
-        attendant,
+        salesPerson: salesPerson ? salesPerson : null,
         onCredit: onCredit == "true" ? true : false,
         status: "completed",
         amountPaid: amountPaid ? parseInt(amountPaid) : 0,
@@ -282,7 +279,7 @@ export default class OrderController {
         customerPhone,
       });
 
-      await Cart.deleteMany({ employee }).exec();
+      await Cart.deleteMany({ employee: cashier }).exec();
 
       for (const item of cartItems) {
         const product = await Product.findById(item.product?._id);
@@ -302,7 +299,7 @@ export default class OrderController {
 
       const logController = await new LogController();
       await logController.create({
-        employee,
+        employee: cashier,
         action: "place an order",
         order: order?._id,
       });
@@ -318,7 +315,7 @@ export default class OrderController {
       await Payment.create({
         amount: amountPaid,
         order: order?._id,
-        cashier: employee,
+        cashier: cashier,
       });
 
       return await Order.findById(order?._id)
@@ -328,6 +325,10 @@ export default class OrderController {
             path: "images",
             model: "images",
           },
+        })
+        .populate({
+          path: "cashier",
+          select: "_id firstName lastName email phone address",
         })
         .populate({
           path: "cashier",

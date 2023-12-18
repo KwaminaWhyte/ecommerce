@@ -18,8 +18,8 @@ const EmployeeSchema = new mongoose.Schema(
     password: String,
     role: {
       type: String,
-      enum: ["attendant", "sales_person", "cashier"],
-      default: "attendant",
+      enum: ["sales_person", "cashier"],
+      default: "sales_person",
     },
     gender: String,
     permissions: [
