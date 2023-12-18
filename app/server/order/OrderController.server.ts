@@ -312,11 +312,11 @@ export default class OrderController {
         amount: amountPaid,
       });
 
-      await Payment.create({
-        amount: amountPaid,
-        order: order?._id,
-        cashier: cashier,
-      });
+      // await Payment.create({
+      //   amount: amountPaid,
+      //   order: order?._id,
+      //   cashier: cashier,
+      // });
 
       return await Order.findById(order?._id)
         .populate({
