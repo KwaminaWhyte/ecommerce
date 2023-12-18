@@ -249,7 +249,6 @@ export const action: ActionFunction = async ({ request }) => {
   const cartController = await new CartController(request);
   const orderController = await new OrderController(request);
   const authControlle = await new EmployeeAuthController(request);
-  const employee = await authControlle.requireEmployeeId();
 
   const product = formData.get("product_id") as string;
   const stock = formData.get("stock") as string;
@@ -257,7 +256,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (actionType == "complete") {
     const ress = await orderController.checkout({
-      employee,
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
       salesPerson: formData.get("sales_person") as string,

@@ -55,11 +55,11 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
                 <span className="font-semibold w-11">{item?.quantity}</span>
                 <span>{item?.product?.name}</span>
                 <span>
-                  - GH₵{" "}
-                  {item?.stock ? item?.stock?.price : item?.product?.price} each
+                  - GH₵{item?.stock ? item?.stock?.price : item?.product?.price}{" "}
+                  each
                 </span>
                 <span className="font-semibold ml-auto">
-                  GH₵{" "}
+                  GH₵
                   {item?.quantity *
                     (item?.stock ? item?.stock?.price : item?.product?.price)}
                 </span>

@@ -4,12 +4,10 @@ const GeneralSettingsSchema = new mongoose.Schema(
   {
     businessName: {
       type: String,
-      required: true,
     },
     siteDescription: String,
     siteLogo: {
       type: String,
-      // required: true,
     },
     favicon: String,
     slogan: String,
@@ -59,7 +57,6 @@ const GeneralSettingsSchema = new mongoose.Schema(
     },
     language: {
       type: String,
-      // required: true,
     },
     notifications: {
       type: Boolean,
