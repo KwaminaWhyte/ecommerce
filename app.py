@@ -22,23 +22,27 @@
 
 # if __name__ == "__main__":
 #     run_react_app()
-
 import subprocess
 import os
 
-# Set the path to the Node.js app directory
-project_directory = os.path.join(
-    os.path.expanduser('~'), 'Desktop', 'ecommerce')
-
-# Change the current working directory to the Node.js app directory
+# Change the working directory to the project directory
+project_directory = os.path.abspath("c:/Users/HP/Desktop/ecommerce/")
 os.chdir(project_directory)
 
-# Command to install dependencies (if needed)
-subprocess.run(['npm', 'install'], check=True)
+# Command to run the Node.js app
+command = "npm run dev"
 
-# Command to start the Node.js app
-subprocess.run(['npm', 'start'], check=True)
+try:
+    # Run the command using subprocess
+    subprocess.run(command, shell=True, check=True)
+except subprocess.CalledProcessError as e:
+    print(f"Error: {e}")
+except KeyboardInterrupt:
+    print("Process interrupted by user.")
+finally:
+    print("Script execution completed.")
 
 
 # pip install pyinstaller
-# pyinstaller --onefile run_node_app.py
+# pyinstaller --onefile app.py
+# password: Famous10@3310, gmail: admin@gmail.com
