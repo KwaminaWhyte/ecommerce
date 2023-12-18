@@ -328,7 +328,7 @@ export default class OrderController {
           },
         })
         .populate({
-          path: "employee",
+          path: "cashier",
           select: "_id firstName lastName email phone address",
         })
         .exec();
