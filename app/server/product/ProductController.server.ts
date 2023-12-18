@@ -106,7 +106,7 @@ export default class ProductController {
     let productData = {
       name,
       description,
-      category,
+      category: category != "" ? category : null,
       availability: "available",
       quantity: parseInt(quantity),
       costPrice: parseFloat(costPrice),

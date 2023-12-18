@@ -23,7 +23,7 @@ export const OrderReceipt = React.forwardRef<HTMLDivElement, OrderReceiptProps>(
           <h1 className="text-2xl font-semibold mt-2">
             {generalSettings?.businessName}
           </h1>
-          <p className="text-slate-600">{generalSettings.address}</p>
+          <p className="text-slate-600">{generalSettings?.address}</p>
         </section>
 
         <section className="mt-6 flex flex-col justify-between">
