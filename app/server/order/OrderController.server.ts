@@ -263,7 +263,7 @@ export default class OrderController {
         });
       });
 
-      const orderId = this.generateOrderId(settings?.orderIdPrefix);
+      const orderId = this.generateOrderId("ORD");
       const order = await Order.create({
         orderId,
         cashier: employee,
@@ -328,7 +328,7 @@ export default class OrderController {
           },
         })
         .populate({
-          path: "employee",
+          path: "cashier",
           select: "_id firstName lastName email phone address",
         })
         .exec();
