@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import { commitSession, getSession } from "~/session";
 import { Cart } from "./Cart";
+import EmployeeAuthController from "../employee/EmployeeAuthController";
 
 export default class CartController {
   private request: Request;
@@ -19,17 +20,13 @@ export default class CartController {
     this.request = request;
   }
 
-  public addToCart = async ({
-    employee,
-    product,
-  }: {
-    employee: string;
-    product: string;
-  }) => {
+  public addToCart = async ({ product }: { product: string }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
+    const employeeAuth = await new EmployeeAuthController(this.request);
+    const cashier = await employeeAuth.getEmployeeId();
 
     const existingCart = await Cart.findOne({
-      employee,
+      employee: cashier,
       product,
     });
 
@@ -39,7 +36,7 @@ export default class CartController {
       }).exec();
     } else {
       const cart = await Cart.create({
-        employee,
+        employee: cashier,
         product,
         quantity: 1,
       });
@@ -91,16 +88,13 @@ export default class CartController {
     }
   };
 
-  public increaseItem = async ({
-    product,
-    employee,
-  }: {
-    product: string;
-    employee: string;
-  }) => {
+  public increaseItem = async ({ product }: { product: string }) => {
+    const employeeAuth = await new EmployeeAuthController(this.request);
+    const cashier = await employeeAuth.getEmployeeId();
+
     try {
       await Cart.findOneAndUpdate(
-        { product, employee },
+        { product, employee: cashier },
         {
           $inc: { quantity: 1 }, // Increase the quantity by 1
         }
@@ -122,16 +116,17 @@ export default class CartController {
 
   public setStock = async ({
     product,
-    employee,
     stock,
   }: {
     product: string;
-    employee: string;
     stock: string;
   }) => {
+    const employeeAuth = await new EmployeeAuthController(this.request);
+    const cashier = await employeeAuth.getEmployeeId();
+
     try {
       await Cart.findOneAndUpdate(
-        { product, employee },
+        { product, employee: cashier },
         {
           stock,
         }
@@ -155,16 +150,13 @@ export default class CartController {
    * @param param0 id
    * @returns null
    */
-  public decreaseItem = async ({
-    product,
-    employee,
-  }: {
-    product: string;
-    employee: string;
-  }) => {
+  public decreaseItem = async ({ product }: { product: string }) => {
+    const employeeAuth = await new EmployeeAuthController(this.request);
+    const cashier = await employeeAuth.getEmployeeId();
+
     try {
       await Cart.findOneAndUpdate(
-        { product, employee },
+        { product, employee: cashier },
         {
           $inc: { quantity: -1 }, // Decrease the quantity by 1
         }
@@ -182,17 +174,13 @@ export default class CartController {
    * @param id String
    * @returns null
    */
-  public removeFromCart = async ({
-    employee,
-    product,
-  }: {
-    product: string;
-    employee: string;
-  }) => {
+  public removeFromCart = async ({ product }: { product: string }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
+    const employeeAuth = await new EmployeeAuthController(this.request);
+    const cashier = await employeeAuth.getEmployeeId();
 
     try {
-      await Cart.findOneAndDelete({ employee, product });
+      await Cart.findOneAndDelete({ employee: cashier, product });
       session.flash("message", {
         title: "Product removed from cart",
         status: "success",

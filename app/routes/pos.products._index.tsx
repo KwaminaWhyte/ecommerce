@@ -265,17 +265,17 @@ export const action: ActionFunction = async ({ request }) => {
 
     return ress;
   } else if (actionType == "increase") {
-    return await cartController.increaseItem({ product, employee });
+    return await cartController.increaseItem({ product });
   } else if (actionType == "decrease") {
-    return await cartController.decreaseItem({ product, employee });
+    return await cartController.decreaseItem({ product });
   } else if (actionType == "add_to_cart") {
-    return await cartController.addToCart({ employee, product });
+    return await cartController.addToCart({ product });
   } else if (actionType == "remove_from_cart") {
-    return await cartController.removeFromCart({ employee, product });
+    return await cartController.removeFromCart({ product });
   } else if (actionType == "clear_cart") {
-    return await cartController.clear_cart({ employee, product });
+    return await cartController.clear_cart({ product });
   } else if (actionType == "set_stock") {
-    return await cartController.setStock({ stock, product, employee });
+    return await cartController.setStock({ stock, product });
   }
 };
 
