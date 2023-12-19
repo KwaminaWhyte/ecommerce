@@ -93,11 +93,13 @@ export default function PosLayout({
               <section className="flex flex-col overflow-y-scroll gap-2 mt-4 pb-4 pt-2 max-h-[470px]">
                 {cart_items?.map((item) => (
                   <div key={IdGenerator()} className="flex justify-center">
-                    <img
-                      className="w-28 h-28 rounded-md object-cover"
-                      src={item?.product?.images[0]?.url}
-                      alt=""
-                    />
+                    {item?.product?.images?.length > 0 && (
+                      <img
+                        className="w-28 h-28 rounded-md object-cover"
+                        src={item?.product?.images[0]?.url}
+                        alt=""
+                      />
+                    )}
 
                     <div className="px-2 flex-1">
                       <p className="text-lg font-bold">{item?.product?.name}</p>

@@ -105,7 +105,7 @@ export default function SystemLogs() {
                   scope="row"
                   className=" px-3 py-3 font-medium text-slate-900 dark:text-white"
                 >
-                  {log?.user?.firstName} {log?.user?.lastName}
+                  {log?.employee?.firstName} {log?.employee?.lastName}
                 </th>
                 <td className="px-3 py-3">
                   <p
