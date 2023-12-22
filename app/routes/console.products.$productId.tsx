@@ -1,17 +1,14 @@
-import { Fragment, useEffect, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { useEffect, useState } from "react";
 import {
-  json,
   type LoaderFunction,
   type MetaFunction,
   type ActionFunction,
 } from "@remix-run/node";
-import { useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
+import { Form, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
 import axios from "axios";
 
 import Container from "~/components/Container";
 import Input from "~/components/Input";
-import Spacer from "~/components/Spacer";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import AdminController from "~/server/admin/AdminController.server";
 import ProductController from "~/server/product/ProductController.server";
@@ -19,6 +16,16 @@ import type { AdminInterface, ProductInterface } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import IdGenerator from "~/lib/IdGenerator";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 
 export default function AdminProductDetails() {
   const submit = useSubmit();
@@ -92,8 +99,8 @@ export default function AdminProductDetails() {
   }, [product]);
 
   return (
-    <AdminLayout user={user}>
-      <div className="mb-3 flex items-center">
+    <AdminLayout user={user} className="gap-4">
+      <div className="flex items-center">
         <div
           className="border border-gray-400 rounded-sm p-1 mr-3"
           onClick={() => navigate(-1)}
@@ -156,15 +163,85 @@ export default function AdminProductDetails() {
         </section>
       </div>
 
-      <Container heading="Stocking History">
-        <p>Inventory</p>
+      <Container heading="Stocking History" contentClassName="flex flex-col">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Restock</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Update Product</DialogTitle>
+            </DialogHeader>
+            <Form
+              method="POST"
+              encType="multipart/form-data"
+              className="flex flex-col gap-4"
+            >
+              <input type="hidden" name="actionType" value="update" />
+              <input type="hidden" name="_id" value={product?._id} />
+
+              <div className="grid w-full  items-center gap-1.5">
+                <Label htmlFor="cost_price">Cost Price</Label>
+                <Input
+                  id="cost_price"
+                  type="number"
+                  step={0.01}
+                  name="cost_price"
+                  defaultValue={product?.costPrice}
+                  required
+                />
+              </div>
+
+              <div className="grid w-full  items-center gap-1.5">
+                <Label htmlFor="price">Price</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step={0.01}
+                  name="price"
+                  defaultValue={product?.price}
+                  required
+                />
+              </div>
+
+              <div className="grid w-full  items-center gap-1.5">
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  name="quantity"
+                  defaultValue={product?.quantity}
+                />
+              </div>
+
+              <div className="flex gap-3 items-center justify-end ">
+                <DialogClose asChild>
+                  <Button type="button" variant="destructive">
+                    Close
+                  </Button>
+                </DialogClose>
+
+                <Button
+                  type="submit"
+                  // disabled={navigation.state === "submitting" ? true : false}
+                >
+                  Submit
+                </Button>
+              </div>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        <section>
+          <p>Inventory</p>
+        </section>
       </Container>
 
       <Container heading="Statistics">
         <p>product specific stats</p>
       </Container>
 
-      <Transition appear show={isOpen} as={Fragment}>
+      {/* <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50 " onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -232,7 +309,7 @@ export default function AdminProductDetails() {
             </div>
           </div>
         </Dialog>
-      </Transition>
+      </Transition> */}
     </AdminLayout>
   );
 }

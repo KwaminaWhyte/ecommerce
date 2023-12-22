@@ -104,7 +104,6 @@ export default function Products() {
 
   const [deleteId, setDeleteId] = useState(null);
   const [isOpenDelete, setIsOpenDelete] = useState(false);
-  const [isStockOpen, setIsStockOpen] = useState(false);
   const [showAddModel, setShowAddModel] = useState(false);
   const [showUpdateModel, setShowUpdateModel] = useState(false);
   const [showImportModel, setShowImportModel] = useState(false);
@@ -161,7 +160,6 @@ export default function Products() {
 
   useEffect(() => {
     setIsOpenDelete(false);
-    setIsStockOpen(false);
     setShowAddModel(false);
     setShowImportModel(false);
     setShowUpdateModel(false);
@@ -680,14 +678,6 @@ export default function Products() {
                             </Form>
                           </DialogContent>
                         </Dialog>
-
-                        <Button
-                          onClick={() => {
-                            setIsStockOpen(true);
-                          }}
-                        >
-                          Restock
-                        </Button>
 
                         <Button
                           variant="destructive"

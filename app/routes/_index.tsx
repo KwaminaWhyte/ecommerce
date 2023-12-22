@@ -1,5 +1,9 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import type { MetaFunction, LoaderFunction } from "@remix-run/node";
+import {
+  type MetaFunction,
+  type LoaderFunction,
+  redirect,
+} from "@remix-run/node";
 import UserLayout from "~/components/layouts/UserLayout";
 import ProductController from "~/server/product/ProductController.server";
 import UserController from "~/server/user/UserController.server";
@@ -65,6 +69,7 @@ export default function Index() {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  return redirect("/pos");
   const url = new URL(request.url);
   const page = parseInt(url.searchParams.get("page") as string) || 1;
   const productController = await new ProductController(request);
