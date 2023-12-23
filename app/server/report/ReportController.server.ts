@@ -45,7 +45,7 @@ export default class ReportController {
       })
       .populate({
         path: "orderItems.stock",
-        model: "stock_histories",
+        model: "stocks",
       })
       .exec();
 

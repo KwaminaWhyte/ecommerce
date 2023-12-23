@@ -1,10 +1,12 @@
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import AdminController from "../admin/AdminController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
 import type { ProductInterface } from "../types";
 import { commitSession, getSession } from "~/session";
-import { Category, Product, ProductImage, StockHistory } from "./Product";
+import { Category, Product, ProductImage } from "./Product";
 import SettingsController from "../settings/SettingsController.server";
+import { StockHistory } from "./Stock";
+import { RestockHistory } from "./RestockHistory";
 
 export default class ProductController {
   private request: Request;
@@ -53,6 +55,8 @@ export default class ProductController {
 
       return { products, totalPages };
     } catch (error) {
+      console.log(error);
+
       throw new Error("Error retrieving products");
     }
   }
@@ -283,6 +287,14 @@ export default class ProductController {
       await product.save();
     }
 
+    await RestockHistory.create({
+      user: adminId,
+      product: _id,
+      quantity,
+      price: parseFloat(price),
+      costPrice: parseFloat(costPrice),
+    });
+
     session.flash("message", {
       title: "Product Stocked Successful",
       status: "success",
@@ -292,6 +304,31 @@ export default class ProductController {
         "Set-Cookie": await commitSession(session),
       },
     });
+  };
+
+  public getStockHistory = async ({ id }: { id: string }) => {
+    const session = await getSession(this.request.headers.get("Cookie"));
+
+    try {
+      const stockHistory = await RestockHistory.find({ product: id })
+        .populate("user")
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return stockHistory;
+    } catch (error) {
+      console.log(error);
+
+      session.flash("message", {
+        title: "Error Getting Stock History",
+        status: "error",
+      });
+      return redirect(`/console/products/${id}`, {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      });
+    }
   };
 
   public deleteProduct = async (id: string) => {

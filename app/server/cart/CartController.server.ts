@@ -73,12 +73,12 @@ export default class CartController {
           populate: [
             { path: "images", model: "images" },
             { path: "category", model: "categories" },
-            { path: "stockHistory", model: "stock_histories" },
+            { path: "stockHistory", model: "stocks" },
           ],
         })
         .populate({
           path: "stock",
-          model: "stock_histories",
+          model: "stocks",
         })
         .exec();
 

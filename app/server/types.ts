@@ -8,6 +8,19 @@ export interface StockHistoryInterface extends Document {
   price: number;
   quantity: number;
   oeperation: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RestockHistoryInterface extends Document {
+  _id: string; //Types.ObjectId
+  user: AdminInterface;
+  product: ProductInterface;
+  price: number;
+  costPrice: number;
+  quantity: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ProductInterface extends Document {

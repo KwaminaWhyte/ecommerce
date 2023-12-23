@@ -7,9 +7,9 @@ import { commitSession, getSession } from "~/session";
 import LogController from "../logs/LogController.server";
 import EmployeeAuthController from "../employee/EmployeeAuthController";
 import { Order } from "./Order";
-import { Product, StockHistory } from "../product/Product";
+import { Product } from "../product/Product";
 import { Cart } from "../cart/Cart";
-import { Payment } from "../payment/PaymentDetails";
+import { StockHistory } from "../product/Stock";
 
 export default class OrderController {
   private request: Request;
@@ -57,7 +57,7 @@ export default class OrderController {
       .limit(limit)
       .populate({
         path: "orderItems.stock",
-        // model: "stock_histories",
+        // model: "stocks",
       })
       .populate({
         path: "orderItems.product",
@@ -102,7 +102,7 @@ export default class OrderController {
       .limit(limit)
       .populate({
         path: "orderItems.stock",
-        // model: "stock_histories",
+        // model: "stocks",
       })
       .populate({
         path: "orderItems.product",
@@ -149,7 +149,7 @@ export default class OrderController {
         })
         .populate({
           path: "orderItems.stock",
-          model: "stock_histories",
+          model: "stocks",
         })
         .exec();
 
@@ -216,7 +216,7 @@ export default class OrderController {
         .populate("product")
         .populate({
           path: "stock",
-          model: "stock_histories",
+          model: "stocks",
         })
         .exec();
 

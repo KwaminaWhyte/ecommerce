@@ -4,7 +4,6 @@ import type {
   CategoryInterface,
   ImageInterface,
   ProductInterface,
-  StockHistoryInterface,
 } from "../types";
 
 const ProductImageSchema: Schema = new mongoose.Schema(
@@ -77,7 +76,7 @@ const ProductSchema: Schema = new mongoose.Schema(
     stockHistory: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "stock_histories",
+        ref: "stocks",
       },
     ],
     reorderPoint: {
@@ -88,48 +87,17 @@ const ProductSchema: Schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const StockHistorySchema: Schema = new mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
-      required: true,
-    },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "products",
-      required: true,
-    },
-    costPrice: {
-      type: Number,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    quantity: Number,
-    operation: String,
-  },
-  { timestamps: true }
-);
-
 let Product: mongoose.Model<ProductInterface>;
 let ProductImage: mongoose.Model<ImageInterface>;
 let Category: mongoose.Model<CategoryInterface>;
-let StockHistory: mongoose.Model<StockHistoryInterface>;
 try {
   Product = mongoose.model<ProductInterface>("products");
   ProductImage = mongoose.model<ImageInterface>("images");
   Category = mongoose.model<CategoryInterface>("categories");
-  StockHistory = mongoose.model<StockHistoryInterface>("stock_histories");
 } catch (error) {
   Product = mongoose.model<ProductInterface>("products", ProductSchema);
   ProductImage = mongoose.model<ImageInterface>("images", ProductImageSchema);
   Category = mongoose.model<CategoryInterface>("categories", CategorySchema);
-  StockHistory = mongoose.model<StockHistoryInterface>(
-    "stock_histories",
-    StockHistorySchema
-  );
 }
 
-export { Product, ProductImage, Category, StockHistory };
+export { Product, ProductImage, Category };
