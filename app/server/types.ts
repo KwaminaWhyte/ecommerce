@@ -19,6 +19,7 @@ export interface RestockHistoryInterface extends Document {
   price: number;
   costPrice: number;
   quantity: number;
+  note: string;
   createdAt: Date;
   updatedAt: Date;
 }

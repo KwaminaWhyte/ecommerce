@@ -253,12 +253,14 @@ export default class ProductController {
     operation,
     price,
     costPrice,
+    note,
   }: {
     _id: string;
     quantity: string;
     operation: string;
     price: string;
     costPrice: string;
+    note: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const product = await Product.findById(_id);
@@ -280,10 +282,9 @@ export default class ProductController {
       product.quantity += parseInt(quantity);
       product.stockHistory.push(stock);
       await product.save();
-    }
-
-    if (!generalSettings?.separateStocks) {
+    } else {
       product.price = parseFloat(price);
+      product.quantity += parseInt(quantity);
       await product.save();
     }
 
@@ -293,6 +294,7 @@ export default class ProductController {
       quantity,
       price: parseFloat(price),
       costPrice: parseFloat(costPrice),
+      note,
     });
 
     session.flash("message", {

@@ -23,16 +23,17 @@ const RestockHistorySchema: Schema = new mongoose.Schema(
     },
     quantity: Number,
     operation: String,
+    note: String,
   },
   { timestamps: true }
 );
 
 let RestockHistory: mongoose.Model<RestockHistoryInterface>;
 try {
-  RestockHistory = mongoose.model<RestockHistoryInterface>("stocks");
+  RestockHistory = mongoose.model<RestockHistoryInterface>("restocks");
 } catch (error) {
   RestockHistory = mongoose.model<RestockHistoryInterface>(
-    "stocks",
+    "restocks",
     RestockHistorySchema
   );
 }

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Employee } from "../employee/Employee";
 import { Expense } from "../expense/Expense";
 import { Order } from "../order/Order";
@@ -313,7 +314,9 @@ export default class ReportController {
       .limit(10);
 
     const lowStockProducts = await Product.find({
-      quantity: { $lt: 10 },
+      $where: function () {
+        return this.quantity <= this.reorderPoint;
+      },
     }).populate("category");
 
     return {
@@ -321,5 +324,64 @@ export default class ReportController {
       notSellingProducts,
       lowStockProducts,
     };
+  };
+
+  public getProductSalesByMonth = async (productId: string) => {
+    try {
+      const productSalesData = await Order.aggregate([
+        {
+          $match: {
+            "orderItems.product": new mongoose.Types.ObjectId(productId),
+            status: "completed",
+          },
+        },
+        {
+          $project: {
+            month: { $month: "$deliveryDate" },
+            year: { $year: "$deliveryDate" },
+            quantity: "$orderItems.quantity",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              month: "$month",
+              year: "$year",
+            },
+            totalQuantity: { $sum: "$quantity" },
+          },
+        },
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.month": 1,
+          },
+        },
+      ]);
+
+      const labels = productSalesData.map(
+        (item) => `${item._id.month}/${item._id.year}`
+      );
+      const quantities = productSalesData.map((item) => item.totalQuantity);
+      const data = {
+        labels: labels,
+        datasets: [
+          {
+            label: "Product Sales",
+            data: quantities,
+            borderColor: "blue", // You can use any valid color here
+            backgroundColor: "rgba(0, 0, 255, 0.5)", // Adjust the alpha channel for transparency
+            borderWidth: 2,
+            borderRadius: 5,
+            borderSkipped: false,
+          },
+        ],
+      };
+
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 }

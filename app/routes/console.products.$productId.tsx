@@ -6,6 +6,18 @@ import {
 } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate, useSubmit } from "@remix-run/react";
 import axios from "axios";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+} from "chart.js/auto";
+import { Bar, Line } from "react-chartjs-2";
 
 import Container from "~/components/Container";
 import Input from "~/components/Input";
@@ -31,14 +43,29 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import moment from "moment";
+import { Textarea } from "~/components/ui/textarea";
+import ReportController from "~/server/report/ReportController.server";
+import { ClientOnly } from "remix-utils/client-only";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement
+);
 
 export default function AdminProductDetails() {
   const submit = useSubmit();
   const navigate = useNavigate();
-  const { user, product, stocks } = useLoaderData<{
+  const { user, product, stocks, productStats } = useLoaderData<{
     product: ProductInterface;
     user: AdminInterface;
     stocks: RestockHistoryInterface[];
+    productStats: any;
   }>();
   const [activeImage, setActiveImage] = useState({});
   const [files, setFiles] = useState<{ file: any; previewUrl: string }[]>([]);
@@ -247,11 +274,12 @@ export default function AdminProductDetails() {
           </div>
         </section>
 
-        <section className="w-1/2">
+        <section className="w-1/2 flex flex-col gap-2">
           <h2 className="text-xl font-bold">{product.name}</h2>
-          <p>{product.description}</p>
+          <p>Description: {product.description}</p>
           <p>Quantity: {product.quantity}</p>
           <p>Price: GH₵ {product.price}</p>
+          <p>Cost Price: GH₵ {product.costPrice}</p>
         </section>
       </div>
 
@@ -302,6 +330,11 @@ export default function AdminProductDetails() {
                 />
               </div>
 
+              <div className="grid w-full  items-center gap-1.5">
+                <Label htmlFor="note">Additional Note</Label>
+                <Textarea id="note" name="note" />
+              </div>
+
               <div className="flex gap-3 items-center justify-end ">
                 <DialogClose asChild>
                   <Button type="button" variant="destructive">
@@ -309,12 +342,7 @@ export default function AdminProductDetails() {
                   </Button>
                 </DialogClose>
 
-                <Button
-                  type="submit"
-                  // disabled={navigation.state === "submitting" ? true : false}
-                >
-                  Submit
-                </Button>
+                <Button type="submit">Submit</Button>
               </div>
             </Form>
           </DialogContent>
@@ -337,6 +365,9 @@ export default function AdminProductDetails() {
                   Selling Price
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Note
+                </th>
+                <th scope="col" className="px-6 py-3">
                   Date
                 </th>
               </tr>
@@ -356,6 +387,7 @@ export default function AdminProductDetails() {
                   <td className="px-6 py-4">{stock.quantity}</td>
                   <td className="px-6 py-4">GH₵ {stock.costPrice}</td>
                   <td className="px-6 py-4">GH₵ {stock.price}</td>
+                  <td className="px-6 py-4"> {stock.note}</td>
                   <td className="px-6 py-4">
                     {moment(stock.createdAt).format(
                       "dddd, MMMM D, YYYY [at] h:mm A"
@@ -369,7 +401,25 @@ export default function AdminProductDetails() {
       </Container>
 
       <Container heading="Statistics">
-        <p>product specific stats</p>
+        <ClientOnly fallback={<div>Generating Chart</div>}>
+          {() => (
+            <Bar
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "top" as const,
+                  },
+                  title: {
+                    display: false,
+                    text: "Chart.js Line Chart",
+                  },
+                },
+              }}
+              data={productStats}
+            />
+          )}
+        </ClientOnly>
       </Container>
 
       {/* <Transition appear show={isOpen} as={Fragment}>
@@ -432,6 +482,7 @@ export const action: ActionFunction = async ({ request }) => {
   const quantity = formData.get("quantity") as string;
   const description = formData.get("description") as string;
   const category = formData.get("category") as string;
+  const note = formData.get("note") as string;
 
   const productController = await new ProductController(request);
 
@@ -442,6 +493,7 @@ export const action: ActionFunction = async ({ request }) => {
       price,
       costPrice,
       operation: "add",
+      note,
     });
     return true;
   } else {
@@ -463,12 +515,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const product = await productController.getProduct({
     id: productId as string,
   });
-
   const stocks = await productController.getStockHistory({
     id: productId as string,
   });
 
-  return { user, product, stocks };
+  const productStats = await new ReportController(
+    request
+  ).getProductSalesByMonth(productId as string);
+  console.log(productStats);
+
+  return { user, product, stocks, productStats };
 };
 
 export const meta: MetaFunction = ({ data }) => {
