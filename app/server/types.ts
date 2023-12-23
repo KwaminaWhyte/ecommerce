@@ -22,6 +22,7 @@ export interface ProductInterface extends Document {
   availability: string;
   createdAt: Date;
   updatedAt: Date;
+  reorderPoint: number;
   stockHistory: StockHistoryInterface[];
   category: CategoryInterface;
 }

@@ -159,14 +159,15 @@ export default function AdminProductDetails() {
         <section className="w-1/2">
           <h2 className="text-xl font-bold">{product.name}</h2>
           <p>{product.description}</p>
-          <p>quantity</p>
+          <p>Quantity: {product.quantity}</p>
+          <p>Price: GH₵ {product.price}</p>
         </section>
       </div>
 
       <Container heading="Stocking History" contentClassName="flex flex-col">
         <Dialog>
           <DialogTrigger asChild>
-            <Button>Restock</Button>
+            <Button className="ml-auto">Restock</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -177,8 +178,13 @@ export default function AdminProductDetails() {
               encType="multipart/form-data"
               className="flex flex-col gap-4"
             >
-              <input type="hidden" name="actionType" value="update" />
-              <input type="hidden" name="_id" value={product?._id} />
+              <input type="hidden" name="actionType" value="restock" />
+              <input type="hidden" name="productId" value={product?._id} />
+
+              <div className="grid w-full  items-center gap-1.5">
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input id="quantity" type="number" name="quantity" required />
+              </div>
 
               <div className="grid w-full  items-center gap-1.5">
                 <Label htmlFor="cost_price">Cost Price</Label>
@@ -187,7 +193,6 @@ export default function AdminProductDetails() {
                   type="number"
                   step={0.01}
                   name="cost_price"
-                  defaultValue={product?.costPrice}
                   required
                 />
               </div>
@@ -199,18 +204,7 @@ export default function AdminProductDetails() {
                   type="number"
                   step={0.01}
                   name="price"
-                  defaultValue={product?.price}
                   required
-                />
-              </div>
-
-              <div className="grid w-full  items-center gap-1.5">
-                <Label htmlFor="quantity">Quantity</Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  name="quantity"
-                  defaultValue={product?.quantity}
                 />
               </div>
 
@@ -320,11 +314,33 @@ export const action: ActionFunction = async ({ request }) => {
   const image = formData.get("image") as string;
   const productId = formData.get("productId") as string;
 
+  const actionType = formData.get("actionType") as string;
+  const completeData = formData.get("completeData") as string;
+
+  const name = formData.get("name") as string;
+  const costPrice = formData.get("cost_price") as string;
+  const price = formData.get("price") as string;
+  const quantity = formData.get("quantity") as string;
+  const description = formData.get("description") as string;
+  const category = formData.get("category") as string;
+
   const productController = await new ProductController(request);
-  return await productController.addProductImage({
-    productId,
-    image: JSON.parse(image),
-  });
+
+  if (actionType == "restock") {
+    await productController.stockProduct({
+      _id: productId,
+      quantity,
+      price,
+      costPrice,
+      operation: "add",
+    });
+    return true;
+  } else {
+    return await productController.addProductImage({
+      productId,
+      image: JSON.parse(image),
+    });
+  }
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {

@@ -80,6 +80,10 @@ const ProductSchema: Schema = new mongoose.Schema(
         ref: "stock_histories",
       },
     ],
+    reorderPoint: {
+      type: Number,
+      default: 5,
+    },
   },
   { timestamps: true }
 );

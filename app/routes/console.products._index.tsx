@@ -730,7 +730,6 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const productController = await new ProductController(request);
 
-  const imgSrc = formData.get("image") as string;
   const actionType = formData.get("actionType") as string;
   const completeData = formData.get("completeData") as string;
 
@@ -745,16 +744,6 @@ export const action: ActionFunction = async ({ request }) => {
     return await productController.deleteProduct(
       formData.get("deleteId") as string
     );
-  } else if (formData.get("stockId") != null) {
-    await productController.stockProduct({
-      _id: formData.get("stockId") as string,
-      quantity,
-      price,
-      costPrice,
-      // operation: formData.get("operation") as string,
-      operation: "add",
-    });
-    return true;
   } else if (actionType == "batch_import") {
     let data = JSON.parse(completeData);
     return productController.importBatch(data);

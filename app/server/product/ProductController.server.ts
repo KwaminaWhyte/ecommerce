@@ -258,63 +258,40 @@ export default class ProductController {
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const product = await Product.findById(_id);
+    const generalSettings = await new SettingsController(
+      this.request
+    ).getGeneralSettings();
 
     const adminController = await new AdminController(this.request);
     const adminId = await adminController.getAdminId();
-    if (adminId) {
-      let stockk = await StockHistory.create({
+
+    if (generalSettings?.separateStocks) {
+      let stock = await StockHistory.create({
         user: adminId,
         product: _id,
         quantity,
-        operation,
         price: parseFloat(price),
         costPrice: parseFloat(costPrice),
       });
-
       product.quantity += parseInt(quantity);
-      product.stockHistory.push(stockk);
+      product.stockHistory.push(stock);
       await product.save();
-
-      session.flash("message", {
-        title: "Product Stocked Successful",
-        status: "success",
-      });
-      return redirect(`/console/products/${_id}`, {
-        headers: {
-          "Set-Cookie": await commitSession(session),
-        },
-      });
     }
 
-    const employeeAuthController = await new EmployeeAuthController(
-      this.request
-    );
-    const userId = await employeeAuthController.getEmployeeId();
-
-    if (userId) {
-      let stockk = await StockHistory.create({
-        user: userId,
-        product: _id,
-        quantity,
-        operation,
-        price: parseFloat(price),
-        costPrice: parseFloat(cost_price),
-      });
-
-      product.quantity += parseInt(quantity);
-      product.stockHistory.push(stockk);
+    if (!generalSettings?.separateStocks) {
+      product.price = parseFloat(price);
       await product.save();
-
-      session.flash("message", {
-        title: "Product Stocked Successful",
-        status: "success",
-      });
-      return redirect(`/console/products/${_id}`, {
-        headers: {
-          "Set-Cookie": await commitSession(session),
-        },
-      });
     }
+
+    session.flash("message", {
+      title: "Product Stocked Successful",
+      status: "success",
+    });
+    return redirect(`/console/products/${_id}`, {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   };
 
   public deleteProduct = async (id: string) => {
