@@ -160,7 +160,7 @@ export default function Employees() {
                         <SelectLabel>Role</SelectLabel>
                         <SelectItem value="cashier">Cashier</SelectItem>
                         {/* <SelectItem value="attendant">Attendant</SelectItem> */}
-                        <SelectItem value="sales_person">
+                        <SelectItem value="sales person">
                           Sales Person
                         </SelectItem>
                       </SelectGroup>
@@ -353,7 +353,7 @@ export default function Employees() {
                                       <SelectItem value="attendant">
                                         Attendant
                                       </SelectItem>
-                                      <SelectItem value="sales_person">
+                                      <SelectItem value="sales person">
                                         Sales Person
                                       </SelectItem>
                                     </SelectGroup>

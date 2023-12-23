@@ -170,7 +170,7 @@ export default class EmployeeController {
   public getSalesPerson = async () => {
     try {
       const employees = await Employee.find({
-        role: "sales_person",
+        role: "sales person",
       }).exec();
 
       return employees;
