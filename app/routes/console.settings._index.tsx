@@ -142,6 +142,27 @@ export default function GeneralSettings() {
             </SelectContent>
           </Select>
         </div>
+
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="include_sales_person">Include Sales Person</Label>
+          <Select
+            name="include_sales_person"
+            defaultValue={
+              generalSettings?.includeSalesPerson ? "true" : "false"
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Select</SelectLabel>
+                <SelectItem value="true">Yes</SelectItem>
+                <SelectItem value="false">No</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </Form>
     </Container>
   );
@@ -158,6 +179,7 @@ export const action: ActionFunction = async ({ request }) => {
   const allow_inscription = formData.get("allow_inscription") as string;
   const separate_stocks = formData.get("separate_stocks") as string;
   const address = formData.get("address") as string;
+  const include_sales_person = formData.get("include_sales_person") as string;
 
   const settingsController = await new SettingsController(request);
   await settingsController.updateGeneralSettings({
@@ -169,6 +191,7 @@ export const action: ActionFunction = async ({ request }) => {
     allow_inscription,
     separate_stocks,
     address,
+    include_sales_person,
   });
 
   return redirect(`/console/settings`);

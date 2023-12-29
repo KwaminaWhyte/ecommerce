@@ -3,7 +3,7 @@ import type {
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useOutletContext } from "@remix-run/react";
 import PosLayout from "~/components/layouts/PosLayout";
 import CartController from "~/server/cart/CartController.server";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
@@ -37,10 +37,9 @@ ChartJS.register(
   BarElement
 );
 
-export default function Shop() {
-  let {
-    user,
-    cart_items,
+export default function PosIndex() {
+  const { user, cart_items } = useOutletContext();
+  const {
     generalSettings,
     salesOptions,
     salesUpdate,
@@ -246,36 +245,29 @@ export const action: ActionFunction = async ({ request }) => {
 
   if ((formData.get("type") as string) == "complete") {
     const ress = await orderController.checkout({
-      user,
       customerName: formData.get("customer_name") as string,
       customerPhone: formData.get("customer_phone") as string,
-      sales_person: formData.get("sales_person") as string,
+      salesPerson: formData.get("sales_person") as string,
       onCredit: formData.get("on_credit") as string,
       amountPaid: formData.get("amount_paid") as string,
     });
 
     return ress;
   } else if ((formData.get("type") as string) == "increase") {
-    return await cartController.increaseItem({ product, user });
+    return await cartController.increaseItem({ product });
   } else if ((formData.get("type") as string) == "decrease") {
-    return await cartController.decreaseItem({ product, user });
+    return await cartController.decreaseItem({ product });
   } else {
-    return await cartController.addToCart({ user, product });
+    return await cartController.addToCart({ product });
   }
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const authControlle = await new EmployeeAuthController(request);
   await authControlle.requireEmployeeId();
-  const user = await authControlle.getEmployee();
 
   const settingsController = await new SettingsController(request);
   const generalSettings = await settingsController.getGeneralSettings();
-
-  const cartController = await new CartController(request);
-  const cart_items = await cartController.getUserCart({
-    user: user._id as string,
-  });
 
   const orderController = await new OrderController(request);
   const salesUpdate = await orderController.getOrderStats();
@@ -331,10 +323,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 
   return {
-    user,
-    cart_items,
     generalSettings,
-
     salesOptions,
     salesUpdate,
     totalRevenue,

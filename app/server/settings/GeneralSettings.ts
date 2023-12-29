@@ -62,6 +62,10 @@ const GeneralSettingsSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    includeSalesPerson: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

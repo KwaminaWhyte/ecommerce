@@ -27,6 +27,7 @@ export default class SettingsController {
     allow_inscription,
     separate_stocks,
     address,
+    include_sales_person,
   }: {
     businessName: string;
     slogan: string;
@@ -36,6 +37,7 @@ export default class SettingsController {
     allow_inscription: string;
     separate_stocks: string;
     address: string;
+    include_sales_person: string;
   }) => {
     try {
       const existingSettings = await GeneralSettings.findOne();
@@ -51,7 +53,8 @@ export default class SettingsController {
           allow_inscription == "true" ? true : false;
         existingSettings.separateStocks =
           separate_stocks == "true" ? true : false;
-
+        existingSettings.includeSalesPerson =
+          include_sales_person == "true" ? true : false;
         await existingSettings.save();
       } else {
         const newSettings = new GeneralSettings({
@@ -63,6 +66,7 @@ export default class SettingsController {
           orderIdPrefix,
           allowInscription: allow_inscription == "true" ? true : false,
           separateStocks: separate_stocks == "true" ? true : false,
+          includeSalesPerson: include_sales_person == "true" ? true : false,
         });
 
         await newSettings.save();

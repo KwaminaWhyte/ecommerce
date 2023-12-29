@@ -4,7 +4,13 @@ import type {
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useLoaderData,
+  useOutletContext,
+} from "@remix-run/react";
 import { Popover } from "@headlessui/react";
 
 import PosLayout from "~/components/layouts/PosLayout";
@@ -15,7 +21,6 @@ import type {
   EmployeeInterface,
   CategoryInterface,
   ProductInterface,
-  CartInterface,
 } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
@@ -38,21 +43,14 @@ import {
 const { useReactToPrint } = pkg;
 
 export default function Shop() {
-  let {
-    user,
-    featured_categories,
-    products,
-    cart_items,
-    generalSettings,
-    sales_persons,
-  } = useLoaderData<{
-    user: EmployeeInterface;
-    featured_categories: CategoryInterface[];
-    products: ProductInterface[];
-    generalSettings: any;
-    cart_items: CartInterface[];
-    sales_persons: EmployeeInterface[];
-  }>();
+  const { user, cart_items } = useOutletContext();
+  const { featured_categories, products, generalSettings, sales_persons } =
+    useLoaderData<{
+      featured_categories: CategoryInterface[];
+      products: ProductInterface[];
+      generalSettings: any;
+      sales_persons: EmployeeInterface[];
+    }>();
   const actionData = useActionData();
 
   useEffect(() => {
@@ -337,7 +335,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   const sales_persons = await employeeController.getSalesPerson();
 
   await authControlle.requireEmployeeId();
-  const user = await authControlle.getEmployee();
 
   const productController = await new ProductController(request);
   const { products, totalPages } = await productController.getProducts({
@@ -347,18 +344,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const featured_categories = await productController.getFeaturedCategories();
 
-  const cartController = await new CartController(request);
-  const cart_items = await cartController.getUserCart({
-    user: user?._id as string,
-  });
-
   return {
-    user,
     products,
     featured_categories,
     page,
     totalPages,
-    cart_items,
     generalSettings,
     sales_persons,
   };

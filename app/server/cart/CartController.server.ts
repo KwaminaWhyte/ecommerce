@@ -100,7 +100,7 @@ export default class CartController {
         }
       ).exec();
 
-      return redirect(`/cart`, 200);
+      return true;
     } catch (error) {
       console.error("Error decreasing item:", error);
       return json(
@@ -162,7 +162,7 @@ export default class CartController {
         }
       ).exec();
 
-      return redirect(`/cart`, 200);
+      return true;
     } catch (error) {
       console.error("Error decreasing item:", error);
       // Handle the error appropriately

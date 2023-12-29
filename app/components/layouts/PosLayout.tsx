@@ -5,7 +5,6 @@ import { Toaster } from "../ui/toaster";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -284,21 +283,23 @@ export default function PosLayout({
                   <Input name="amount_paid" type="number" />
                 </div>
 
-                <div className="mt-2 ">
-                  <Label>Sales Person</Label>
-                  <Select name="sales_person">
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a sales person" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sales_persons?.map((person) => (
-                        <SelectItem key={IdGenerator()} value={person?._id}>
-                          {person?.firstName} {person?.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {settings?.includeSalesPerson && (
+                  <div className="mt-2 ">
+                    <Label>Sales Person</Label>
+                    <Select name="sales_person">
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a sales person" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sales_persons?.map((person) => (
+                          <SelectItem key={IdGenerator()} value={person?._id}>
+                            {person?.firstName} {person?.lastName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <Button className="w-full mt-auto" type="submit">
                   Continue to Payment

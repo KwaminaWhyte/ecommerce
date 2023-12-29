@@ -20,7 +20,6 @@ const OrderSchema = new mongoose.Schema(
     salesPerson: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "employees",
-      // required: true,
     },
     shippingAddress: {
       type: mongoose.Schema.Types.ObjectId,
@@ -74,7 +73,7 @@ const OrderSchema = new mongoose.Schema(
       enum: ["cancelled", "pending", "completed"],
       default: "pending",
     },
-    shipping_timelines: [
+    shippingTimelines: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "shipping_timelines",

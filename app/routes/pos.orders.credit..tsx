@@ -1,5 +1,11 @@
 import { type MetaFunction, type LoaderFunction } from "@remix-run/node";
-import { Form, Link, useLoaderData, useSubmit } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useOutletContext,
+  useSubmit,
+} from "@remix-run/react";
 import OrderCard from "~/components/OrderCard";
 import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
@@ -14,15 +20,15 @@ import IdGenerator from "~/lib/IdGenerator";
 import { Input } from "~/components/ui/input";
 
 export default function PosOrders() {
+  const { user, cart_items } = useOutletContext();
   const submit = useSubmit();
-  const { user, orders, page, totalPages, cart_items, generalSettings } =
-    useLoaderData<{
-      orders: OrderInterface[];
-      user: EmployeeInterface;
-      totalPages: number;
-      page: number;
-      generalSettings: any;
-    }>();
+  const { orders, page, totalPages, generalSettings } = useLoaderData<{
+    orders: OrderInterface[];
+    user: EmployeeInterface;
+    totalPages: number;
+    page: number;
+    generalSettings: any;
+  }>();
 
   return (
     <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
@@ -146,7 +152,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const authController = await new EmployeeAuthController(request);
   await authController.requireEmployeeId();
-  const user = await authController.getEmployee();
 
   const settingsController = await new SettingsController(request);
   const generalSettings = await settingsController.getGeneralSettings();
@@ -157,12 +162,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     status: "pending",
   });
 
-  const cartController = await new CartController(request);
-  const cart_items = await cartController.getUserCart({
-    user: user._id as string,
-  });
-
-  return { user, orders, page, totalPages, cart_items, generalSettings };
+  return { orders, page, totalPages, generalSettings };
 };
 
 export const meta: MetaFunction = () => {

@@ -16,6 +16,14 @@ import { getSession } from "./session";
 import moment from "moment";
 import { useEffect } from "react";
 import { useToast } from "./components/ui/use-toast";
+import EmployeeAuthController from "./server/employee/EmployeeAuthController";
+import type {
+  CartInterface,
+  EmployeeInterface,
+  ProductInterface,
+} from "./server/types";
+import AdminController from "./server/admin/AdminController.server";
+import CartController from "./server/cart/CartController.server";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
@@ -23,8 +31,10 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
-  const { message } = useLoaderData<{
+  const { message, user, cart_items } = useLoaderData<{
     message: { title: string; description?: string; status: string };
+    user: EmployeeInterface;
+    cart_items: ProductInterface[];
   }>();
   const { toast } = useToast();
 
@@ -47,7 +57,7 @@ export default function App() {
         <Links />
       </head>
       <body className="text-sm bg-gradient-to-tr from-purple-300 to-red-300 dark:bg-gradient-to-tr dark:from-yellow-700 dark:to-purple-700">
-        <Outlet />
+        <Outlet context={{ user, cart_items }} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -59,7 +69,25 @@ export default function App() {
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const message = session.get("message") || null;
-  return { message };
+
+  const employeeAuth = await new EmployeeAuthController(request);
+  const employee = await employeeAuth.getEmployee();
+
+  const adminAuth = await new AdminController(request);
+  const admin = await adminAuth.getAdmin();
+
+  if (employee) {
+    const cartController = await new CartController(request);
+    const cart_items = await cartController.getUserCart({
+      user: (await employeeAuth.getEmployeeId()) as string,
+    });
+
+    return { message, user: employee, cart_items };
+  } else if (admin) {
+    return { message, user: admin };
+  } else {
+    return { message };
+  }
 };
 
 export function ErrorBoundary() {
