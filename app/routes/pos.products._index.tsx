@@ -170,7 +170,9 @@ export default function Shop() {
                   <input type="hidden" name="actionType" value="add_to_cart" />
                   <input type="hidden" name="product_id" value={product?._id} />
                   <input type="hidden" name="user_id" value={user?._id} />
-                  <Button type="submit">Add to Cart</Button>
+                  <Button type="submit" size="sm">
+                    Add to Cart
+                  </Button>
                 </Form>
               </div>
             </section>
