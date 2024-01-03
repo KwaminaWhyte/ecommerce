@@ -21,7 +21,7 @@ export default class UserController {
   constructor(request: Request) {
     this.request = request;
 
-    const secret = process.env.SESSION_SECRET;
+    const secret = "asfafasfasjfhasf";
     if (!secret) {
       throw new Error("No session secret provided");
     }

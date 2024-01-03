@@ -23,7 +23,7 @@ export default class WishlistController {
     this.request = request;
     this.domain = (this.request.headers.get("host") as string).split(":")[0];
 
-    const secret = process.env.SESSION_SECRET;
+    const secret = "asfafasfasjfhasf";
     if (!secret) {
       throw new Error("No session secret provided");
     }

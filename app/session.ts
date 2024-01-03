@@ -14,7 +14,7 @@ type SessionFlashData = {
   };
 };
 
-const secret = process.env.SESSION_SECRET;
+const secret = "asfafasfasjfhasf";
 if (!secret) {
   throw new Error("No session secret provided");
 }

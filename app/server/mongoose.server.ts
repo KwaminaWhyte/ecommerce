@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Connect to your MongoDB instance
-mongoose.connect(process.env.DATABASE_URL as string);
+mongoose.connect("mongodb://127.0.0.1:27017/comclo_single");
 
 const db = mongoose.connection;
 

@@ -20,7 +20,7 @@ export default class AdminController {
   constructor(request: Request) {
     this.request = request;
 
-    const secret = process.env.SESSION_SECRET;
+    const secret = "asfafasfasjfhasf";
     if (!secret) {
       throw new Error("No session secret provided");
     }
@@ -88,6 +88,9 @@ export default class AdminController {
     const session = await getSession(this.request.headers.get("Cookie"));
 
     const admin = await Admin.findOne({ email });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword);
 
     if (!admin) {
       session.flash("message", {

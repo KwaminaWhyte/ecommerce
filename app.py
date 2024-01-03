@@ -44,4 +44,4 @@ finally:
 
 
 # pip install pyinstaller
-# pyinstaller --onefile run_node_app.py
+# pyinstaller --onefile app.py
