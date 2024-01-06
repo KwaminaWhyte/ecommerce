@@ -1,7 +1,6 @@
 import type { Document } from "mongodb";
-// import type { Types } from "mongoose";
 
-export interface StockHistoryInterface extends Document {
+export type StockHistoryInterface = {
   _id: string; //Types.ObjectId
   user: AdminInterface;
   product: ProductInterface;
@@ -10,9 +9,9 @@ export interface StockHistoryInterface extends Document {
   oeperation: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface RestockHistoryInterface extends Document {
+export type RestockHistoryInterface = {
   _id: string; //Types.ObjectId
   user: AdminInterface;
   product: ProductInterface;
@@ -22,9 +21,9 @@ export interface RestockHistoryInterface extends Document {
   note: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface ProductInterface extends Document {
+export type ProductInterface = {
   _id: string; //Types.ObjectId
   name: string;
   description: string;
@@ -39,9 +38,9 @@ export interface ProductInterface extends Document {
   reorderPoint: number;
   stockHistory: StockHistoryInterface[];
   category: CategoryInterface;
-}
+};
 
-export interface ImageInterface extends Document {
+export type ImageInterface = {
   _id: string;
   name: string;
   url: string;
@@ -49,18 +48,18 @@ export interface ImageInterface extends Document {
   type: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface CategoryInterface extends Document {
+export type CategoryInterface = {
   _id: string;
   name: string;
   description: string;
   status: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface AdminInterface extends Document {
+export type AdminInterface = {
   _id: string;
   username: string;
   email: string;
@@ -68,9 +67,9 @@ export interface AdminInterface extends Document {
   permissions?: [{ name: string; action: string }];
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface UserInterface extends Document {
+export type UserInterface = {
   _id: string;
   username: string;
   firstName: string;
@@ -78,9 +77,9 @@ export interface UserInterface extends Document {
   email: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface EmployeeInterface extends Document {
+export type EmployeeInterface = {
   _id: string;
   firstName: string;
   middleName: string;
@@ -92,9 +91,9 @@ export interface EmployeeInterface extends Document {
   permissions?: [{ name: string; action: string }];
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface CartInterface extends Document {
+export type CartInterface = {
   _id: string;
   user: string;
   product: ProductInterface;
@@ -103,9 +102,9 @@ export interface CartInterface extends Document {
   color: number;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface OrderInterface extends Document {
+export type OrderInterface = {
   _id: string;
   orderId: string;
   orderItems: CartInterface[];
@@ -125,9 +124,9 @@ export interface OrderInterface extends Document {
   customerName: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface AddressInterface extends Document {
+export type AddressInterface = {
   _id: string;
   user: UserInterface;
   title: String;
@@ -139,26 +138,26 @@ export interface AddressInterface extends Document {
   default: Boolean;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface EmailHistoryInterface extends Document {
+export type EmailHistoryInterface = {
   _id: string;
   from: string;
   to: string;
   subject: string;
   body: string;
   storeName: string;
-}
+};
 
-export interface LogInterface extends Document {
+export type LogInterface = {
   _id: string;
   user: UserInterface;
   product?: ProductInterface;
   order?: OrderInterface;
   action: string;
-}
+};
 
-export interface PaymentInterface extends Document {
+export type PaymentInterface = {
   _id: string;
   cashier: EmployeeInterface;
   order: OrderInterface;
@@ -166,9 +165,9 @@ export interface PaymentInterface extends Document {
   customerName: string;
   customerPhone: string;
   amount: number;
-}
+};
 
-export interface ExpenseInterface extends Document {
+export type ExpenseInterface = {
   _id: string;
   admin: AdminInterface;
   amount: number;
@@ -176,9 +175,9 @@ export interface ExpenseInterface extends Document {
   category: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface GeneralSettingsInterface extends Document {
+export type GeneralSettingsInterface = {
   _id: string;
   address: string;
   businessName: string;
@@ -188,9 +187,9 @@ export interface GeneralSettingsInterface extends Document {
   allowInscription: boolean;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-// export interface PaymentInterface extends Document {
+// export type PaymentInterface = {
 //   _id: string;
 //   orderId: string;
 //   paymentMethod: string;

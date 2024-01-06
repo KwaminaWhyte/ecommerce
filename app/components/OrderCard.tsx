@@ -4,7 +4,6 @@ import type { OrderInterface } from "~/server/types";
 import ItemStatus from "./ItemStatus";
 import IdGenerator from "~/lib/IdGenerator";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
 
 const OrderCard = ({
   order,

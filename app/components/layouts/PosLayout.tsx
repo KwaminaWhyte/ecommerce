@@ -286,6 +286,11 @@ export default function PosLayout({
                   <Input name="amount_paid" type="number" />
                 </div>
 
+                <div className="mt-2 ">
+                  <Label>Balance</Label>
+                  <Input name="balance" type="number" />
+                </div>
+
                 {settings?.includeSalesPerson && (
                   <div className="mt-2 ">
                     <Label>Sales Person</Label>

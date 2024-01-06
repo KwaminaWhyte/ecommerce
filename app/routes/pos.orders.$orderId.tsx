@@ -6,7 +6,12 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 
-import { Link, useLoaderData, useNavigate } from "@remix-run/react";
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useOutletContext,
+} from "@remix-run/react";
 import { useRef } from "react";
 import Container from "~/components/Container";
 import ItemStatus from "~/components/ItemStatus";
@@ -42,9 +47,12 @@ import moment from "moment";
 const { useReactToPrint } = pkg;
 
 export default function AdminOrderDetails() {
-  let { user, order, generalSettings, payments } = useLoaderData<{
-    order: OrderInterface;
+  const { user, cart_items } = useOutletContext<{
     user: UserInterface;
+    cart_items: any[];
+  }>();
+  const { order, generalSettings, payments } = useLoaderData<{
+    order: OrderInterface;
     generalSettings: any;
     payments: PaymentInterface[];
   }>();
@@ -56,7 +64,7 @@ export default function AdminOrderDetails() {
   });
 
   return (
-    <PosLayout user={user}>
+    <PosLayout user={user} cart_items={cart_items} settings={generalSettings}>
       <section className="mb-3 flex items-center">
         <div
           onClick={() => navigate(-1)}

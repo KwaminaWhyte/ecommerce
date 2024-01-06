@@ -11,8 +11,11 @@ import OrderController from "~/server/order/OrderController.server";
 import Container from "~/components/Container";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import PosLayout from "~/components/layouts/PosLayout";
-import type { EmployeeInterface, OrderInterface } from "~/server/types";
-import CartController from "~/server/cart/CartController.server";
+import type {
+  EmployeeInterface,
+  OrderInterface,
+  UserInterface,
+} from "~/server/types";
 import { Pagination, PaginationItem } from "@mui/material";
 import { Button } from "~/components/ui/button";
 import SettingsController from "~/server/settings/SettingsController.server";
@@ -20,7 +23,10 @@ import IdGenerator from "~/lib/IdGenerator";
 import { Input } from "~/components/ui/input";
 
 export default function PosOrders() {
-  const { user, cart_items } = useOutletContext();
+  const { user, cart_items } = useOutletContext<{
+    user: UserInterface;
+    cart_items: any[];
+  }>();
   const submit = useSubmit();
   const { orders, page, totalPages, generalSettings } = useLoaderData<{
     orders: OrderInterface[];

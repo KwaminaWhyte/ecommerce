@@ -21,7 +21,7 @@ export default function AdminLogin() {
   return (
     <AdminPublicLayout message={data}>
       <div className="m-auto w-2/5 rounded-md bg-white p-4 shadow-sm dark:bg-slate-800">
-        <h2 className="my-5 text-3xl font-bold">Log into your Dashboard</h2>
+        <h2 className="my-5 text-3xl font-bold">Log into POS</h2>
 
         <Form method="POST">
           <Input
@@ -93,7 +93,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "ComClo - Admin Login" },
+    { title: "Employee Login - ComClo" },
     {
       name: "description",
       content: "The best e-Commerce platform for your business.",
