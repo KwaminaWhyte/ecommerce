@@ -6,7 +6,7 @@ const GeneralSettingsSchema = new mongoose.Schema(
       type: String,
     },
     siteDescription: String,
-    siteLogo: {
+    logo: {
       type: String,
     },
     favicon: String,
@@ -89,7 +89,7 @@ export { GeneralSettings };
 //       language: "en",
 //       notifications: true,
 //       businessName: "My Business Name",
-//       siteLogo: "https://via.placeholder.com/150",
+//       logo: "https://via.placeholder.com/150",
 //     };
 
 //     const options = {

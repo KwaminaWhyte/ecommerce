@@ -18,6 +18,26 @@ export default class SettingsController {
     return settings;
   };
 
+  public updateLogo = async (logo: string) => {
+    try {
+      const existingSettings = await GeneralSettings.findOne();
+
+      if (existingSettings) {
+        existingSettings.logo = logo;
+        await existingSettings.save();
+      } else {
+        const newSettings = new GeneralSettings({
+          logo,
+        });
+        await newSettings.save();
+      }
+      return json({ message: "Success" }, 200);
+    } catch (err) {
+      console.log(err);
+      return json({ message: "Error", error: err }, 400);
+    }
+  };
+
   public updateGeneralSettings = async ({
     businessName,
     slogan,
