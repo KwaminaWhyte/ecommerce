@@ -90,7 +90,7 @@ export default function PosLayout({
             </SheetHeader>
 
             <div className="w-full flex flex-col">
-              <section className="flex flex-col overflow-y-scroll gap-2 mt-4 pb-4 pt-2 max-h-[470px]">
+              <section className="flex flex-col overflow-y-scroll gap-2 mt-4 pb-4 pt-2 max-h-[50vh]">
                 {cart_items?.map((item) => (
                   <div key={IdGenerator()} className="flex justify-center">
                     <img

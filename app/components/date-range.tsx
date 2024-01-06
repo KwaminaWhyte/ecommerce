@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { addDays, format } from "date-fns";
@@ -19,8 +17,8 @@ export function DatePickerWithRange({
 
   return (
     <div className={cn("grid gap-2", className)}>
-      <input type="hidden" name="from" value={date.from} />
-      <input type="hidden" name="to" value={date.to} />
+      <input type="hidden" name="from" value={date?.from} />
+      <input type="hidden" name="to" value={date?.to} />
       <Popover>
         <PopoverTrigger asChild>
           <Button

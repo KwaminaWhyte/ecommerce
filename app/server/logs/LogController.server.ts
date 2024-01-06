@@ -54,7 +54,7 @@ export default class LogController {
 
     const searchFilter: any = employee
       ? {
-          $or: [{ user: employee }],
+          $or: [{ employee: employee }],
         }
       : {};
 
