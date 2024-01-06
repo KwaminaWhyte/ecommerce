@@ -30,15 +30,8 @@ import { OrderReceipt } from "~/components/printables/OrderReceipt";
 import EmployeeController from "~/server/employee/EmployeeController.server";
 import IdGenerator from "~/lib/IdGenerator";
 import { Input } from "~/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+
+import imgPlaceholder from "~/components/inc/placeholder-image.jpg";
 
 const { useReactToPrint } = pkg;
 
@@ -123,13 +116,16 @@ export default function Shop() {
             key={IdGenerator(10)}
             className="w-full border border-slate-400 bg-white/95 dark:bg-black/95 dark:text-white p-1 rounded-lg"
           >
-            {product?.images.length > 0 && (
-              <img
-                className="w-full inset-0 h-60 rounded-md object-cover"
-                src={product?.images[0]?.url}
-                alt="product"
-              />
-            )}
+            <img
+              className="w-full inset-0 h-60 rounded-md object-cover"
+              src={
+                product?.images[0]?.url
+                  ? product?.images[0]?.url
+                  : imgPlaceholder
+              }
+              alt="product"
+            />
+
             <section className="p-1 flex flex-col">
               <p className="font-bold text-base">{product?.name}</p>
               <p className="line-clamp-3 mb-2">{product?.description}</p>

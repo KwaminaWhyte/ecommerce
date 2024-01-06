@@ -12,7 +12,6 @@ const ProductImageSchema: Schema = new mongoose.Schema(
     url: String,
     size: Number,
     type: String,
-    imageId: String,
   },
   { timestamps: true }
 );

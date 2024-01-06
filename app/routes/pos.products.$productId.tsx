@@ -3,10 +3,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import {
   json,
   type LoaderFunction,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-  type UploadHandler,
   type MetaFunction,
   type ActionFunction,
 } from "@remix-run/node";
@@ -16,23 +12,26 @@ import {
   useLoaderData,
   useNavigation,
 } from "@remix-run/react";
+import imgPlaceholder from "~/components/inc/placeholder-image.jpg";
 
 import Container from "~/components/Container";
 import Input from "~/components/Input";
 import Spacer from "~/components/Spacer";
-import AdminController from "~/server/admin/AdminController.server";
-import { uploadImage } from "~/server/cloudinary.server";
 import ProductController from "~/server/product/ProductController.server";
 import { validateName } from "~/server/validators.server";
 import PosLayout from "~/components/layouts/PosLayout";
 import CartController from "~/server/cart/CartController.server";
-import type { ProductImageInterface } from "~/server/types";
+import type { ProductInterface, UserInterface } from "~/server/types";
 import EmployeeAuthController from "~/server/employee/EmployeeAuthController";
 import { Button } from "~/components/ui/button";
 import IdGenerator from "~/lib/IdGenerator";
 
 export default function AdminProductDetails() {
-  let { user, product, cart_items } = useLoaderData();
+  let { user, product, cart_items } = useLoaderData<{
+    user: UserInterface;
+    product: ProductInterface;
+    cart_items: any[];
+  }>();
   const [activeImage, setActiveImage] = useState({});
   let actionData = useActionData();
   let navigation = useNavigation();
@@ -74,11 +73,11 @@ export default function AdminProductDetails() {
           />
 
           <div className="mt-3 flex flex-wrap gap-3 p-1">
-            {product.images.map((image: ProductImageInterface) => (
+            {product.images.map((image) => (
               <img
                 key={IdGenerator(10)}
                 onClick={() => setActiveImage(image)}
-                src={image.url}
+                src={image.url ? image.url : imgPlaceholder}
                 className={`h-20 w-20 rounded-md object-cover ${
                   image._id == activeImage?._id
                     ? "ring-1 ring-purple-500 ring-offset-2"
@@ -196,28 +195,9 @@ export default function AdminProductDetails() {
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  // const formData = await request.formData();
+  const formData = await request.formData();
 
-  // if (formData.get("deleteId") != null) {
-  //   deleteProduct(formData.get("deleteId") as string);
-  //   return true;
-  // } else {
-  const uploadHandler: UploadHandler = composeUploadHandlers(
-    async ({ name, data }) => {
-      if (name !== "image") {
-        return undefined;
-      }
-
-      const uploadedImage: { secure_url: string; asset_id: string } =
-        (await uploadImage(data)) as { secure_url: string; asset_id: string };
-
-      return uploadedImage?.secure_url + "|" + uploadedImage.asset_id;
-    },
-    createMemoryUploadHandler()
-  );
-
-  const formDataI = await parseMultipartFormData(request, uploadHandler);
-  const imgSrc = formDataI.get("image") as string;
+  const imgSrc = formData.get("image") as string;
   if (!imgSrc) {
     return json({ error: "something wrong" });
   }
@@ -225,7 +205,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (typeof imgSrc !== "string") {
     return json({ error: "Invalid image" }, { status: 400 });
   }
-  const productId = formDataI.get("productId") as string;
+  const productId = formData.get("productId") as string;
 
   const errors = {
     name: validateName(imgSrc),

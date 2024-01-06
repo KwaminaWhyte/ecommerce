@@ -557,23 +557,38 @@ export default class ProductController {
 
   public addProductImage = async ({
     productId,
-    image,
+    images,
   }: {
     productId: string;
-    image: any;
+    images: any;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
+
+    const imagePromises = images.map(async (image) => {
+      try {
+        // Assuming ProductImage.create returns a promise
+        const imageRes = await ProductImage.create({
+          url: image,
+          product: productId,
+        });
+        return imageRes;
+      } catch (error) {
+        console.error(`Error creating product image: ${error}`);
+        // Handle the error as needed
+        return null;
+      }
+    });
+
+    // Wait for all promises to resolve
+    const results = await Promise.all(imagePromises);
+    const successfulResults = results.filter((result) => result !== null);
+    console.log(successfulResults);
 
     try {
       const product = await Product.findById(productId);
 
-      let imageRes = await ProductImage.create({
-        url: image?.url,
-        imageId: image?.externalId,
-        product: product?._id,
-      });
-
-      product.images.push(imageRes);
+      const successfulIds = successfulResults.map((result) => result?._id);
+      product.images.push(...successfulIds);
       await product.save();
 
       session.flash("message", {

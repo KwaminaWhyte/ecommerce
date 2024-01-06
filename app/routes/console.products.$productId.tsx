@@ -68,56 +68,50 @@ export default function AdminProductDetails() {
     productStats: any;
   }>();
   const [activeImage, setActiveImage] = useState({});
-  const [files, setFiles] = useState<{ file: any; previewUrl: string }[]>([]);
 
-  let [isRestockOpen, setIsRestockOpen] = useState(false);
-  let [isImageOpen, setIsImageOpen] = useState(false);
+  const [isRestockOpen, setIsRestockOpen] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
 
-  const handleFileChange = (event) => {
-    const newImages = [...files];
-    for (const file of event.target.files) {
-      const image = {
-        file: file,
-        previewUrl: URL.createObjectURL(file),
-      };
-      newImages.push(image);
-    }
-    setFiles(newImages);
-  };
+  const [base64Strings, setBase64Strings] = useState([]);
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    let index = 0;
-    while (index < files.length) {
-      formData.append("file", files[index].file);
-      formData.append("upload_preset", "hostel");
+    submit(
+      {
+        productId: product?._id,
+        images: JSON.stringify(base64Strings),
+      },
+      {
+        method: "post",
+      }
+    );
+  };
 
-      axios
-        .post(
-          "https://api.cloudinary.com/v1_1/app-deity/image/upload",
-          formData
-        )
-        .then((response) => {
-          submit(
-            {
-              productId: product?._id,
-              image: JSON.stringify({
-                url: response.data.secure_url,
-                externalId: response.data.asset_id,
-              }),
-            },
-            {
-              method: "post",
-            }
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      index += 1;
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    const newBase64Strings = [];
+
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      const reader = new FileReader();
+
+      reader.onloadend = (() => {
+        const currentIndex = index; // Capture the current index
+        return () => {
+          // The result attribute contains the data as a Base64 encoded string
+          const base64 = reader.result;
+          newBase64Strings[currentIndex] = base64;
+
+          // If all files are processed, update state
+          if (newBase64Strings.filter(Boolean).length === files.length) {
+            setBase64Strings(newBase64Strings);
+          }
+        };
+      })();
+
+      // Read the image file as a data URL
+      reader.readAsDataURL(file);
     }
   };
-  console.log(stocks);
 
   useEffect(() => {
     setActiveImage(product.images[0]);
@@ -166,56 +160,6 @@ export default function AdminProductDetails() {
                 <DialogHeader>
                   <DialogTitle>Upload Image</DialogTitle>
                 </DialogHeader>
-                {/* <Form
-              method="POST"
-              encType="multipart/form-data"
-              className="flex flex-col gap-4"
-            >
-              <input type="hidden" name="actionType" value="restock" />
-              <input type="hidden" name="productId" value={product?._id} />
-
-              <div className="grid w-full  items-center gap-1.5">
-                <Label htmlFor="quantity">Quantity</Label>
-                <Input id="quantity" type="number" name="quantity" required />
-              </div>
-
-              <div className="grid w-full  items-center gap-1.5">
-                <Label htmlFor="cost_price">Cost Price</Label>
-                <Input
-                  id="cost_price"
-                  type="number"
-                  step={0.01}
-                  name="cost_price"
-                  required
-                />
-              </div>
-
-              <div className="grid w-full  items-center gap-1.5">
-                <Label htmlFor="price">Price</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step={0.01}
-                  name="price"
-                  required
-                />
-              </div>
-
-              <div className="flex gap-3 items-center justify-end ">
-                <DialogClose asChild>
-                  <Button type="button" variant="destructive">
-                    Close
-                  </Button>
-                </DialogClose>
-
-                <Button
-                  type="submit"
-                  // disabled={navigation.state === "submitting" ? true : false}
-                >
-                  Submit
-                </Button>
-              </div>
-            </Form> */}
 
                 <div className=" bg-white p-4 rounded-2xl  flex-col gap-5 items-center">
                   <div className="grid flex-1 items-center gap-1.5 mb-5">
@@ -226,7 +170,7 @@ export default function AdminProductDetails() {
                       name="image"
                       accept=".png,.jpg,jpeg"
                       multiple
-                      onChange={handleFileChange}
+                      onChange={handleImageChange}
                     />
                   </div>
 
@@ -470,7 +414,7 @@ export default function AdminProductDetails() {
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
 
-  const image = formData.get("image") as string;
+  const images = formData.get("images") as string;
   const productId = formData.get("productId") as string;
 
   const actionType = formData.get("actionType") as string;
@@ -499,7 +443,7 @@ export const action: ActionFunction = async ({ request }) => {
   } else {
     return await productController.addProductImage({
       productId,
-      image: JSON.parse(image),
+      images: JSON.parse(images),
     });
   }
 };
@@ -522,7 +466,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const productStats = await new ReportController(
     request
   ).getProductSalesByMonth(productId as string);
-  console.log(productStats);
 
   return { user, product, stocks, productStats };
 };
