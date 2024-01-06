@@ -301,6 +301,7 @@ export const action: ActionFunction = async ({ request }) => {
       salesPerson: formData.get("sales_person") as string,
       onCredit: formData.get("on_credit") as string,
       amountPaid: formData.get("amount_paid") as string,
+      balance: formData.get("balance") as string,
     });
 
     return ress;

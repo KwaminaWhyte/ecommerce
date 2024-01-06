@@ -51,10 +51,6 @@ const OrderSchema = new mongoose.Schema(
         color: String,
       },
     ],
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
     deliveryDate: {
       type: Date,
       default: Date.now,
@@ -73,12 +69,7 @@ const OrderSchema = new mongoose.Schema(
       enum: ["cancelled", "pending", "completed"],
       default: "pending",
     },
-    shippingTimelines: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "shipping_timelines",
-      },
-    ],
+
     deliveryStatus: {
       type: String,
       enum: ["pending", "shipped", "delivered"],
@@ -89,12 +80,26 @@ const OrderSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
     amountPaid: {
+      type: Number,
+      default: 0,
+    },
+    balance: {
       type: Number,
       default: 0,
     },
     customerName: String,
     customerPhone: String,
+    shippingTimelines: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "shipping_timelines",
+      },
+    ],
   },
   {
     timestamps: true,

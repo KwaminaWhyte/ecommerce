@@ -196,6 +196,7 @@ export default class OrderController {
     customerPhone,
     salesPerson,
     amountPaid,
+    balance,
     onCredit = "false",
   }: {
     customerName: string;
@@ -203,6 +204,7 @@ export default class OrderController {
     salesPerson: string;
     onCredit: string;
     amountPaid: string;
+    balance: string;
   }) => {
     const session = await getSession(this.request.headers.get("Cookie"));
     const employeeAuth = await new EmployeeAuthController(this.request);
@@ -267,14 +269,15 @@ export default class OrderController {
       const order = await Order.create({
         orderId,
         cashier: cashier,
-        totalPrice,
         orderItems: newCartItems,
         deliveryStatus: "delivered",
         paymentStatus: onCredit == "true" ? "pending" : "paid",
         salesPerson: salesPerson ? salesPerson : null,
         onCredit: onCredit == "true" ? true : false,
         status: "completed",
+        totalPrice,
         amountPaid: amountPaid ? parseInt(amountPaid) : 0,
+        balance: balance ? parseInt(balance) : 0,
         customerName,
         customerPhone,
       });
@@ -328,11 +331,11 @@ export default class OrderController {
         })
         .populate({
           path: "cashier",
-          select: "_id firstName lastName email phone address",
+          select: "_id firstName lastName email phone",
         })
         .populate({
-          path: "cashier",
-          select: "_id firstName lastName email phone address",
+          path: "salesPerson",
+          select: "_id firstName lastName email phone",
         })
         .exec();
     } catch (error) {
