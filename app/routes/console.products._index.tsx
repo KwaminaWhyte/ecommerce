@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import TextArea from "~/components/TextArea";
 import AdminLayout from "~/components/layouts/AdminLayout";
 import DeleteModal from "~/components/modals/DeleteModal";
 import AdminController from "~/server/admin/AdminController.server";
@@ -54,6 +53,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import imgPlaceholder from "~/components/inc/placeholder-image.jpg";
+import { Textarea } from "~/components/ui/textarea";
 
 const arrayToKeyValuePairs = async (dataArray) => {
   // Assuming the first array in the input represents the keys
@@ -338,14 +338,12 @@ export default function Products() {
                   </Select>
                 </div>
 
-                <TextArea
-                  name="description"
-                  placeholder="Description"
-                  label="Description"
-                  error={actionData?.errors?.description}
-                />
+                <div className="grid w-full  items-center gap-1.5">
+                  <Label htmlFor="quantity">Description</Label>
+                  <Textarea name="description" placeholder="Description" />
+                </div>
 
-                <div className="grid w-full p-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                   <Label htmlFor="quantity">Quantity</Label>
                   <Input id="quantity" type="number" name="quantity" />
                 </div>
@@ -645,12 +643,13 @@ export default function Products() {
                                 </Select>
                               </div>
 
-                              <TextArea
-                                name="description"
-                                placeholder="Description"
-                                label="Description"
-                                defaultValue={product?.description}
-                              />
+                              <div className="grid w-full  items-center gap-1.5">
+                                <Label htmlFor="quantity">Description</Label>
+                                <Textarea
+                                  name="description"
+                                  placeholder="Description"
+                                />
+                              </div>
 
                               <div className="grid w-full  items-center gap-1.5">
                                 <Label htmlFor="quantity">Quantity</Label>
