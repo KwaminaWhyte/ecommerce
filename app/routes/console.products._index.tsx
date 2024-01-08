@@ -53,6 +53,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import imgPlaceholder from "~/components/inc/placeholder-image.jpg";
 
 const arrayToKeyValuePairs = async (dataArray) => {
   // Assuming the first array in the input represents the keys
@@ -408,7 +409,11 @@ export default function Products() {
                 >
                   <img
                     className="mr-2 h-11 w-11 rounded-md object-cover"
-                    src={product?.images[0]?.url}
+                    src={
+                      product?.images[0]?.url
+                        ? product?.images[0]?.url
+                        : imgPlaceholder
+                    }
                     alt=""
                   />
 
