@@ -218,7 +218,7 @@ export default class ProductController {
         name,
         price,
         description,
-        category,
+        category: category != "" ? category : null,
         quantity,
         costPrice,
       });
@@ -362,6 +362,16 @@ export default class ProductController {
       });
     }
   };
+
+  public async getAllCategories() {
+    try {
+      const categories = await Category.find();
+
+      return categories;
+    } catch (error) {
+      console.error("Error retrieving categories:", error);
+    }
+  }
 
   public async getCategories({
     page,

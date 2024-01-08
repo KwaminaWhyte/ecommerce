@@ -783,7 +783,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     search_term,
     page,
   });
-  const { categories } = await productController.getCategories({ page });
+  const categories = await productController.getAllCategories();
   return { user, products, categories, page, totalPages };
 };
 
