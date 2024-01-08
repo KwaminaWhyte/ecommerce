@@ -46,6 +46,7 @@ export default class ProductController {
         .populate("images")
         .populate("category")
         .populate("stockHistory")
+        .sort({ name: "asc" })
         .exec();
 
       const totalProductsCount = await Product.countDocuments(
